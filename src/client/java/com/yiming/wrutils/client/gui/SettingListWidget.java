@@ -1,95 +1,127 @@
 package com.yiming.wrutils.client.gui;
 
+import com.google.common.collect.ImmutableList;
+import com.yiming.wrutils.client.data.ConfigManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.screen.option.ControlsListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 
-import java.awt.*;
 import java.util.List;
 
-public class SettingListWidget extends ElementListWidget<SettingListWidget.SettingEntry> {
+@Environment(EnvType.CLIENT)
+public class SettingListWidget extends ElementListWidget<SettingListWidget.Entry> {
+    private static ConfigManager configManager = new ConfigManager("config/wrutils/wrutils.properties");
 
     private final SettingGui parent;
 
-    int buttonWidth;
-    int buttonHeight;
-    int rowWidth;
-
     public SettingListWidget(MinecraftClient client, SettingGui parent) {
-        super(client, parent.width, parent.height - 100, 64, (parent.height) / 4, 32);
+        super(client, parent.width, parent.layout.getContentHeight(), parent.layout.getHeaderHeight(), 25);
         this.parent = parent;
-//        buttonWidth = (parent.width - 30) / 4;
-//        buttonHeight = (parent.width - 30) / 16;
-        buttonWidth = 100;
-        buttonHeight = 20;
-        rowWidth = parent.width - 30;
 
-//        super(client, 200, 200, 32, 150, 32);
-        System.out.println(String.format("width:%d height:%d 32:%d height-64:%d 32:%d", width, parent.height, 32, parent.height - 64, 32));
-        this.addEntry(new SettingEntry(Text.literal("设置项 1"),
-                ButtonWidget.builder(Text.literal("按钮 3"), button -> {
-                            System.out.println("你点击了按钮 3！");
-                        })
-                        .dimensions(0, 0, buttonWidth, buttonHeight)
-                        .tooltip(Tooltip.of(Text.literal("按钮 3 的提示")))
-                        .build()
-        ));
-
-        this.addEntry(new SettingEntry(Text.literal("设置项 2"),
-                ButtonWidget.builder(Text.literal("按钮 4"), button -> {
-                            System.out.println("你点击了按钮 4！");
-                        })
-                        .dimensions(0, 0, buttonWidth, buttonHeight)
-                        .tooltip(Tooltip.of(Text.literal("按钮 4 的提示")))
-                        .build()
-        ));
-
-    }
-
-
-    @Override
-    public int getRowWidth() {
-        return rowWidth;
-    }
-
-//    @Override
-//    protected int getScrollbarPositionX() {
-//        return this.width / 2 + this.getRowWidth() / 2 + 4;
-//    }
-
-    public class SettingEntry extends ElementListWidget.Entry<SettingEntry> {
-        private final Text text;
-        private final ButtonWidget button0;
-
-        public SettingEntry(Text text, ButtonWidget button0) {
-            this.text = text;
-            this.button0 = button0;
+        int countEntry = 3;
+        int countEmptyEntry = (this.getHeight() - 10 > countEntry * 25 ? (this.getHeight() - this.getEntryCount() * 25) : 0) / (25 * 2) - 1;
+        for (int i = 0; i < countEmptyEntry; i++) {
+            this.addEntry(new EmptyEntry());
         }
 
+        this.addEntry(new SettingEntry(Text.literal("项目1"), "option1"));
+        this.addEntry(new SettingEntry(Text.literal("项目2"), "option2"));
+        this.addEntry(new SettingEntry(Text.literal("项目3"), "option3"));
+
+    }
+
+
+    @Environment(EnvType.CLIENT)
+    public abstract static class Entry extends ElementListWidget.Entry<SettingListWidget.Entry> {
+    }
+
+    public class SettingEntry extends SettingListWidget.Entry {
+        private final Text text;
+        private final ButtonWidget button0;
+        private boolean status;
+        private final String id;
+
+        public SettingEntry(Text text, String id) {
+            this.status = configManager.getConfigOption(id);
+            this.text = text;
+            this.id = id;
+            this.button0 = ButtonWidget.builder(this.getMessageText(), button -> {
+                changeButtonText(button);
+            }).dimensions(0, 0, 75, 20).build();
+        }
+
+//        public SettingEntry(Text text, String id) {
+//            this(text, id);
+//        }
+
+        /**
+         * 根据当前状态更改按钮文本
+         * 此方法根据当前的 status 状态来决定按钮上显示的文本如果 status 为 true，则按钮文本设置为 "OFF"；
+         * 否则，按钮文本设置为 "ON" 通过这种方式，用户可以直观地了解当前的功能状态
+         *
+         * @param buttonWidget ButtonWidget 类型的参数，代表需要更改文本的按钮对象
+         */
+        private void changeButtonText(ButtonWidget buttonWidget) {
+            if (this.status) {
+                this.status = false;
+                buttonWidget.setMessage(this.getMessageText());
+            } else {
+                this.status = true;
+                buttonWidget.setMessage(this.getMessageText());
+            }
+            configManager.setConfigOptionAndSave(this.id, this.status);
+
+        }
+
+        private Text getMessageText() {
+            return Text.literal(this.status ? "ON" : "OFF").formatted(new Formatting[]{this.status ? Formatting.GREEN : Formatting.RED});
+        }
 
         @Override
         public List<? extends Element> children() {
-            return List.of(button0);
+            return ImmutableList.of(this.button0);
         }
 
         @Override
         public List<? extends Selectable> selectableChildren() {
-            return List.of(button0);
+            return ImmutableList.of(this.button0);
         }
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-//            System.out.println("SettingEntry render 方法被调用");
-            button0.setX(x + 5);
-            button0.setY(y-buttonHeight/2);
-            button0.render(context, mouseX, mouseY, tickDelta);
-            context.drawText(parent.getTextRenderer(), text, button0.getX() + button0.getWidth()+5, y-parent.getTextRenderer().getWrappedLinesHeight(text, parent.getTextRenderer().getWidth(text))/2, 0xFFFFFFFF, false);
-
+            int i = SettingListWidget.this.getScrollbarX() - 10;
+            int j = y - 2;
+            int k = i - 5 - this.button0.getWidth();
+            this.button0.setPosition(k, j);
+            this.button0.render(context, mouseX, mouseY, tickDelta);
+            context.drawTextWithShadow(SettingListWidget.this.client.textRenderer, this.text, x, y + entryHeight / 2 - parent.getTextHeight() / 2, Colors.WHITE);
         }
     }
+
+    @Environment(EnvType.CLIENT)
+    public static class EmptyEntry extends SettingListWidget.Entry {
+        @Override
+        public List<? extends Element> children() {
+            return ImmutableList.of();
+        }
+
+        @Override
+        public List<? extends Selectable> selectableChildren() {
+            return ImmutableList.of();
+        }
+
+        @Override
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        }
+    }
+
 }

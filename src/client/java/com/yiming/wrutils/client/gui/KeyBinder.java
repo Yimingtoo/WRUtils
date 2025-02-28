@@ -11,16 +11,16 @@ import org.lwjgl.glfw.GLFW;
 public class KeyBinder {
     private  static KeyBinding keyBinding;
     public KeyBinder() {
-        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.wrutils.setting",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_I,
-                "key.wrutils.category"));
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyBinding.wasPressed()) {
-                System.out.println("-----------------Key I was pressed sdf------------");
-                MinecraftClient.getInstance().setScreen(new SettingGui(Text.empty()));
-            }
-        });
+//        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+//                "key.wrutils.setting",
+//                InputUtil.Type.KEYSYM,
+//                GLFW.GLFW_KEY_I,
+//                "key.wrutils.category"));
+//        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+//            while (keyBinding.wasPressed()) {
+//                System.out.println("-----------------Key I was pressed sdf------------");
+//                MinecraftClient.getInstance().setScreen(new SettingGui(Text.empty()));
+//            }
+//        });
     }
 }

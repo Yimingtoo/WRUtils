@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client;
 
+import com.yiming.wrutils.client.data.ConfigManager;
 import com.yiming.wrutils.client.gui.KeyBinder;
 import com.yiming.wrutils.client.gui.SettingGui;
 import net.fabricmc.api.ClientModInitializer;
@@ -12,12 +13,18 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class WrutilsClient implements ClientModInitializer {
-    private  static KeyBinding keyBinding;
+    private static KeyBinding keyBinding;
 
     @Override
     public void onInitializeClient() {
+        String currentPath = System.getProperty("user.dir");
+        // 打印当前工作目录
+        System.out.println("当前路径: " + currentPath);
+
+
+
+
         System.out.println("WrutilsClient initialized!");
-//        KeyBinder keyBinder = new KeyBinder();
         keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.wrutils.setting",
                 InputUtil.Type.KEYSYM,
@@ -26,7 +33,7 @@ public class WrutilsClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
                 System.out.println("-----------------Key I was pressed sdf------------");
-                MinecraftClient.getInstance().setScreen(new SettingGui(Text.of("TEst")));
+                MinecraftClient.getInstance().setScreen(new SettingGui(Text.of("WRUtils Settings")));
             }
         });
     }

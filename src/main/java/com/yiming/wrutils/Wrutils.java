@@ -6,5 +6,6 @@ public class Wrutils implements ModInitializer {
 
     @Override
     public void onInitialize() {
+
     }
 }

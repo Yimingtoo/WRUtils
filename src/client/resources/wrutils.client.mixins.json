@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.yiming.wrutils.mixin.client",
+  "package": "com.yiming.wrutils.client.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ResizeWindowMixin"
   ],
   "injectors": {
     "defaultRequire": 1
