@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Function;
 
+@Deprecated
 public class AddedBlocks {
     public static final Block COLORED_BLOCK = registerBlock("colored_block", Block::new, Block.Settings.create());
 
@@ -29,7 +30,7 @@ public class AddedBlocks {
         return block;
     }
 
-    public static void registerModBlocks() {
+    public static void initializeAndRegister() {
         System.out.println("Registering Blocks for " + Wrutils.MOD_ID);
     }
 }

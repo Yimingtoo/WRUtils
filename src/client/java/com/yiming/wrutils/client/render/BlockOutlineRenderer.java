@@ -3,6 +3,7 @@ package com.yiming.wrutils.client.render;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.util.math.BlockPos;
 
+@Deprecated
 public class BlockOutlineRenderer {
 
     public void registerBlockOutlineRenderer() {

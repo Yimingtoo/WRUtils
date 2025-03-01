@@ -7,6 +7,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
+@Deprecated
 public class ColoredBlockEntity extends BlockEntity {
 
     public ColoredBlockEntity(BlockPos pos, BlockState state) {

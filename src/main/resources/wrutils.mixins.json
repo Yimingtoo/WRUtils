@@ -4,6 +4,7 @@
   "package": "com.yiming.wrutils.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "testMixin"
   ],
   "injectors": {
     "defaultRequire": 1

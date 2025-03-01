@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
 
+@Deprecated
 public class CustomBlockEntityRenderer implements BlockEntityRenderer<BlockEntity> {
     protected final BlockEntityRenderDispatcher dispatcher;
     private final TextRenderer textRenderer;

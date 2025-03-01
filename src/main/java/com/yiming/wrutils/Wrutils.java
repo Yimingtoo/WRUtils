@@ -1,27 +1,27 @@
 package com.yiming.wrutils;
 
-import com.yiming.wrutils.block.AddedBlocks;
-import com.yiming.wrutils.block.entity.ColoredBlockEntity;
-import com.yiming.wrutils.block.entity.ModBlockEntityTypes;
+import com.yiming.wrutils.block.entity.ModItemEntity;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 
 
 public class Wrutils implements ModInitializer {
     public static final String MOD_ID = "wrutils-mod";
 
-    public static final BlockEntityType<ColoredBlockEntity> COLORED_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-            "wrutils:colored_block_entity",
-            FabricBlockEntityTypeBuilder.create((BlockPos type, BlockState pos) -> new ColoredBlockEntity(type, pos)).build(null));
+//    public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_TYPE =;
+    public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_ENTITY_TYPE = Registry.register(
+            Registries.ENTITY_TYPE,
+            "wrutils_mod_item_entity",
+            EntityType.Builder.create(ModItemEntity::new, SpawnGroup.MISC).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.ofVanilla("wrutils_mod_item_entity")))
+    );
 
     @Override
     public void onInitialize() {
-        AddedBlocks.registerModBlocks();
-        ModBlockEntityTypes.initialize();
     }
 }
