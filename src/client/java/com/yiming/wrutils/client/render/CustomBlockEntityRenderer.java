@@ -33,14 +33,16 @@ public class CustomBlockEntityRenderer implements BlockEntityRenderer<BlockEntit
     @Override
     public void render(BlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         World world = blockEntity.getWorld();
+        System.out.println("CustomBlockEntityRenderer ================ = = = = = =  = = =W");
         if (world != null) {
+            System.out.println("CustomBlockEntityRenderervcbfdgsd");
 
             BlockPos pos = blockEntity.getPos();
             BlockState state = world.getBlockState(pos);
             // 检查是否是需要渲染文字的方块
             if (world.getBlockState(pos).getBlock() instanceof RepeaterBlock) {
-                System.out.printf("find RepeaterBlock : " + pos.toString());
-                blockRenderManager.renderBlock(state, pos, world, matrices, vertexConsumers, true, world.random);
+                System.out.println("find RepeaterBlock : " + pos.toString());
+//                blockRenderManager.renderBlock(state, pos, world, matrices, vertexConsumers, true, world.random);
 
                 Vec3d renderPos = new Vec3d(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
 
