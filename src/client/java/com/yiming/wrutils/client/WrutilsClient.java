@@ -1,24 +1,18 @@
 package com.yiming.wrutils.client;
 
 import com.yiming.wrutils.Wrutils;
-import com.yiming.wrutils.block.entity.ModItemEntity;
+import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.client.gui.SettingGui;
 import com.yiming.wrutils.client.render.ModItemEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.EntityType;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
-import com.yiming.wrutils.block.entity.ModBlockEntityTypes;
-import com.yiming.wrutils.client.render.CustomBlockEntityRenderer;
 
 public class WrutilsClient implements ClientModInitializer {
     private static KeyBinding keyBinding;
@@ -27,6 +21,8 @@ public class WrutilsClient implements ClientModInitializer {
     public void onInitializeClient() {
         guiInitialize();
         EntityRendererRegistry.register(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, ModItemEntityRenderer::new);
+//        BlockOutlineRenderer blockOutlineRenderer = new BlockOutlineRenderer();
+//        blockOutlineRenderer.registerBlockOutlineRenderer();
     }
 
     public void guiInitialize() {
@@ -40,7 +36,9 @@ public class WrutilsClient implements ClientModInitializer {
     }
 
     public void spawnItem() {
+
         ModItemEntity modItemEntity = new ModItemEntity(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, MinecraftClient.getInstance().player.getWorld());
+        MinecraftClient.getInstance().player.getWorld().spawnEntity(modItemEntity);
     }
 
 

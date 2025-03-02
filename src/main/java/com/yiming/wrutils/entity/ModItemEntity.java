@@ -1,4 +1,4 @@
-package com.yiming.wrutils.block.entity;
+package com.yiming.wrutils.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -17,8 +17,18 @@ public class ModItemEntity extends Entity {
     public ModItemEntity(EntityType<?> type, World world) {
         super(type, world);
         System.out.println("============================ ModItemEntity ==============================");
+        double x = this.getX();
+        double y = this.getY();
+        double z = this.getZ();
+
+        double x1 = this.getX();
+        double y1 = this.getY();
+        double z1 = this.getZ();
+
+
     }
-//    public ModItemEntity(World world, double x, double y, double z) {
+
+    //    public ModItemEntity(World world, double x, double y, double z) {
 //        this(EntityType.ITEM, world);
 //        this.setPosition(x, y, z);
 //        this.setVelocity(0, 0, 0);

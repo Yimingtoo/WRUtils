@@ -1,6 +1,6 @@
 package com.yiming.wrutils;
 
-import com.yiming.wrutils.block.entity.ModItemEntity;
+import com.yiming.wrutils.entity.ModItemEntity;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
