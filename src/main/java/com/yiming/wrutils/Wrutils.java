@@ -1,5 +1,6 @@
 package com.yiming.wrutils;
 
+import com.yiming.wrutils.data.UpdateInfo;
 import com.yiming.wrutils.entity.ModItemEntity;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EntityType;
@@ -14,7 +15,6 @@ import net.minecraft.util.Identifier;
 public class Wrutils implements ModInitializer {
     public static final String MOD_ID = "wrutils-mod";
 
-//    public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_TYPE =;
     public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_ENTITY_TYPE = Registry.register(
             Registries.ENTITY_TYPE,
             "wrutils_mod_item_entity",
@@ -23,5 +23,6 @@ public class Wrutils implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        UpdateInfo.init();
     }
 }

@@ -38,7 +38,8 @@ public class ModItemEntityRenderer extends EntityRenderer<ModItemEntity, ModItem
         if (d - this.lastUpdateTime > 1.0E9) {
             this.lastUpdateTime = d;
 //            System.out.printf("%.2f %.2f %.2f %.2f %.2f %.2f%n", modItemEntity.getPos().x, modItemEntity.getPos().y, modItemEntity.getPos().z, entity.getX(), entity.getY(), entity.getZ());
-            entity.getDisplayName()
+            entity.setCustomName(Text.literal("WRUtils"));
+
         }
     }
 
