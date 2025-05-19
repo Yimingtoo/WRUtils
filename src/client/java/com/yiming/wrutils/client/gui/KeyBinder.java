@@ -8,6 +8,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+@Deprecated
 public class KeyBinder {
     private  static KeyBinding keyBinding;
     public KeyBinder() {

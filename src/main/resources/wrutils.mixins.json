@@ -4,6 +4,9 @@
   "package": "com.yiming.wrutils.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractRedstoneGateBlockMixin",
+    "RepeaterBlockMixin",
+    "ScheduledTickViewMixin",
     "testMixin"
   ],
   "injectors": {
