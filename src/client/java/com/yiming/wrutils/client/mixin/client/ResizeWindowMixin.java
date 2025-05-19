@@ -7,6 +7,9 @@ import net.minecraft.util.thread.ReentrantThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 
+
+// 初始化游戏窗口尺寸
+@Deprecated
 @Mixin(MinecraftClient.class)
 public abstract class ResizeWindowMixin extends ReentrantThreadExecutor<Runnable> implements WindowEventHandler {
     Boolean isResize = false;
