@@ -31,6 +31,9 @@ public class WrutilsClient implements ClientModInitializer {
             while (keyBinding.wasPressed()) {
                 spawnItem();
                 MinecraftClient.getInstance().setScreen(new SettingGui(Text.of("WRUtils Settings")));
+
+                Wrutils.redstoneInfoManager.printAllUpdateInfoTickDescriptions();
+
             }
         });
     }

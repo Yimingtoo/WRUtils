@@ -1,39 +1,101 @@
 package com.yiming.wrutils.data;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.tick.OrderedTick;
+import net.minecraft.world.tick.TickPriority;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 方块的仅一个更新的信息<br>
+ * 包括更新的类型，更新产生的计划刻
+ */
 public class UpdateInfo {
+    public enum UpdateType {NC, PP, S;}
 
-    private static final Set<RedstoneInfo> blocks = new HashSet<>();
+    private static final AtomicInteger ORDER = new AtomicInteger();
+    private static long currentGameTick;
+    private int order;
+    private long gameTick;
 
-    private static final Set<BlockPos> checkedBlockPoses = new HashSet<>();
+    private BlockPos sourceBlockPos;
+    private TickScheduleInfo tickScheduleInfo;
 
-    public static boolean isBlockChecked(BlockPos pos) {
-        return checkedBlockPoses.contains(pos);
-    }
+    private UpdateType updateType;
 
-
-    public static void init() {
-        checkedBlockPoses.add(new BlockPos(0, 0, 0));
-    }
-
-    public static void addCheckedBlockPos(BlockPos pos) {
-        checkedBlockPoses.add(pos);
-    }
-
-    public static void removeCheckedBlockPos(BlockPos pos) {
-        if (!checkedBlockPoses.contains(pos)) {
-            return;
+    public UpdateInfo(long gameTick) {
+        if (gameTick != UpdateInfo.currentGameTick) {
+            UpdateInfo.currentGameTick = gameTick;
+            ORDER.set(0);
         }
-        checkedBlockPoses.remove(pos);
+        this.order = ORDER.getAndIncrement();
+        this.gameTick = gameTick;
+        this.tickScheduleInfo = new TickScheduleInfo();
     }
 
-    public static void addBlock(RedstoneInfo block) {
-        blocks.add(block);
+    //Getter
+    public long getGameTick() {
+        return gameTick;
     }
+
+    public int getOrder() {
+        return order;
+    }
+
+
+    public TickScheduleInfo getTickScheduleInfo() {
+        return tickScheduleInfo;
+    }
+
+    //Setter
+    public void setTickScheduleInfo(Boolean isAddScheduleSuccess, TickPriority tickPriority, int delay, String tickDescription){
+        this.tickScheduleInfo.setAddScheduleSuccess(isAddScheduleSuccess);
+        this.tickScheduleInfo.setTickPriority(tickPriority);
+        this.tickScheduleInfo.setDelay(delay);
+        this.tickScheduleInfo.setTickDescription(tickDescription);
+    }
+
+    class TickScheduleInfo {
+        private boolean isAddScheduleSuccess;
+        private TickPriority tickPriority;
+        private int delay;
+        private String tickDescription;
+
+        //Getter
+        public boolean isAddScheduleSuccess() {
+            return isAddScheduleSuccess;
+        }
+
+        public TickPriority getTickPriority() {
+            return tickPriority;
+        }
+
+        public int getDelay() {
+            return delay;
+        }
+
+        public String getTickDescription() {
+            return tickDescription;
+        }
+
+        // Setter
+        public void setAddScheduleSuccess(boolean addScheduleSuccess) {
+            isAddScheduleSuccess = addScheduleSuccess;
+        }
+
+        public void setTickPriority(TickPriority tickPriority) {
+            this.tickPriority = tickPriority;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
+        }
+
+        public void setTickDescription(String tickDescription) {
+            this.tickDescription = tickDescription;
+        }
+
+    }
+
+
 }

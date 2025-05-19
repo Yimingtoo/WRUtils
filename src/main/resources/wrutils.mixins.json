@@ -6,6 +6,7 @@
   "mixins": [
     "AbstractRedstoneGateBlockMixin",
     "RepeaterBlockMixin",
+    "ScheduledTickViewMixin",
     "testMixin"
   ],
   "injectors": {
