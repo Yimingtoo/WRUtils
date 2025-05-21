@@ -17,6 +17,7 @@ public class UpdateInfo {
     private static long currentGameTick;
     private int order;
     private long gameTick;
+    private BlockPos blockPos;
 
     private BlockPos sourceBlockPos;
     private TickScheduleInfo tickScheduleInfo;
@@ -33,6 +34,17 @@ public class UpdateInfo {
         this.tickScheduleInfo = new TickScheduleInfo();
     }
 
+    public UpdateInfo(long gameTick, BlockPos blockPos) {
+        if (gameTick != UpdateInfo.currentGameTick) {
+            UpdateInfo.currentGameTick = gameTick;
+            ORDER.set(0);
+        }
+        this.order = ORDER.getAndIncrement();
+        this.gameTick = gameTick;
+        this.tickScheduleInfo = new TickScheduleInfo();
+        this.blockPos = blockPos;
+    }
+
     //Getter
     public long getGameTick() {
         return gameTick;
@@ -42,13 +54,17 @@ public class UpdateInfo {
         return order;
     }
 
+    public BlockPos getBlockPos() {
+        return blockPos;
+    }
+
 
     public TickScheduleInfo getTickScheduleInfo() {
         return tickScheduleInfo;
     }
 
     //Setter
-    public void setTickScheduleInfo(Boolean isAddScheduleSuccess, TickPriority tickPriority, int delay, String tickDescription){
+    public void setTickScheduleInfo(Boolean isAddScheduleSuccess, TickPriority tickPriority, int delay, String tickDescription) {
         this.tickScheduleInfo.setAddScheduleSuccess(isAddScheduleSuccess);
         this.tickScheduleInfo.setTickPriority(tickPriority);
         this.tickScheduleInfo.setDelay(delay);
