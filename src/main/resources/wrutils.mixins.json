@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractRedstoneGateBlockMixin",
+    "ChainRestrictedNeighborUpdaterMixin",
     "RepeaterBlockMixin",
     "ScheduledTickViewMixin",
     "testMixin"
