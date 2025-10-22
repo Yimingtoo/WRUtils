@@ -4,11 +4,21 @@
   "package": "com.yiming.wrutils.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractRedstoneGateBlockMixin",
-    "ChainRestrictedNeighborUpdaterMixin",
-    "RepeaterBlockMixin",
-    "ScheduledTickViewMixin",
-    "testMixin"
+    "ServerWorldMixin",
+    "WorldMixin",
+    "chain_restricted_neighbor_updater.ChainRestrictedNeighborUpdaterMixin",
+    "chain_restricted_neighbor_updater.SimpleEntryMixin",
+    "chain_restricted_neighbor_updater.SixWayEntryMixin",
+    "chain_restricted_neighbor_updater.StatefulEntryMixin",
+    "chain_restricted_neighbor_updater.StateReplacementEntryMixin",
+    "event.AbstractRailBlockMixin",
+    "event.AbstractRedstoneGateBlockMixin",
+    "event.LeverBlockMixin",
+    "event.NeighborUpdaterMixin",
+    "event.PoweredRailBlockMixin",
+    "event.RepeaterBlockMixin",
+    "schedule_tick.OrderedTickMixin",
+    "schedule_tick.WorldTickSchedulerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
