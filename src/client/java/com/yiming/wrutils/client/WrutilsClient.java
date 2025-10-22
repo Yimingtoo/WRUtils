@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client;
 
 import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.data.event.BaseEvent;
 import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.client.gui.SettingGui;
 import com.yiming.wrutils.client.render.ModItemEntityRenderer;
@@ -32,7 +33,8 @@ public class WrutilsClient implements ClientModInitializer {
                 spawnItem();
                 MinecraftClient.getInstance().setScreen(new SettingGui(Text.of("WRUtils Settings")));
 
-                Wrutils.redstoneInfoManager.printAllUpdateInfoTickDescriptions();
+                Wrutils.eventRecorder.printEvents();
+                System.out.println("Wrutils.BaseEvent\t"+ BaseEvent.BLOCK_POS_STACK.size());
 
             }
         });

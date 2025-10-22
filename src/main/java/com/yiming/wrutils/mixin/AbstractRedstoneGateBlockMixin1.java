@@ -1,6 +1,5 @@
 package com.yiming.wrutils.mixin;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.data.UpdateInfo;
 import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.Block;
@@ -19,8 +18,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Deprecated
 @Mixin(AbstractRedstoneGateBlock.class)
-public abstract class AbstractRedstoneGateBlockMixin {
+public abstract class AbstractRedstoneGateBlockMixin1 {
 
     @Invoker("isLocked")
     public abstract boolean invokerIsLocked(WorldView world, BlockPos pos, BlockState state);
@@ -78,7 +78,7 @@ public abstract class AbstractRedstoneGateBlockMixin {
             String description = ("Fail info: state.canPlaceAt(world, pos) is FALSE!");
             updateInfo.setTickScheduleInfo(false, null, -1, description);
         }
-        Wrutils.redstoneInfoManager.addUpdateInfoUnit(updateInfo, pos);
+//        Wrutils.redstoneInfoManager.addUpdateInfoUnit(updateInfo, pos);
 
     }
 }
