@@ -40,11 +40,16 @@ public abstract class BaseEvent {
         this.sourcePos = sourcePos;
         this.eventType = eventType;
 
-        if (lastTimeStamp.gameTime() == gameTime && lastTimeStamp.sequence() == microTimingSequence) {
-            timeStamp = new TimeStamp(gameTime, microTimingSequence, lastTimeStamp.eventId()+1);
-        }else {
+        if (lastTimeStamp != null) {
+            if (lastTimeStamp.gameTime() == gameTime && lastTimeStamp.sequence() == microTimingSequence) {
+                timeStamp = new TimeStamp(gameTime, microTimingSequence, lastTimeStamp.eventId() + 1);
+            } else {
+                timeStamp = new TimeStamp(gameTime, microTimingSequence, 0);
+            }
+        } else {
             timeStamp = new TimeStamp(gameTime, microTimingSequence, 0);
         }
+
         lastTimeStamp = timeStamp;
 
     }

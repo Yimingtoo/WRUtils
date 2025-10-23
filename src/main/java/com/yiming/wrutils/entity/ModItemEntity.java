@@ -16,7 +16,7 @@ public class ModItemEntity extends Entity {
 
     public ModItemEntity(EntityType<?> type, World world) {
         super(type, world);
-        System.out.println("============================ ModItemEntity 一个三 ==============================");
+//        System.out.println("============================ ModItemEntity 一个三 ==============================");
         double x = this.getX();
         double y = this.getY();
         double z = this.getZ();
