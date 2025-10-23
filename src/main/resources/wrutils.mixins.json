@@ -11,11 +11,13 @@
     "chain_restricted_neighbor_updater.SixWayEntryMixin",
     "chain_restricted_neighbor_updater.StatefulEntryMixin",
     "chain_restricted_neighbor_updater.StateReplacementEntryMixin",
+    "event.AbstractBlockStateMixin",
     "event.AbstractRailBlockMixin",
     "event.AbstractRedstoneGateBlockMixin",
     "event.LeverBlockMixin",
     "event.NeighborUpdaterMixin",
     "event.PoweredRailBlockMixin",
+    "event.RedstoneWireBlockMixin",
     "event.RepeaterBlockMixin",
     "schedule_tick.OrderedTickMixin",
     "schedule_tick.WorldTickSchedulerMixin"

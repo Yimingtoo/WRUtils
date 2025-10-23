@@ -22,16 +22,13 @@ public class AbstractRailBlockMixin {
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdateMixinHead(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
         System.out.println("AbstractRailBlockMixin: sourceBlockPos is "+BaseEvent.entrySourcePos + "\tSize: "+BaseEvent.BLOCK_POS_STACK.size()+"\t"+ (!BaseEvent.BLOCK_POS_STACK.isEmpty()?BaseEvent.BLOCK_POS_STACK.peek():"null"));
-        BaseEvent.BLOCK_POS_STACK.push(pos);
-//        System.out.println("BaseEvent.BLOCK_POS_STACK.push At Rail");
+//        BaseEvent.BLOCK_POS_STACK.push(pos);
 
-        BlockPos sourcePos = BaseEvent.getFirstFromTop();
-        Wrutils.eventRecorder.addEvent(new SimpleEvent(world.getTime(), MicroTimingSequence.BE, pos,sourcePos, SimpleEvent.EventType.NEIGHBOR_CHANGED));
+
     }
     @Inject(method = "neighborUpdate", at = @At("RETURN"))
     public void neighborUpdateMixinReturn(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        BaseEvent.BLOCK_POS_STACK.pop();
-//        System.out.println("BaseEvent.BLOCK_POS_STACK.pop At Rail");
+//        BaseEvent.BLOCK_POS_STACK.pop();
 
     }
 }
