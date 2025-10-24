@@ -1,6 +1,8 @@
 package com.yiming.wrutils.mixin.chain_restricted_neighbor_updater;
 
 import com.yiming.wrutils.data.event.BaseEvent;
+import com.yiming.wrutils.data.event.BlockInfo;
+import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,7 +30,7 @@ public class SixWayEntryMixin {
     @Shadow
     private  Direction except;
     @Unique
-    private BlockPos sourceBlockPos;
+    private BlockInfo sourceBlockInfo;
 
     @Override
     public String toString(){
@@ -42,7 +44,7 @@ public class SixWayEntryMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init1(BlockPos pos, Block sourceBlock, @Nullable WireOrientation orientation, @Nullable Direction except, CallbackInfo ci) {
-        sourceBlockPos = BaseEvent.getFirstFromTop();
+        sourceBlockInfo = BaseEvent.getFirstBlockInfoFromTop();
     }
 //    @Inject(method = "update", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,ordinal = 0, target = "Lnet/minecraft/world/block/NeighborUpdater;tryNeighborUpdate(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/world/block/WireOrientation;Z)V"))
 //    public void update(World world, CallbackInfoReturnable<Boolean> cir) {
@@ -51,7 +53,7 @@ public class SixWayEntryMixin {
 
     @Inject(method = "update", at = @At("HEAD"))
     public void update1(World world, CallbackInfoReturnable<Boolean> cir) {
-        BaseEvent.entrySourcePos = this.sourceBlockPos;
+        EventRecorder.entrySourceBlockInfo = this.sourceBlockInfo;
     }
 
 }

@@ -1,8 +1,9 @@
 package com.yiming.wrutils.mixin.schedule_tick;
 
 import com.yiming.wrutils.data.event.BaseEvent;
+import com.yiming.wrutils.data.event.EventRecorder;
+import com.yiming.wrutils.data.event.ScheduledTickAddEvent;
 import com.yiming.wrutils.mixin_interface.OrderedTickAccessor;
-import com.yiming.wrutils.data.event.TimeStamp;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.tick.OrderedTick;
 import net.minecraft.world.tick.TickPriority;
@@ -19,16 +20,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class OrderedTickMixin<T>{
 
     @Unique
-    public TimeStamp scheduledTimeStamp;
+    public ScheduledTickAddEvent scheduledTickAddedEvent;
 
     @Inject(method = "<init>(Ljava/lang/Object;Lnet/minecraft/util/math/BlockPos;JLnet/minecraft/world/tick/TickPriority;J)V", at = @At("RETURN"))
     public void init(T object, BlockPos pos, long triggerTick, TickPriority priority, long subTickOrder, CallbackInfo ci) {
-        this.scheduledTimeStamp = BaseEvent.scheduledEventTimeStamp;
+        this.scheduledTickAddedEvent = EventRecorder.scheduledTickAddedEventForOrderedTick;
     }
 
 
-    public TimeStamp orderedTick$getScheduledTimeStamp() {
-        return scheduledTimeStamp;
+    public ScheduledTickAddEvent orderedTick$getScheduledTickAddedEvent() {
+        return scheduledTickAddedEvent;
     }
 
 

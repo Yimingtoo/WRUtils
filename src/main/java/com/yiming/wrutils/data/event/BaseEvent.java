@@ -1,43 +1,18 @@
 package com.yiming.wrutils.data.event;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.tick.OrderedTick;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseEvent {
-    public static Stack<BlockPos> BLOCK_POS_STACK = new Stack<>();
-    public static MicroTimingSequence currentMicroTimingSequence = MicroTimingSequence.WTU;
-    public static BlockPos entrySourcePos = BlockPos.ORIGIN;
-    public static TimeStamp scheduledEventTimeStamp = null;
-
-    public enum EventType {
-        UNKNOWN,
-        NEIGHBOR_CHANGED,
-        POST_PLACEMENT,
-        SCHEDULED_TICK_ADD,
-        SCHEDULED_TICK_EXEC,
-    }
-
-
     protected TimeStamp timeStamp;
     protected EventType eventType = EventType.UNKNOWN;
-
-    protected BlockPos sourcePos;
-    protected BlockPos targetPos;
-    protected BlockState sourceState = null;
-    protected BlockState targetState = null;
-
+    BlockInfo targetBlockInfo = null;
+    BlockInfo sourceBlockInfo = null;
 
     public static TimeStamp lastTimeStamp;
 
-    public BaseEvent(long gameTime, MicroTimingSequence microTimingSequence, BlockPos targetPos, BlockPos sourcePos, EventType eventType) {
-        this.targetPos = targetPos;
-        this.sourcePos = sourcePos;
+    public BaseEvent(long gameTime, MicroTimingSequence microTimingSequence, BlockInfo targetBlockInfo, @Nullable BlockInfo sourceBlockInfo, EventType eventType) {
+        this.targetBlockInfo = targetBlockInfo;
+        this.sourceBlockInfo = sourceBlockInfo;
         this.eventType = eventType;
 
         if (lastTimeStamp != null) {
@@ -54,35 +29,32 @@ public abstract class BaseEvent {
 
     }
 
-    public static BlockPos getSecondFromTop() {
-        if (BLOCK_POS_STACK.size() >= 2) {
-            return BLOCK_POS_STACK.get(BLOCK_POS_STACK.size() - 2);
+
+    public static BlockInfo getFirstBlockInfoFromTop() {
+        if (!EventRecorder.BLOCK_INFO_STACK.isEmpty()) {
+            return EventRecorder.BLOCK_INFO_STACK.peek();
         } else {
             return null;
         }
     }
 
-    public static BlockPos getFirstFromTop() {
-        if (!BLOCK_POS_STACK.isEmpty()) {
-            return BLOCK_POS_STACK.peek();
-        } else {
-            return null;
-        }
+
+    public TimeStamp getTimeStamp() {
+        return timeStamp;
     }
 
-    public abstract void process();
-
-    public BlockPos getTargetPos() {
-        return targetPos;
+    public BlockInfo getSourceBlockInfo() {
+        return sourceBlockInfo;
     }
 
+    public BlockInfo getTargetBlockInfo() {
+        return targetBlockInfo;
+    }
 
     @Override
     public String toString() {
-        if (sourcePos == null) {
-            sourcePos = BlockPos.ORIGIN;
-        }
-        return String.format("Event: Time=%s,\teventType=%s,\ttargetPos=%s,\tsourcePos=%s", timeStamp, eventType, targetPos.toString(), sourcePos.toString());
+
+        return String.format("Event: Time=%s,\teventType=%s,\tsource: %s,\ttarget: %s", timeStamp, eventType, sourceBlockInfo, targetBlockInfo);
     }
 
 }
