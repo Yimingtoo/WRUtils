@@ -8,8 +8,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.block.ChainRestrictedNeighborUpdater;
 import net.minecraft.world.block.WireOrientation;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,15 +24,18 @@ import java.util.List;
 public class ChainRestrictedNeighborUpdaterMixin {
     @Shadow
     private int depth;
+    @Final
     @Shadow
     private int maxChainDepth;
+    @Final
     @Shadow
     private World world;
     @Shadow
-    private final ArrayDeque<Object> queue = new ArrayDeque();
+    private final ArrayDeque<Object> queue = new ArrayDeque<>();
     @Shadow
     private final List<Object> pending = new ArrayList<>();
-    private static int count=0;
+//    @Unique
+//    private static int count=0;
 
 //    @Inject(method = "enqueue", at = @At("HEAD"))
 //    private void enqueue1(BlockPos pos, Object entry, CallbackInfo ci) {
@@ -67,7 +72,7 @@ public class ChainRestrictedNeighborUpdaterMixin {
 //        count++;
 //        System.out.println("Tick : " + this.world.getTime() + "\t" + "runQueuedUpdates1 : " + this.depth + " " + this.queue.size() + "       maxChainDepth: " + this.maxChainDepth);
 
-        System.out.println("runQueuedUpdates1 : " +count+"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   "+this.queue.peek().toString());
+        System.out.println("runQueuedUpdates1 : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   "+this.queue.peek().toString());
 
     }
 
@@ -76,6 +81,6 @@ public class ChainRestrictedNeighborUpdaterMixin {
 //        count++;
 //        System.out.println("Tick : " + this.world.getTime() + "\t" + "runQueuedUpdates1 : " + this.depth + " " + this.queue.size() + "       maxChainDepth: " + this.maxChainDepth);
 
-        System.out.println("runQueuedUpdates2--------------- : " +count+"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   ");
+        System.out.println("runQueuedUpdates2--------------- : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   ");
     }
 }
