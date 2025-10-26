@@ -17,6 +17,7 @@
     "event.AbstractRailBlockMixin",
     "event.AbstractRedstoneGateBlockMixin",
     "event.BedBlockMixin",
+    "event.BlockMixin",
     "event.ButtonBlockMixin",
     "event.CactusBlockMixin",
     "event.DetectorRailBlockMixin",

@@ -34,43 +34,9 @@ public class ChainRestrictedNeighborUpdaterMixin {
     private final ArrayDeque<Object> queue = new ArrayDeque<>();
     @Shadow
     private final List<Object> pending = new ArrayList<>();
-//    @Unique
-//    private static int count=0;
 
-//    @Inject(method = "enqueue", at = @At("HEAD"))
-//    private void enqueue1(BlockPos pos, Object entry, CallbackInfo ci) {
-//        System.out.println("enqueue--------------------------------------------- : " + this.depth);
-//    }
-
-    @Inject(method = "updateNeighbors", at = @At("HEAD"))
-    private void updateNeighbors1(BlockPos pos, Block sourceBlock, Direction except, WireOrientation orientation, CallbackInfo ci) {
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "updateNeighbors : " + this.depth + sourceBlock.toString() + "       maxChainDepth: " + this.maxChainDepth);
-    }
-
-    @Inject(method = "updateNeighbor(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/world/block/WireOrientation;)V", at = @At("HEAD"))
-    private void updateNeighbor1(BlockPos pos, Block sourceBlock, WireOrientation wireOrientation, CallbackInfo ci) {
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "updateNeighbor1 : " + this.depth + sourceBlock.toString() + "       maxChainDepth: " + this.maxChainDepth);
-    }
-
-    @Inject(method = "updateNeighbor(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/world/block/WireOrientation;Z)V", at = @At("HEAD"))
-    private void updateNeighbor2(BlockState state, BlockPos pos, Block sourceBlock, WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "updateNeighbor2 : " + this.depth + sourceBlock.toString() + "       maxChainDepth: " + this.maxChainDepth);
-    }
-
-    @Inject(method = "replaceWithStateForNeighborUpdate", at = @At("HEAD"))
-    private void replaceWithStateForNeighborUpdate1(Direction direction, BlockState neighborState, BlockPos pos, BlockPos neighborPos, int flags, int maxUpdateDepth, CallbackInfo ci) {
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "replaceWithStateForNeighborUpdate1 : " + this.depth + pos.toString() + "       maxChainDepth: " + maxUpdateDepth);
-    }
-
-    @Inject(method = "runQueuedUpdates", at = @At("HEAD"))
-    private void runQueuedUpdates1(CallbackInfo ci) {
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "runQueuedUpdates1 : " + this.depth + " " + this.queue.size() + "       maxChainDepth: " + this.maxChainDepth);
-
-    }
     @Inject(method = "runQueuedUpdates", at = @At(value = "INVOKE", target = "Ljava/util/ArrayDeque;peek()Ljava/lang/Object;", shift = At.Shift.AFTER, ordinal = 0))
     private void runQueuedUpdates2(CallbackInfo ci) {
-//        count++;
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "runQueuedUpdates1 : " + this.depth + " " + this.queue.size() + "       maxChainDepth: " + this.maxChainDepth);
 
         System.out.println("runQueuedUpdates1 : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   "+this.queue.peek().toString());
 
@@ -78,8 +44,6 @@ public class ChainRestrictedNeighborUpdaterMixin {
 
     @Inject(method = "runQueuedUpdates", at = @At(value = "INVOKE", target = "Ljava/util/ArrayDeque;isEmpty()Z", shift = At.Shift.AFTER, ordinal = 0))
     private void runQueuedUpdates3(CallbackInfo ci) {
-//        count++;
-//        System.out.println("Tick : " + this.world.getTime() + "\t" + "runQueuedUpdates1 : " + this.depth + " " + this.queue.size() + "       maxChainDepth: " + this.maxChainDepth);
 
         System.out.println("runQueuedUpdates2--------------- : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   ");
     }
