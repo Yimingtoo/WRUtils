@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
@@ -67,6 +68,20 @@ public abstract class AbstractBlockStateMixin {
                                 EventType.POST_PLACEMENT));
             }
         }
+
+    }
+
+
+    @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("HEAD"))
+    public void updateNeighbors(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
+        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
+//        System.out.println("asdffffffffffffffffffffafdsfasd" +  world.getBlockState(pos).getBlock());;
+
+    }
+
+    @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("RETURN"))
+    public void updateNeighbors1(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
+        EventRecorder.BLOCK_INFO_STACK.pop();
 
     }
 

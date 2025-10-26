@@ -83,9 +83,14 @@ public class EventRecorder {
     }
 
     public void printEvents() {
+        long lastGameTime = -1;
         for (BaseEvent event : eventList) {
-
+            if (lastGameTime != -1 && event.getTimeStamp().gameTime() != lastGameTime) {
+                System.out.println();
+            }
             System.out.println(event.toString());
+
+            lastGameTime = event.getTimeStamp().gameTime();
         }
     }
 

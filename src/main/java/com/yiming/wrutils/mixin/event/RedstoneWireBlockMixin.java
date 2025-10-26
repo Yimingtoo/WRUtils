@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin {
+
+    @Inject(method = "prepare", at = @At("HEAD"))
+    public void prepare(BlockState state, WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
+        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+
+    }
+    @Inject(method = "prepare", at = @At("RETURN"))
+    public void prepare1(BlockState state, WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
+        EventRecorder.BLOCK_INFO_STACK.pop();
+    }
 
     @Inject(method = "update", at = @At("HEAD"))
     public void update(World world, BlockPos pos, BlockState state, @Nullable WireOrientation orientation, boolean blockAdded, CallbackInfo ci) {
