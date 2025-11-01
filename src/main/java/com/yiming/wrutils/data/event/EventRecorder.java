@@ -1,6 +1,7 @@
 package com.yiming.wrutils.data.event;
 
 import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,8 @@ public class EventRecorder {
     public static ScheduledTickAddEvent scheduledTickAddedEventForOrderedTick = null;
     public static ScheduledTickAddEvent scheduledTickAddedEventForServerWorld = null;
     private static long tempTickSize;
+
+    public static ModItemEntity modItemEntity11 = null;
 
 
     ArrayList<BaseEvent> eventList = new ArrayList<>();

@@ -38,13 +38,13 @@ public class ChainRestrictedNeighborUpdaterMixin {
     @Inject(method = "runQueuedUpdates", at = @At(value = "INVOKE", target = "Ljava/util/ArrayDeque;peek()Ljava/lang/Object;", shift = At.Shift.AFTER, ordinal = 0))
     private void runQueuedUpdates2(CallbackInfo ci) {
 
-        System.out.println("runQueuedUpdates1 : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   "+this.queue.peek().toString());
+//        System.out.println("runQueuedUpdates1 : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   "+this.queue.peek().toString());
 
     }
 
     @Inject(method = "runQueuedUpdates", at = @At(value = "INVOKE", target = "Ljava/util/ArrayDeque;isEmpty()Z", shift = At.Shift.AFTER, ordinal = 0))
     private void runQueuedUpdates3(CallbackInfo ci) {
 
-        System.out.println("runQueuedUpdates2--------------- : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   ");
+//        System.out.println("runQueuedUpdates2--------------- : " +"    pending num : "+this.pending.size()+"   queue num : "+this.queue.size()+"   ");
     }
 }

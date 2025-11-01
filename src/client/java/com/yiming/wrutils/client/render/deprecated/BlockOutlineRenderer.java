@@ -1,7 +1,6 @@
-package com.yiming.wrutils.client.render;
+package com.yiming.wrutils.client.render.deprecated;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.util.math.BlockPos;
 
 @Deprecated
 public class BlockOutlineRenderer {
