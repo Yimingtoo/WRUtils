@@ -3,6 +3,7 @@ package com.yiming.wrutils.mixin.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.data.event.*;
+import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
 import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.Block;
@@ -11,6 +12,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
@@ -23,6 +25,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
 
 @Mixin(AbstractRedstoneGateBlock.class)
 public abstract class AbstractRedstoneGateBlockMixin {
@@ -40,17 +44,18 @@ public abstract class AbstractRedstoneGateBlockMixin {
 //    public abstract boolean hasPowerMixin(World world, BlockPos pos, BlockState state) ;
 
 
-//    @Inject(method = "scheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V"))
-//    public void scheduledTick1(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-//        TickPriority priority = TickPriority.VERY_HIGH;
-//        int delay = this.getUpdateDelayInternalMixin(state);
-//        String description = "计划刻在执行中的添加";
-//        EventRecorder.addScheduledTickTag(world, pos, state, delay, priority, description);
-//    }
-//
+    @Inject(method = "scheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V"))
+    public void scheduledTick1(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
+        List<ModItemEntity> modItemEntities = world.getEntitiesByClass(ModItemEntity.class, new Box(new BlockPos(0, 0, 0)).expand(2.0, 2.0, 2.0), modItemEntity -> true);
+        for (ModItemEntity modItemEntity : modItemEntities) {
+            modItemEntity.discard();
+        }
+        ModItemEntity.spawnModItemEntity(world);
+    }
+
 //    @Inject(method = "scheduledTick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/world/ServerWorld;scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V"))
 //    public void scheduledTick2(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-//        EventRecorder.isScheduledTickAdded(world, pos);
+//
 //
 //    }
 //

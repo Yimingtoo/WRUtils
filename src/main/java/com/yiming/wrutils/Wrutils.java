@@ -10,6 +10,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 
 
@@ -24,7 +25,9 @@ public class Wrutils implements ModInitializer {
             EntityType.Builder.create(ModItemEntity::new, SpawnGroup.MISC).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.ofVanilla("wrutils_mod_item_entity")))
     );
 
+
     @Override
     public void onInitialize() {
+
     }
 }

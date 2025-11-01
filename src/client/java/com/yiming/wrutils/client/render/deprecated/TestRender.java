@@ -1,4 +1,4 @@
-package com.yiming.wrutils.client.render;
+package com.yiming.wrutils.client.render.deprecated;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -10,7 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
-
+@Deprecated
 public class TestRender {
 
     public TestRender() {
@@ -20,7 +20,7 @@ public class TestRender {
             Camera camera = context.camera();
 
             // 设置渲染位置（世界坐标）
-            BlockPos renderPos = new BlockPos(0, -61, 0); // 你想显示的位置
+            BlockPos renderPos = new BlockPos(1, 2, 3); // 你想显示的位置
             Vec3d relativePos = Vec3d.of(renderPos).subtract(camera.getPos());
 
             matrices.push();

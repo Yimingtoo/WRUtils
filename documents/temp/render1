@@ -1,0 +1,27 @@
+
+
+//        matrices.push();
+//        matrices.translate(0.0, 0, 10);
+//        // 示例代码 - 在render方法中添加
+//        BlockState repeaterState = Blocks.REPEATER.getDefaultState();
+//        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout());
+//        MinecraftClient.getInstance().getBlockRenderManager()
+//                .renderBlock(repeaterState,
+//                        BlockPos.ORIGIN,
+//                        MinecraftClient.getInstance().world,
+//                        matrices,
+//                        vertexConsumer,
+//                        true,
+//                        Random.create());
+//        matrices.pop();
+//        matrices.push();
+//        BlockState repeaterState1 = Blocks.OBSERVER.getDefaultState();
+//        MinecraftClient.getInstance().getBlockRenderManager()
+//                .renderBlock(repeaterState1,
+//                        new BlockPos(1, 0, 1),
+//                        MinecraftClient.getInstance().world,
+//                        matrices,
+//                        vertexConsumer,
+//                        true,
+//                        Random.create());
+//        matrices.pop();
