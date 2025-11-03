@@ -21,54 +21,38 @@ public class CustomRender {
     public static void renderCustomModelOut() {
         WorldRenderEvents.LAST.register(context -> {
             if (isRender) {
-
-
                 Vec3i pos1 = SelectBoxes.getCurrent().pos1();
                 Vec3i pos2 = SelectBoxes.getCurrent().pos2();
 
-
-
-                ZoneRenderer.drawSelectedBox(
+//                ZoneRenderer.drawSelectedBox(
+//                        context.matrixStack(), context.camera(), context.consumers(),
+//                        pos1, new DrawStyle(DrawStyle.RED, 0.5f),
+//                        pos2, new DrawStyle(DrawStyle.BLUE, 0.5f),
+//                        new DrawStyle(DrawStyle.WHITE, 1f)
+//                );
+//
+//
+//                ZoneRenderer.drawFilledBox(
+//                        context.matrixStack(), context.camera(), context.consumers(),
+//                        pos1,
+//                        pos2,
+//                        new DrawStyle(DrawStyle.WHITE, 0.2f)
+//                );
+                ZoneRenderer2.drawSelectedBox(
                         context.matrixStack(), context.camera(), context.consumers(),
-                        pos1, new DrawStyle(DrawStyle.RED, 0.5f),
-                        pos2, new DrawStyle(DrawStyle.BLUE, 0.5f),
-                        new DrawStyle(DrawStyle.WHITE, 1f)
-                );
-
-
-                ZoneRenderer.drawFilledBox(
+                        pos1, new DrawStyle(DrawStyle.RED, 1f),
+                        pos2, new DrawStyle(DrawStyle.BLUE, 1f),
+                        new DrawStyle(DrawStyle.WHITE, 1f));
+                ZoneRenderer2.drawFilledBox(
                         context.matrixStack(), context.camera(), context.consumers(),
                         pos1,
                         pos2,
                         new DrawStyle(DrawStyle.WHITE, 0.2f)
                 );
 
-//                ZoneRenderer.drawBox(
-//                        context.matrixStack(), context.camera(), context.consumers(),
-//                        pos1.add(3, 0, 0),
-//                        pos2.add(3, 0, 0),
-//                        new DrawStyle(DrawStyle.WHITE, 0.5f)
-//                );
-//
-//                ZoneRenderer.drawFilledBox(
-//                        context.matrixStack(), context.camera(), context.consumers(),
-//                        pos1.add(3, 0, 0),
-//                        pos2.add(3, 0, 0),
-//                        new DrawStyle(DrawStyle.WHITE, 0.2f)
-//                );
-//                ZoneRenderer.drawBox(
-//                        context.matrixStack(), context.camera(), context.consumers(),
-//                        pos1.add(4, 0, 0),
-//                        pos2.add(4, 0, 0),
-//                        new DrawStyle(DrawStyle.WHITE, 0.5f)
-//                );
-//
-//                ZoneRenderer.drawFilledBox(
-//                        context.matrixStack(), context.camera(), context.consumers(),
-//                        pos1.add(4, 0, 0),
-//                        pos2.add(4, 0, 0),
-//                        new DrawStyle(DrawStyle.WHITE, 0.2f)
-//                );
+
+
+
             }
         });
 
