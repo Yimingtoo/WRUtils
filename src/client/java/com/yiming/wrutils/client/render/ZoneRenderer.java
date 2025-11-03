@@ -2,15 +2,11 @@ package com.yiming.wrutils.client.render;
 
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -63,23 +59,23 @@ public class ZoneRenderer {
         // 获取大Box的两个角点
         Vec3i p1 = new Vec3i(0, 0, 0);
         Vec3i p7 = p1.add(new Vec3i(dx, dy, dz));
-        List<Side> sides = new ArrayList<>(Side.getSides(p1, p7, style));
+        List<CubeSide> cubeSides = new ArrayList<>(CubeSide.getSides(p1, p7, style));
 
         matrices.push();
         matrices.translate(pos1.getX() + 0.5 - camPos.x, pos1.getY() + 0.5 - camPos.y, pos1.getZ() + 0.5 - camPos.z); // 将矩阵移动到目标位置
         MatrixStack.Entry entry = matrices.peek();
         VertexConsumer lineConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
-        for (Side side : sides) {
+        for (CubeSide cubeSide : cubeSides) {
             ZoneRenderer.drawLine(
                     entry,
                     lineConsumer,
-                    side.pos1.getX() - uint.getX() * 0.5,
-                    side.pos1.getY() - uint.getY() * 0.5,
-                    side.pos1.getZ() - uint.getZ() * 0.5,
-                    side.pos2.getX() - uint.getX() * 0.5,
-                    side.pos2.getY() - uint.getY() * 0.5,
-                    side.pos2.getZ() - uint.getZ() * 0.5,
-                    side.style.color);
+                    cubeSide.pos1.getX() - uint.getX() * 0.5,
+                    cubeSide.pos1.getY() - uint.getY() * 0.5,
+                    cubeSide.pos1.getZ() - uint.getZ() * 0.5,
+                    cubeSide.pos2.getX() - uint.getX() * 0.5,
+                    cubeSide.pos2.getY() - uint.getY() * 0.5,
+                    cubeSide.pos2.getZ() - uint.getZ() * 0.5,
+                    cubeSide.style.color);
         }
         matrices.pop();
     }
@@ -123,27 +119,19 @@ public class ZoneRenderer {
 //        }
 
         // 获得pos1和pos2处的两个方块的所有边
-        List<Side> diagonalBlockSides = Stream.concat(
-                Side.getSides(p1, p1_1, style1).stream(),
-                Side.getSides(p7_1, p7, style2).stream()
+        List<CubeSide> diagonalBlockCubeSides = Stream.concat(
+                CubeSide.getSides(p1, p1_1, style1).stream(),
+                CubeSide.getSides(p7_1, p7, style2).stream()
         ).toList();
 
         // 去除重复的边
-        List<Side> deduplicateSides = Side.deduplicateSides(diagonalBlockSides, DrawStyle.getMixedStyle(style1, style2));
+        List<CubeSide> deduplicateCubeSides = CubeSide.deduplicateSides(diagonalBlockCubeSides, DrawStyle.getMixedStyle(style1, style2));
 
         // 获得大Box的所有边
-        List<Side> sides = new ArrayList<>(Side.getSides(p1, p7, style));
+        List<CubeSide> cubeSides = new ArrayList<>(CubeSide.getSides(p1, p7, style));
         // 剪除sides中与deduplicateSides中重叠的边
-        for (Side side1 : deduplicateSides) {
-            List<Side> nextSides = new ArrayList<>();
-            for (Side side : sides) {
-                List<Side> cut = side.cutSide(side1);
-                if (!cut.isEmpty()) {
-                    nextSides.addAll(cut);
-                }
-            }
-            sides = nextSides;
-        }
+        cubeSides = CubeSide.cutSides(cubeSides, deduplicateCubeSides);
+
 
         // 渲染
         matrices.push();
@@ -151,18 +139,18 @@ public class ZoneRenderer {
         MatrixStack.Entry entry = matrices.peek();
         VertexConsumer lineConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
 
-        sides.addAll(deduplicateSides);
-        for (Side side : sides) {
+        cubeSides.addAll(deduplicateCubeSides);
+        for (CubeSide cubeSide : cubeSides) {
             ZoneRenderer.drawLine(
                     entry,
                     lineConsumer,
-                    side.pos1.getX() - uint.getX() * 0.5,
-                    side.pos1.getY() - uint.getY() * 0.5,
-                    side.pos1.getZ() - uint.getZ() * 0.5,
-                    side.pos2.getX() - uint.getX() * 0.5,
-                    side.pos2.getY() - uint.getY() * 0.5,
-                    side.pos2.getZ() - uint.getZ() * 0.5,
-                    side.style.color);
+                    cubeSide.pos1.getX() - uint.getX() * 0.5,
+                    cubeSide.pos1.getY() - uint.getY() * 0.5,
+                    cubeSide.pos1.getZ() - uint.getZ() * 0.5,
+                    cubeSide.pos2.getX() - uint.getX() * 0.5,
+                    cubeSide.pos2.getY() - uint.getY() * 0.5,
+                    cubeSide.pos2.getZ() - uint.getZ() * 0.5,
+                    cubeSide.style.color);
         }
         matrices.pop();
 
