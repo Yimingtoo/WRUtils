@@ -23,7 +23,7 @@ public class DrawStyle {
         this.color = 0xFFFF0000;
     }
 
-    DrawStyle(int color) {
+    public DrawStyle(int color) {
         this.color = color;
         this.alpha = ((color >> 24) & 0xFF) / 255.0f;
         this.red = ((color >> 16) & 0xFF) / 255.0f;
@@ -31,7 +31,7 @@ public class DrawStyle {
         this.blue = (color & 0xFF) / 255.0f;
     }
 
-    DrawStyle(int color, float alpha) {
+    public DrawStyle(int color, float alpha) {
         this.red = ((color >> 16) & 0xFF) / 255.0f;
         this.green = ((color >> 8) & 0xFF) / 255.0f;
         this.blue = (color & 0xFF) / 255.0f;

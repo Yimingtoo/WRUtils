@@ -72,8 +72,8 @@ public class WrutilsClient implements ClientModInitializer {
         keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wrutils.setting1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, "key.wrutils.category1"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding2.wasPressed()) {
-                CustomRender.model = MinecraftClient.getInstance().getBakedModelManager().getModel(BlockModels.getModelId(Blocks.REPEATER.getDefaultState()));
-                CustomRender.renderCustomModelOut();
+//                CustomRender.model = MinecraftClient.getInstance().getBakedModelManager().getModel(BlockModels.getModelId(Blocks.REPEATER.getDefaultState()));
+//                CustomRender.renderCustomModelOut();
 
             }
         });

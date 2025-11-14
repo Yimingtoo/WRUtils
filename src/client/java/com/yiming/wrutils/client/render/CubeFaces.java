@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.render;
 
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public class CubeFaces {
     private Vec3i posMin;
-
+    private double expand = 0.002;
 
     Map<Direction, CubeFace> faces = new HashMap<>();
 
@@ -30,6 +31,10 @@ public class CubeFaces {
         faces.put(Direction.WEST, new CubeFace(new Vec3i(x_min, y_min, z_min), new Vec3i(x_min, y_max, z_max), style));
         faces.put(Direction.EAST, new CubeFace(new Vec3i(x_max, y_min, z_min), new Vec3i(x_max, y_max, z_max), style));
 
+    }
+
+    public void setExpand(double expand) {
+        this.expand = expand;
     }
 
     public Vec3i getPosMin() {
@@ -72,6 +77,30 @@ public class CubeFaces {
                         List.of(pos1, new Vec3i(pos1.getX(), pos1.getY(), pos2.getZ()), pos2, new Vec3i(pos2.getX(), pos1.getY(), pos1.getZ()));
                 case Direction.Axis.Z ->
                         List.of(pos1, new Vec3i(pos1.getX(), pos2.getY(), pos1.getZ()), pos2, new Vec3i(pos2.getX(), pos1.getY(), pos1.getZ()));
+            };
+        }
+
+        List<Vec3d> getExpandPoints(Direction direction) {
+            Vec3d dir = new Vec3d(direction.getVector()).multiply(expand);
+            return switch (direction.getAxis()) {
+                case Direction.Axis.X -> List.of(
+                        new Vec3d(pos1).add(dir),
+                        new Vec3d(pos1.getX(), pos2.getY(), pos1.getZ()).add(dir),
+                        new Vec3d(pos2).add(dir),
+                        new Vec3d(pos1.getX(), pos1.getY(), pos2.getZ()).add(dir)
+                );
+                case Direction.Axis.Y -> List.of(
+                        new Vec3d(pos1).add(dir),
+                        new Vec3d(pos1.getX(), pos1.getY(), pos2.getZ()).add(dir),
+                        new Vec3d(pos2).add(dir),
+                        new Vec3d(pos2.getX(), pos1.getY(), pos1.getZ()).add(dir)
+                );
+                case Direction.Axis.Z -> List.of(
+                        new Vec3d(pos1).add(dir),
+                        new Vec3d(pos1.getX(), pos2.getY(), pos1.getZ()).add(dir),
+                        new Vec3d(pos2).add(dir),
+                        new Vec3d(pos2.getX(), pos1.getY(), pos1.getZ()).add(dir)
+                );
             };
         }
 
