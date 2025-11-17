@@ -73,7 +73,6 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
 
     }
 
-
     public abstract static class Entry extends AlwaysSelectedEntryListWidget.Entry<SelectedAreaListWidget.Entry> {
 
     }
@@ -83,7 +82,6 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
         private final Text text;
         private int width;
         private int height;
-        private boolean isSelected;
 
         public OneAreaEntry(Text text, int width, int height) {
             super();
@@ -105,6 +103,7 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
             );
             if (MinecraftClient.getInstance().options.getTouchscreen().getValue() || hovered) {
                 if (this.isFocused()) {
+//                    context.fill(x - 1, y - 1, x + Math.max(this.width - 30, 10) - 3, y + 24 - 3, 0xFF808080);
                     context.fill(x - 1, y - 1, x + Math.max(this.width - 30, 10) - 3, y + 24 - 3, 0x20FFFFFF);
                 } else {
                     context.fill(x - 2, y - 2, x + Math.max(this.width - 30, 10) - 2, y + 24 - 2, 0x20FFFFFF);
@@ -114,9 +113,9 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
 
         }
 
+
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            isSelected = true;
             return super.mouseClicked(mouseX, mouseY, button);
         }
 
