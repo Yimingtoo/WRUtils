@@ -1,12 +1,15 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.SelectedAreaListWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 
+@Environment(EnvType.CLIENT)
 public class AreaManagementScreen extends Screen {
     private boolean initialized;
     private SelectedAreaListWidget selectedAreaListWidget;
@@ -23,7 +26,7 @@ public class AreaManagementScreen extends Screen {
     @Override
     protected void init() {
         if (this.initialized) {
-            this.selectedAreaListWidget.setDimensionsAndPosition(this.width, this.height - 64 - 32, 0, 32);
+            this.selectedAreaListWidget.setDimensionsAndPosition(this.width, this.height - 64 - 100, 0, 120);
         } else {
             this.initialized = true;
             this.selectedAreaListWidget = new SelectedAreaListWidget(this.client, this.width, this.height - 64 - 100, 120, 24);
@@ -55,4 +58,12 @@ public class AreaManagementScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
     }
+
+    @Override
+    protected void refreshWidgetPositions() {
+//        super.refreshWidgetPositions();
+        this.client.setScreen(new AreaManagementScreen(Text.of("Area Management"), this.parent));
+    }
+
+
 }
