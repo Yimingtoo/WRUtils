@@ -12,9 +12,9 @@ public class CubeFaces {
     private Vec3i posMin;
     private double expand = 0.002;
 
-    Map<Direction, CubeFace> faces = new HashMap<>();
+    public Map<Direction, CubeFace> faces = new HashMap<>();
 
-    public CubeFaces(Vec3i pos1, Vec3i pos2, DrawStyle style) {
+    public CubeFaces(Vec3i pos1, Vec3i pos2, DrawColor style) {
         int x_min = 0;
         int y_min = 0;
         int z_min = 0;
@@ -41,7 +41,7 @@ public class CubeFaces {
         return posMin;
     }
 
-    public void setAllStyle(DrawStyle style) {
+    public void setAllStyle(DrawColor style) {
         // 遍历faces的每个元素
         for (Map.Entry<Direction, CubeFace> entry : faces.entrySet()) {
             CubeFace cubeFace = entry.getValue();
@@ -49,7 +49,7 @@ public class CubeFaces {
         }
     }
 
-    public void setStyle(Direction direction, DrawStyle style) {
+    public void setStyle(Direction direction, DrawColor style) {
         CubeFace cubeFace = faces.get(direction);
         if (cubeFace != null) {
             cubeFace.style = style;
@@ -60,16 +60,16 @@ public class CubeFaces {
     public class CubeFace {
         private final Vec3i pos1;
         private final Vec3i pos2;
-        public DrawStyle style;
+        public DrawColor style;
 
-        public CubeFace(Vec3i pos1, Vec3i pos2, DrawStyle style) {
+        public CubeFace(Vec3i pos1, Vec3i pos2, DrawColor style) {
             this.pos1 = pos1;
             this.pos2 = pos2;
             this.style = style;
         }
 
 
-        List<Vec3i> getPoints(Direction direction) {
+        public List<Vec3i> getPoints(Direction direction) {
             return switch (direction.getAxis()) {
                 case Direction.Axis.X ->
                         List.of(pos1, new Vec3i(pos1.getX(), pos2.getY(), pos1.getZ()), pos2, new Vec3i(pos1.getX(), pos1.getY(), pos2.getZ()));
@@ -80,7 +80,7 @@ public class CubeFaces {
             };
         }
 
-        List<Vec3d> getExpandPoints(Direction direction) {
+        public List<Vec3d> getExpandPoints(Direction direction) {
             Vec3d dir = new Vec3d(direction.getVector()).multiply(expand);
             return switch (direction.getAxis()) {
                 case Direction.Axis.X -> List.of(

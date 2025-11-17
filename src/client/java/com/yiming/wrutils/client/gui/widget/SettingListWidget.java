@@ -1,14 +1,14 @@
-package com.yiming.wrutils.client.gui;
+package com.yiming.wrutils.client.gui.widget;
 
 import com.google.common.collect.ImmutableList;
 import com.yiming.wrutils.client.data.ConfigManager;
+import com.yiming.wrutils.client.gui.SettingGui;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.option.ControlsListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
@@ -17,6 +17,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
+@Deprecated
 @Environment(EnvType.CLIENT)
 public class SettingListWidget extends ElementListWidget<SettingListWidget.Entry> {
     private static ConfigManager configManager = new ConfigManager("config/wrutils/wrutils.properties");

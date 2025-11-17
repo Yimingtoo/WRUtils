@@ -6,6 +6,10 @@ public class SelectBox {
     Vec3i pos1;
     Vec3i pos2;
 
+    boolean isVisible;
+    boolean isUsed;
+
+
     public SelectBox(Vec3i pos1, Vec3i pos2) {
         this.pos1 = pos1;
         this.pos2 = pos2;

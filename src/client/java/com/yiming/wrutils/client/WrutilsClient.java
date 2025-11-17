@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client;
 
 import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.render.CustomRender;
 import com.yiming.wrutils.data.select_box.SelectBox;
 import com.yiming.wrutils.data.select_box.SelectBoxes;
@@ -10,12 +11,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3i;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +26,7 @@ public class WrutilsClient implements ClientModInitializer {
 
     public static boolean wasLeftPressedLastTick = false;
     public static boolean wasRightPressedLastTick = false;
+
 
     @Override
     public void onInitializeClient() {
@@ -46,24 +47,9 @@ public class WrutilsClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
 //                spawnItem();
-//                MinecraftClient.getInstance().setScreen(new SettingGui(Text.of("WRUtils Settings")));
-
-//                Wrutils.eventRecorder.printEvents();
-//                System.out.println("Wrutils.BaseEvent\t" + EventRecorder.BLOCK_INFO_STACK.size() + "\teventRecorder size:\t" + Wrutils.eventRecorder.eventsSize());
-//
-//
-//                Wrutils.eventRecorder.clearEvents();
-
-//                TestRender testRender = new TestRender();
-
-//                CustomRender.renderCustomModelOut();
-
-                CustomRender.x_cr++;
-                if (CustomRender.x_cr % 2 == 0) {
-                    CustomRender.isRender = true;
-                } else {
-                    CustomRender.isRender = false;
-                }
+                MinecraftClient client1 = MinecraftClient.getInstance();
+//                client1.setScreen(new SettingGui(Text.of("WRUtils Settings")));
+                client1.setScreen(new MainMenuScreen(Text.of("WRUtils Settings")));
 
 
             }
@@ -85,7 +71,7 @@ public class WrutilsClient implements ClientModInitializer {
                 boolean isPressedNow = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
                 if (isPressedNow && !wasLeftPressedLastTick) {
-                    System.out.println("左键按下一次！");
+//                    System.out.println("左键按下一次！");
                     if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
                         System.out.println("wooden_sword");
 
@@ -98,7 +84,7 @@ public class WrutilsClient implements ClientModInitializer {
                     }
                 }
                 if (!isPressedNow && wasLeftPressedLastTick) {
-                    System.out.println("左键抬起一次！");
+//                    System.out.println("左键抬起一次！");
                 }
 
                 wasLeftPressedLastTick = isPressedNow;
@@ -106,7 +92,7 @@ public class WrutilsClient implements ClientModInitializer {
                 isPressedNow = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
 
                 if (isPressedNow && !wasRightPressedLastTick) {
-                    System.out.println("右键按下一次！");
+//                    System.out.println("右键按下一次！");
 
 
                     if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
@@ -122,7 +108,7 @@ public class WrutilsClient implements ClientModInitializer {
 
                 }
                 if (!isPressedNow && wasRightPressedLastTick) {
-                    System.out.println("右键抬起一次！");
+//                    System.out.println("右键抬起一次！");
                 }
 
                 wasRightPressedLastTick = isPressedNow;

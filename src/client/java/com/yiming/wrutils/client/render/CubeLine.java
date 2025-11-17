@@ -8,14 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class CubeSide {
+public class CubeLine {
     public Direction direction;
     public Vec3i pos1;
     public Vec3i pos2;
-    public DrawStyle style;
+    public DrawColor style;
 
 
-    public CubeSide(Vec3i pos1, Vec3i pos2, DrawStyle style) {
+    public CubeLine(Vec3i pos1, Vec3i pos2, DrawColor style) {
         direction = Direction.getFacing(pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ());
         if (direction.getVector().getX() < 0 || direction.getVector().getY() < 0 || direction.getVector().getZ() < 0) {
             this.pos1 = pos2;
@@ -30,7 +30,7 @@ class CubeSide {
     }
 
 
-    public static ArrayList<CubeSide> getSides(Vec3i pos1, Vec3i pos2, DrawStyle style) {
+    public static ArrayList<CubeLine> getLines(Vec3i pos1, Vec3i pos2, DrawColor style) {
 
         int dx = (pos2.getX() - pos1.getX());
         int dy = (pos2.getY() - pos1.getY());
@@ -55,57 +55,57 @@ class CubeSide {
         //    │/            │/              │/
         //   p2────────────p1       i ── ── O
 
-        ArrayList<CubeSide> cubeSides = new ArrayList<>();
-        cubeSides.add(new CubeSide(p1, p2, style));
-        cubeSides.add(new CubeSide(p2, p3, style));
-        cubeSides.add(new CubeSide(p3, p4, style));
-        cubeSides.add(new CubeSide(p4, p1, style));
+        ArrayList<CubeLine> cubeLines = new ArrayList<>();
+        cubeLines.add(new CubeLine(p1, p2, style));
+        cubeLines.add(new CubeLine(p2, p3, style));
+        cubeLines.add(new CubeLine(p3, p4, style));
+        cubeLines.add(new CubeLine(p4, p1, style));
 
-        cubeSides.add(new CubeSide(p1, p5, style));
-        cubeSides.add(new CubeSide(p2, p6, style));
-        cubeSides.add(new CubeSide(p3, p7, style));
-        cubeSides.add(new CubeSide(p4, p8, style));
+        cubeLines.add(new CubeLine(p1, p5, style));
+        cubeLines.add(new CubeLine(p2, p6, style));
+        cubeLines.add(new CubeLine(p3, p7, style));
+        cubeLines.add(new CubeLine(p4, p8, style));
 
-        cubeSides.add(new CubeSide(p5, p6, style));
-        cubeSides.add(new CubeSide(p6, p7, style));
-        cubeSides.add(new CubeSide(p7, p8, style));
-        cubeSides.add(new CubeSide(p8, p5, style));
+        cubeLines.add(new CubeLine(p5, p6, style));
+        cubeLines.add(new CubeLine(p6, p7, style));
+        cubeLines.add(new CubeLine(p7, p8, style));
+        cubeLines.add(new CubeLine(p8, p5, style));
 
-        return cubeSides;
+        return cubeLines;
     }
 
-    public static List<CubeSide> deduplicateSides(List<CubeSide> cubeSides, DrawStyle style) {
-        Map<EdgeKey, CubeSide> map = new HashMap<>();
+    public static List<CubeLine> deduplicateLines(List<CubeLine> cubeLines, DrawColor style) {
+        Map<EdgeKey, CubeLine> map = new HashMap<>();
 
-        for (CubeSide cubeSide : cubeSides) {
-            EdgeKey key = new EdgeKey(cubeSide.pos1, cubeSide.pos2);
+        for (CubeLine cubeLine : cubeLines) {
+            EdgeKey key = new EdgeKey(cubeLine.pos1, cubeLine.pos2);
             if (map.containsKey(key)) {
-                map.put(key, new CubeSide(key.a, key.b, style));
+                map.put(key, new CubeLine(key.a, key.b, style));
             } else {
-                map.put(key, cubeSide);
+                map.put(key, cubeLine);
             }
         }
 
         return new ArrayList<>(map.values());
     }
 
-    public static List<CubeSide> cutSides(List<CubeSide> cubeSides, List<CubeSide> cubeSides1) {
-        for (CubeSide cubeSide1 : cubeSides1) {
-            List<CubeSide> nextCubeSides = new ArrayList<>();
-            for (CubeSide cubeSide : cubeSides) {
-                List<CubeSide> cut = cubeSide.cutSide(cubeSide1);
+    public static List<CubeLine> cutLines(List<CubeLine> cubeLines, List<CubeLine> cubeLines1) {
+        for (CubeLine cubeLine1 : cubeLines1) {
+            List<CubeLine> nextCubeLines = new ArrayList<>();
+            for (CubeLine cubeLine : cubeLines) {
+                List<CubeLine> cut = cubeLine.cutSide(cubeLine1);
                 if (!cut.isEmpty()) {
-                    nextCubeSides.addAll(cut);
+                    nextCubeLines.addAll(cut);
                 }
             }
-            cubeSides = nextCubeSides;
+            cubeLines = nextCubeLines;
         }
-        return cubeSides;
+        return cubeLines;
     }
 
 
-    public boolean isSuperposition(CubeSide cubeSide) {
-        return this.pos1.equals(cubeSide.pos1) && this.pos2.equals(cubeSide.pos2);
+    public boolean isSuperposition(CubeLine cubeLine) {
+        return this.pos1.equals(cubeLine.pos1) && this.pos2.equals(cubeLine.pos2);
     }
 
 
@@ -125,45 +125,45 @@ class CubeSide {
         return out;
     }
 
-    public ArrayList<CubeSide> cutSide(CubeSide cubeSide) {
-        ArrayList<CubeSide> cubeSides = new ArrayList<>();
-        if (!isCollinear(cubeSide)) {
-            cubeSides.add(this);
-            return cubeSides;
+    public ArrayList<CubeLine> cutSide(CubeLine cubeLine) {
+        ArrayList<CubeLine> cubeLines = new ArrayList<>();
+        if (!isCollinear(cubeLine)) {
+            cubeLines.add(this);
+            return cubeLines;
         }
         int thisP1 = getPosAtAxis(1);
         int thisP2 = getPosAtAxis(2);
-        int sideP1 = cubeSide.getPosAtAxis(1);
-        int sideP2 = cubeSide.getPosAtAxis(2);
+        int sideP1 = cubeLine.getPosAtAxis(1);
+        int sideP2 = cubeLine.getPosAtAxis(2);
         if (thisP1 >= sideP1 && thisP2 <= sideP2) {
-            return cubeSides;
+            return cubeLines;
         } else {
             if (thisP1 < sideP1) {
-                cubeSides.add(new CubeSide(this.pos1, cubeSide.pos1, style));
+                cubeLines.add(new CubeLine(this.pos1, cubeLine.pos1, style));
             }
             if (thisP2 > sideP2) {
-                cubeSides.add(new CubeSide(this.pos2, cubeSide.pos2, style));
+                cubeLines.add(new CubeLine(this.pos2, cubeLine.pos2, style));
             }
         }
 
-        return cubeSides;
+        return cubeLines;
     }
 
-    public boolean isCollinear(CubeSide cubeSide) {
+    public boolean isCollinear(CubeLine cubeLine) {
         boolean isCollinear = false;
         switch (direction.getAxis()) {
             case Direction.Axis.X:
-                if (pos1.getY() == cubeSide.pos1.getY() && pos2.getY() == cubeSide.pos2.getY() && pos1.getZ() == cubeSide.pos1.getZ() && pos2.getZ() == cubeSide.pos2.getZ()) {
+                if (pos1.getY() == cubeLine.pos1.getY() && pos2.getY() == cubeLine.pos2.getY() && pos1.getZ() == cubeLine.pos1.getZ() && pos2.getZ() == cubeLine.pos2.getZ()) {
                     isCollinear = true;
                 }
                 break;
             case Direction.Axis.Y:
-                if (pos1.getX() == cubeSide.pos1.getX() && pos2.getX() == cubeSide.pos2.getX() && pos1.getZ() == cubeSide.pos1.getZ() && pos2.getZ() == cubeSide.pos2.getZ()) {
+                if (pos1.getX() == cubeLine.pos1.getX() && pos2.getX() == cubeLine.pos2.getX() && pos1.getZ() == cubeLine.pos1.getZ() && pos2.getZ() == cubeLine.pos2.getZ()) {
                     isCollinear = true;
                 }
                 break;
             case Direction.Axis.Z:
-                if (pos1.getX() == cubeSide.pos1.getX() && pos2.getX() == cubeSide.pos2.getX() && pos1.getY() == cubeSide.pos1.getY() && pos2.getY() == cubeSide.pos2.getY()) {
+                if (pos1.getX() == cubeLine.pos1.getX() && pos2.getX() == cubeLine.pos2.getX() && pos1.getY() == cubeLine.pos1.getY() && pos2.getY() == cubeLine.pos2.getY()) {
                     isCollinear = true;
                 }
                 break;
