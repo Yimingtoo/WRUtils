@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.render.deprecated;
 
-import com.yiming.wrutils.client.render.DrawStyle;
+import com.yiming.wrutils.client.render.DrawColor;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 @Deprecated
 
 public class ZoneRenderer1 {
-    public static void drawBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawStyle style) {
+    public static void drawBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawColor style) {
         // 获取摄像机位置
         Vec3d camPos = camera.getPos();
         double x_len = posMax.getX() - posMin.getX();
@@ -46,7 +46,7 @@ public class ZoneRenderer1 {
 
     }
 
-    public static void drawLine1(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawStyle style) {
+    public static void drawLine1(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawColor style) {
         Vec3d camPos = camera.getPos();
 
         float x_min = (float) posMin.getX();
@@ -64,7 +64,7 @@ public class ZoneRenderer1 {
         matrices.pop();
     }
 
-    public static void drawOutline(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawStyle style) {
+    public static void drawOutline(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3d posMin, Vec3d posMax, DrawColor style) {
 
         Vec3d camPos = camera.getPos();
         double x_len = posMax.getX() - posMin.getX();
