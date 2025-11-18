@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class ZoneRenderer3 {
+public class ZoneRenderer {
 
     public static void drawSelectedBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3i pos1, DrawColor style1, Vec3i pos2, DrawColor style2, DrawColor style) {
         Vec3i unit = new Vec3i(
@@ -59,7 +59,7 @@ public class ZoneRenderer3 {
 
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         for (CubeLine cubeLine : cubeLines) {
-            ZoneRenderer3.drawLine(
+            ZoneRenderer.drawLine(
                     matrix4f,
                     lineConsumer,
                     cubeLine.pos1.getX() - unit.getX() * 0.5,

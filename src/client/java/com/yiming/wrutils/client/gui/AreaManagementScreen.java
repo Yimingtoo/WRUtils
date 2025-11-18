@@ -43,7 +43,7 @@ public class AreaManagementScreen extends Screen {
         }
         SelectBoxes boxes = Wrutils.selectedAreaManagement.getCurrentBoxes();
         this.selectedAreaListWidget.setAreaEntries(boxes);
-        this.selectedAreaListWidget.setSelected(boxes.getCurrentBox());
+//        this.selectedAreaListWidget.setSelected(boxes.getCurrentBox());
         this.addDrawableChild(this.selectedAreaListWidget);
 
         Text text = Text.literal("Selected Area Setting").styled(style -> style.withBold(true));

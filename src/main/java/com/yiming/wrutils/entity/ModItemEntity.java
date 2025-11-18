@@ -17,6 +17,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
+@Deprecated
 public class ModItemEntity extends Entity {
 
 
@@ -33,14 +34,14 @@ public class ModItemEntity extends Entity {
 //        this.setVelocity(0, 0, 0);
 //    }
 
-    public static void spawnModItemEntity(World world) {
-        if (EventRecorder.modItemEntity11 != null) {
-            EventRecorder.modItemEntity11.discard();
-        }
-        ModItemEntity modItemEntity = new ModItemEntity(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, world);
-        EventRecorder.modItemEntity11 = modItemEntity;
-        world.spawnEntity(modItemEntity);
-    }
+//    public static void spawnModItemEntity(World world) {
+//        if (EventRecorder.modItemEntity11 != null) {
+//            EventRecorder.modItemEntity11.discard();
+//        }
+//        ModItemEntity modItemEntity = new ModItemEntity(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, world);
+//        EventRecorder.modItemEntity11 = modItemEntity;
+//        world.spawnEntity(modItemEntity);
+//    }
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {

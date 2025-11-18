@@ -1,13 +1,10 @@
 package com.yiming.wrutils.data.event;
 
 import com.yiming.wrutils.Wrutils;
-import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.tick.ScheduledTickView;
 import net.minecraft.world.tick.TickPriority;
 import net.minecraft.world.tick.WorldTickScheduler;
 
@@ -25,7 +22,7 @@ public class EventRecorder {
     public static ScheduledTickAddEvent scheduledTickAddedEventForServerWorld = null;
     private static long tempTickSize;
 
-    public static ModItemEntity modItemEntity11 = null;
+//    public static ModItemEntity modItemEntity11 = null;
 
 
     ArrayList<BaseEvent> eventList = new ArrayList<>();
@@ -103,18 +100,7 @@ public class EventRecorder {
     }
 
 
-//    public void processEvents() {
-//        eventList.add(new SimpleEvent(gameTime, microTimingSequence, sourcePos));
-//
-//        // 通过类型转换访问SimpleEvent特有功能
-//        for (
-//                BaseEvent event : eventList) {
-//            if (event instanceof SimpleEvent) {
-//                SimpleEvent simpleEvent = (SimpleEvent) event;
-//                // 现在可以访问SimpleEvent的特有数据和方法
-//            }
-//        }
-//    }
+
 
 
 }

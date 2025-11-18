@@ -1,25 +1,17 @@
 package com.yiming.wrutils.client.gui;
 
-import com.yiming.wrutils.client.gui.widget.SettingListWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.StatsScreen;
-import net.minecraft.client.gui.screen.advancement.AdvancementsScreen;
-import net.minecraft.client.gui.screen.option.LanguageOptionsScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class MainMenuScreen extends Screen {
 
-    private SettingListWidget settingListWidget;
     public final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
     private int textHeight;
     private int textWidth;
@@ -45,7 +37,7 @@ public class MainMenuScreen extends Screen {
             this.client.mouse.lockCursor();
         }).width(204).build(), 2, gridWidget.copyPositioner().marginTop(50));
         adder.add(this.createButton(Text.of("Area Management"), () -> new AreaManagementScreen(Text.of("Area Management"), this)));
-        adder.add(this.createButton(Text.of("Test2"), () -> new SettingGui(Text.of("Test2"), this)));
+//        adder.add(this.createButton(Text.of("Test2"), () -> new SettingGui(Text.of("Test2"), this)));
 
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5F, 0.25F);

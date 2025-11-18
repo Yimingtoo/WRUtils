@@ -9,23 +9,34 @@ public class SelectBoxes {
 
     public void addAndSetCurrent(SelectBox selectBox) {
         this.add(selectBox);
-        currentSelectBox = selectBox;
+        this.currentSelectBox = selectBox;
     }
 
     public void add(SelectBox selectBox) {
-        selectBoxList.add(selectBox);
+        this.selectBoxList.add(selectBox);
     }
 
     public SelectBox get(int index) {
-        return selectBoxList.get(index);
+        return this.selectBoxList.get(index);
+    }
+
+    public void remove(SelectBox selectBox) {
+        this.selectBoxList.remove(selectBox);
+        if (this.currentSelectBox == selectBox) {
+            this.currentSelectBox = null;
+        }
     }
 
     public SelectBox getCurrentBox() {
-        return currentSelectBox;
+        return this.currentSelectBox;
+    }
+
+    public void setCurrentSelectBox(SelectBox box) {
+        this.currentSelectBox = box;
     }
 
     public ArrayList<SelectBox> getList() {
-        return selectBoxList;
+        return this.selectBoxList;
     }
 
 }

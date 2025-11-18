@@ -1,23 +1,16 @@
 package com.yiming.wrutils.client;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.render.CustomRender;
-import com.yiming.wrutils.data.selected_area.SelectBox;
-import com.yiming.wrutils.data.selected_area.SelectBoxes;
-import com.yiming.wrutils.entity.ModItemEntity;
-import com.yiming.wrutils.client.render.deprecated.ModItemEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Vec3i;
 import org.lwjgl.glfw.GLFW;
 
 public class WrutilsClient implements ClientModInitializer {
@@ -30,15 +23,8 @@ public class WrutilsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.register(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, ModItemEntityRenderer::new);
         guiInitialize();
-//        BlockOutlineRenderer blockOutlineRenderer = new BlockOutlineRenderer();
-//        blockOutlineRenderer.registerBlockOutlineRenderer();
         CustomRender.renderCustomModelOut();
-
-//        SelectBoxes.add(new SelectBox(new Vec3i(0, 0, 0), new Vec3i(0, 0, 0)));
-
-
     }
 
 
@@ -117,14 +103,14 @@ public class WrutilsClient implements ClientModInitializer {
         });
     }
 
-    public void spawnItem() {
-
-        ModItemEntity modItemEntity = new ModItemEntity(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, MinecraftClient.getInstance().player.getWorld());
-
-        boolean isClient1 = MinecraftClient.getInstance().player.getServer() == null;
-
-        MinecraftClient.getInstance().player.getWorld().spawnEntity(modItemEntity);
-    }
+//    public void spawnItem() {
+//
+//        ModItemEntity modItemEntity = new ModItemEntity(Wrutils.MOD_ITEM_ENTITY_ENTITY_TYPE, MinecraftClient.getInstance().player.getWorld());
+//
+//        boolean isClient1 = MinecraftClient.getInstance().player.getServer() == null;
+//
+//        MinecraftClient.getInstance().player.getWorld().spawnEntity(modItemEntity);
+//    }
 
 
 }
