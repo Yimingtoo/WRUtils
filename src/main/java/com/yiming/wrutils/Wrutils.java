@@ -2,6 +2,8 @@ package com.yiming.wrutils;
 
 import com.yiming.wrutils.data.RedstoneInfoManager;
 import com.yiming.wrutils.data.event.EventRecorder;
+import com.yiming.wrutils.data.selected_area.SelectBoxes;
+import com.yiming.wrutils.data.selected_area.SelectedAreaManagement;
 import com.yiming.wrutils.entity.ModItemEntity;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EntityType;
@@ -16,8 +18,9 @@ import net.minecraft.util.Identifier;
 
 public class Wrutils implements ModInitializer {
     public static final String MOD_ID = "wrutils-mod";
+    public static SelectedAreaManagement selectedAreaManagement = new SelectedAreaManagement();
 
-//    public static RedstoneInfoManager redstoneInfoManager = new RedstoneInfoManager();
+    //    public static RedstoneInfoManager redstoneInfoManager = new RedstoneInfoManager();
     public static EventRecorder eventRecorder = new EventRecorder();
     public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_ENTITY_TYPE = Registry.register(
             Registries.ENTITY_TYPE,
@@ -28,6 +31,8 @@ public class Wrutils implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        selectedAreaManagement.addAndSetCurrent(new SelectBoxes());
+
 
     }
 }
