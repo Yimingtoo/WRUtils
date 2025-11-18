@@ -1,8 +1,9 @@
-package com.yiming.wrutils.data.select_box;
+package com.yiming.wrutils.data.selected_area;
 
 import net.minecraft.util.math.Vec3i;
 
 public class SelectBox {
+    private String name = "Unnamed";
     Vec3i pos1;
     Vec3i pos2;
 
@@ -30,4 +31,13 @@ public class SelectBox {
     public void setPos2(Vec3i pos) {
         pos2 = pos;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

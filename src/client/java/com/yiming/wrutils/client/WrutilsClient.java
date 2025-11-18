@@ -3,8 +3,8 @@ package com.yiming.wrutils.client;
 import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.render.CustomRender;
-import com.yiming.wrutils.data.select_box.SelectBox;
-import com.yiming.wrutils.data.select_box.SelectBoxes;
+import com.yiming.wrutils.data.selected_area.SelectBox;
+import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import com.yiming.wrutils.entity.ModItemEntity;
 import com.yiming.wrutils.client.render.deprecated.ModItemEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
@@ -36,7 +36,7 @@ public class WrutilsClient implements ClientModInitializer {
 //        blockOutlineRenderer.registerBlockOutlineRenderer();
         CustomRender.renderCustomModelOut();
 
-        SelectBoxes.add(new SelectBox(new Vec3i(0, 0, 0), new Vec3i(0, 0, 0)));
+//        SelectBoxes.add(new SelectBox(new Vec3i(0, 0, 0), new Vec3i(0, 0, 0)));
 
 
     }
@@ -78,7 +78,7 @@ public class WrutilsClient implements ClientModInitializer {
                         if (client.crosshairTarget != null) {
                             System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
 
-                            SelectBoxes.getCurrent().setPos2(((BlockHitResult) client.crosshairTarget).getBlockPos());
+//                            SelectBoxes.getCurrent().setPos2(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
                         }
                     }
@@ -101,7 +101,7 @@ public class WrutilsClient implements ClientModInitializer {
                         if (client.crosshairTarget != null) {
                             System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
 
-                            SelectBoxes.getCurrent().setPos1(((BlockHitResult) client.crosshairTarget).getBlockPos());
+//                            SelectBoxes.getCurrent().setPos1(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
                         }
                     }
