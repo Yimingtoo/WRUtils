@@ -1,11 +1,11 @@
 package com.yiming.wrutils.data.selected_area;
 
-import javax.print.DocFlavor;
 import java.util.ArrayList;
 
 public class SelectBoxes {
     private ArrayList<SelectBox> selectBoxList = new ArrayList<>();
     private SelectBox currentSelectBox;
+    private String selectBoxesName;
 
     public void addAndSetCurrent(SelectBox selectBox) {
         this.add(selectBox);
@@ -27,7 +27,7 @@ public class SelectBoxes {
         }
     }
 
-    public SelectBox getCurrentBox() {
+    public SelectBox getCurrentSelectBox() {
         return this.currentSelectBox;
     }
 
@@ -37,6 +37,15 @@ public class SelectBoxes {
 
     public ArrayList<SelectBox> getList() {
         return this.selectBoxList;
+    }
+
+
+    public String getName() {
+        return this.selectBoxesName;
+    }
+
+    public void setName(String name) {
+        this.selectBoxesName = name;
     }
 
 }
