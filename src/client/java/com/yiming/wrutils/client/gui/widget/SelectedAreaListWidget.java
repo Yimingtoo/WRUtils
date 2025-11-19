@@ -183,14 +183,6 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            this.deleteButton.setPosition(this.width - 50, y);
-            this.deleteButton.render(context, mouseX, mouseY, tickDelta);
-
-            this.editButton.setPosition(this.width - 100, y);
-            this.editButton.render(context, mouseX, mouseY, tickDelta);
-
-            context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, name, 30, y + entryHeight / 2 - 9 / 2, Colors.WHITE);
-
             if (this.client.options.getTouchscreen().getValue() || hovered) {
                 if (this.isFocused()) {
                     context.fill(x - 1, y - 1, x + Math.max(this.width - 30, 10) - 3, y + 24 - 3, 0x20FFFFFF);
@@ -199,6 +191,13 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
                 }
             }
 
+            this.deleteButton.setPosition(this.width - 50, y);
+            this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+
+            this.editButton.setPosition(this.width - 100, y);
+            this.editButton.render(context, mouseX, mouseY, tickDelta);
+
+            context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, name, 30, y + entryHeight / 2 - 9 / 2, Colors.WHITE);
         }
 
         @Override
@@ -213,7 +212,9 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
             if (button == 0) { // 左键点击
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastClickTime < 200) {
-                    System.out.println("Double Click");
+                    if (editAction != null) {
+                        editAction.run();
+                    }
                     lastClickTime = 0;
                     return true;
                 }
