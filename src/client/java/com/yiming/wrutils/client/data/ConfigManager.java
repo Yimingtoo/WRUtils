@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+@Deprecated
 public class ConfigManager {
     private Properties properties;
     private File configFile;
