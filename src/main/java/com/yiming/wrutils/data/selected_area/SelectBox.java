@@ -3,7 +3,7 @@ package com.yiming.wrutils.data.selected_area;
 import net.minecraft.util.math.Vec3i;
 
 public class SelectBox {
-    private String name = "Sub-Area-1";
+    private String selectBoxName = "Sub-Area-1";
     Vec3i pos1;
     Vec3i pos2;
 
@@ -33,11 +33,11 @@ public class SelectBox {
     }
 
     public String getName() {
-        return name;
+        return selectBoxName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.selectBoxName = name;
     }
 
 }

@@ -1,12 +1,12 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
 import com.yiming.wrutils.client.gui.widget.SelectedAreaListWidget;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,11 +18,8 @@ import org.lwjgl.glfw.GLFW;
 public class AreaManagementScreen extends Screen {
     private boolean initialized;
     private SelectedAreaListWidget selectedAreaListWidget;
-    private ButtonWidget buttonOpen;
-    private ButtonWidget buttonClear;
-    private TextFieldWidget AreaNameField;
-    ButtonWidget setAreaName;
-    ButtonWidget cancelAreaName;
+    private CustomTextFieldWidget AreaNameField;
+
     private Screen parent;
 
     protected AreaManagementScreen(Text title, Screen parent) {
@@ -38,7 +35,7 @@ public class AreaManagementScreen extends Screen {
             this.selectedAreaListWidget.setDimensionsAndPosition(this.width, this.height - 64 - 50, 0, 80);
         } else {
             this.initialized = true;
-            this.selectedAreaListWidget = new SelectedAreaListWidget(this.client, this.width, this.height - 64 - 50, 80, 24);
+            this.selectedAreaListWidget = new SelectedAreaListWidget(this, this.client, this.width, this.height - 64 - 50, 80, 24);
 
         }
         SelectBoxes boxes = Wrutils.selectedAreaManagement.getCurrentBoxes();
@@ -55,26 +52,10 @@ public class AreaManagementScreen extends Screen {
         TextWidget textWidget = addDrawableChild(new TextWidget(text1, this.textRenderer));
         SimplePositioningWidget.setPos(textWidget, 12, y, this.textRenderer.getWidth(text1), 20);
 
-        this.AreaNameField = this.addDrawableChild(new TextFieldWidget(this.textRenderer, 200, 20, Text.of("Area Name")) {
-            @Override
-            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-                if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    ((TextFieldWidget) this).setFocused(false);
-
-                }
-                return super.keyPressed(keyCode, scanCode, modifiers);
-            }
-
-            @Override
-            public void setFocused(boolean focused) {
-                super.setFocused(focused);
-                if (!focused) {
-                    this.setText("changed");
-                }
-            }
-
+        this.AreaNameField = this.addDrawableChild(new CustomTextFieldWidget(this.textRenderer, 200, 20, Text.of("Area Name")));
+        this.AreaNameField.setLostFocusAction(() -> {
+            this.selectedAreaListWidget.getSelectBoxes().setName(this.AreaNameField.getText());
         });
-
         SimplePositioningWidget.setPos(this.AreaNameField, 75, y, 200, 20);
         this.AreaNameField.setText("Area Name");
 
@@ -89,19 +70,8 @@ public class AreaManagementScreen extends Screen {
         }).width(100).build());
         SimplePositioningWidget.setPos(createSubArea, 75, y, 100, 20);
 
-        this.buttonClear = this.addDrawableChild(ButtonWidget.builder(Text.of("Clear"), button -> {
-            this.selectedAreaListWidget.clearAreaEntries();
-        }).width(100).build());
-        this.buttonOpen = this.addDrawableChild(ButtonWidget.builder(Text.of("Open"), button -> {
-            this.selectedAreaListWidget.setAreaEntries(MinecraftClient.getInstance());
-        }).width(100).build());
-        DirectionalLayoutWidget directionalLayoutWidget = DirectionalLayoutWidget.vertical();
-        AxisGridWidget axisGridWidget = directionalLayoutWidget.add(new AxisGridWidget(308, 20, AxisGridWidget.DisplayAxis.HORIZONTAL));
-        axisGridWidget.add(this.buttonClear);
-        axisGridWidget.add(this.buttonOpen);
-        directionalLayoutWidget.refreshPositions();
-//        directionalLayoutWidget.add(EmptyWidget.ofHeight(4));
-        SimplePositioningWidget.setPos(directionalLayoutWidget, 0, this.height - 48, this.width, 64);
+
+
 
     }
 
@@ -133,6 +103,8 @@ public class AreaManagementScreen extends Screen {
         }
         return true;
     }
+
+
 
 
 }
