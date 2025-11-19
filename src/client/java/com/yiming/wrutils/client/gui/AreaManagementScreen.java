@@ -57,7 +57,7 @@ public class AreaManagementScreen extends Screen {
             this.selectedAreaListWidget.getSelectBoxes().setName(this.AreaNameField.getText());
         });
         SimplePositioningWidget.setPos(this.AreaNameField, 75, y, 200, 20);
-        this.AreaNameField.setText("Area Name");
+        this.AreaNameField.setText(boxes.getName());
 
         y += 25;
         Text text2 = Text.of("Sub Areas:");
@@ -69,8 +69,6 @@ public class AreaManagementScreen extends Screen {
             selectedAreaListWidget.appendAreaEntry(selectBox);
         }).width(100).build());
         SimplePositioningWidget.setPos(createSubArea, 75, y, 100, 20);
-
-
 
 
     }
@@ -103,8 +101,6 @@ public class AreaManagementScreen extends Screen {
         }
         return true;
     }
-
-
 
 
 }

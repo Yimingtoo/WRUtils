@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class SelectBoxes {
     private ArrayList<SelectBox> selectBoxList = new ArrayList<>();
     private SelectBox currentSelectBox;
-    private String selectBoxesName;
+    private String selectBoxesName = "Area-0";
 
     public void addAndSetCurrent(SelectBox selectBox) {
         this.add(selectBox);
