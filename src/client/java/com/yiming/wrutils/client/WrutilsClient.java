@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client;
 
+import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.render.CustomRender;
 import net.fabricmc.api.ClientModInitializer;
@@ -62,9 +63,10 @@ public class WrutilsClient implements ClientModInitializer {
                         System.out.println("wooden_sword");
 
                         if (client.crosshairTarget != null) {
-                            System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
-
-//                            SelectBoxes.getCurrent().setPos2(((BlockHitResult) client.crosshairTarget).getBlockPos());
+//                            System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
+                            if (Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox() != null) {
+                                Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox().setPos2(((BlockHitResult) client.crosshairTarget).getBlockPos());
+                            }
 
                         }
                     }
@@ -80,15 +82,14 @@ public class WrutilsClient implements ClientModInitializer {
                 if (isPressedNow && !wasRightPressedLastTick) {
 //                    System.out.println("右键按下一次！");
 
-
                     if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
                         System.out.println("wooden_sword");
 
                         if (client.crosshairTarget != null) {
-                            System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
-
-//                            SelectBoxes.getCurrent().setPos1(((BlockHitResult) client.crosshairTarget).getBlockPos());
-
+//                            System.out.println("client.crosshairTarget.getPos() " + ((BlockHitResult) client.crosshairTarget).getBlockPos());
+                            if (Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox() != null) {
+                                Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox().setPos1(((BlockHitResult) client.crosshairTarget).getBlockPos());
+                            }
                         }
                     }
 
