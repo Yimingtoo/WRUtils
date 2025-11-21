@@ -36,7 +36,7 @@ public class MainMenuScreen extends Screen {
             this.client.setScreen(null);
             this.client.mouse.lockCursor();
         }).width(204).build(), 2, gridWidget.copyPositioner().marginTop(50));
-        adder.add(this.createButton(Text.of("Area Management"), () -> new AreaManagementScreen(Text.of("Area Management"), this)));
+        adder.add(this.createButton(Text.of("Area Group"), () -> new AreaGroupScreen(this)));
 //        adder.add(this.createButton(Text.of("Test2"), () -> new SettingGui(Text.of("Test2"), this)));
 
         gridWidget.refreshPositions();

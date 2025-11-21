@@ -1,29 +1,32 @@
 package com.yiming.wrutils;
 
 import com.yiming.wrutils.data.event.EventRecorder;
+import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
-import com.yiming.wrutils.data.selected_area.SelectedAreaManagement;
+import com.yiming.wrutils.data.selected_area.AreaGroupManagement;
 import net.fabricmc.api.ModInitializer;
 
 
 public class Wrutils implements ModInitializer {
     public static final String MOD_ID = "wrutils-mod";
-    public static SelectedAreaManagement selectedAreaManagement = new SelectedAreaManagement();
-
-    //    public static RedstoneInfoManager redstoneInfoManager = new RedstoneInfoManager();
+    public static AreaGroupManagement areaGroupManagement = new AreaGroupManagement();
     public static EventRecorder eventRecorder = new EventRecorder();
-
-//    public static final EntityType<ModItemEntity> MOD_ITEM_ENTITY_ENTITY_TYPE = Registry.register(
-//            Registries.ENTITY_TYPE,
-//            "wrutils_mod_item_entity",
-//            EntityType.Builder.create(ModItemEntity::new, SpawnGroup.MISC).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.ofVanilla("wrutils_mod_item_entity")))
-//    );
-
 
     @Override
     public void onInitialize() {
-        selectedAreaManagement.addAndSetCurrent(new SelectBoxes());
-
+        areaGroupManagement.addAndSetCurrent(new SelectBoxes());
 
     }
+
+    public static SelectBoxes getCurrentBoxes() {
+        return areaGroupManagement.getCurrentBoxes();
+    }
+
+    public static SelectBox getCurrentSelectBox() {
+        if (areaGroupManagement.getCurrentBoxes() != null) {
+            return areaGroupManagement.getCurrentBoxes().getCurrentSelectBox();
+        }
+        return null;
+    }
+
 }

@@ -2,12 +2,12 @@ package com.yiming.wrutils.client.input;
 
 import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.Notification;
+import com.yiming.wrutils.client.WrutilsClient;
 import com.yiming.wrutils.client.WrutilsClientUtils;
 import com.yiming.wrutils.client.utils.GeometryUtil;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class MouseClickManagement {
     public static MouseState wasMiddlePressedLastTick = new MouseState(GLFW.GLFW_MOUSE_BUTTON_MIDDLE);
 
     public static void clickEvent(MinecraftClient client) {
-        if (client.currentScreen == null) {
+        if (client.currentScreen == null && client.isWindowFocused()) {
             long window = client.getWindow().getHandle();
             checkClick(client, window, wasLeftPressedLastTick, () -> leftClickDown(client), null);
             checkClick(client, window, wasRightPressedLastTick, () -> rightClickDown(client), null);
@@ -49,12 +49,12 @@ public class MouseClickManagement {
 
 
     private static void leftClickDown(MinecraftClient client) {
-        if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
+        if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            if (Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox() != null) {
+            if (Wrutils.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
-                    Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox().setPos2(pos);
+                    Wrutils.getCurrentSelectBox().setPos2(pos);
                 }
             }
 
@@ -63,12 +63,12 @@ public class MouseClickManagement {
     }
 
     private static void rightClickDown(MinecraftClient client) {
-        if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
+        if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            if (Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox() != null) {
+            if (Wrutils.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
-                    Wrutils.selectedAreaManagement.getCurrentBoxes().getCurrentSelectBox().setPos1(pos);
+                    Wrutils.getCurrentSelectBox().setPos1(pos);
                 }
             }
         }
@@ -76,12 +76,15 @@ public class MouseClickManagement {
 
 
     private static void middleClickDown(MinecraftClient client) {
-        if (client.player.getMainHandStack().getItem() == Items.WOODEN_SWORD) {
+        if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            System.out.println("Middle click");
+            SelectBoxes boxes = Wrutils.getCurrentBoxes();
+            if (boxes == null) {
+                return;
+            }
+
             Vec3d camPos = client.gameRenderer.getCamera().getPos();
             Vec3d camDir = client.player.getRotationVec(1.0F);
-            SelectBoxes boxes = Wrutils.selectedAreaManagement.getCurrentBoxes();
 
             double distanceToBlock = -1;
             BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);

@@ -7,6 +7,8 @@ public class DrawColor {
     public static final int BLUE = 0xFF0000FF;
     public static final int WHITE = 0xFFFFFFFF;
     public static final int PURPLE = 0xFF800080;
+    public static final int LIGHT_BLUE = 0xFF81C6F0;
+    public static final int PINK = 0xFFE269A2;
 
 
     public int color; // 默认红色不透明
