@@ -1,7 +1,7 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
-import com.yiming.wrutils.client.gui.widget.SelectedAreaListWidget;
+import com.yiming.wrutils.client.gui.widget.AreaListWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
@@ -9,8 +9,8 @@ import net.minecraft.text.Text;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SubAreaEditScreen extends Screen {
-    private final SelectedAreaListWidget.Entry entry;
+public class SubAreaConfigScreen extends Screen {
+    private final AreaListWidget.Entry entry;
     private final HashSet<String> nameSet;
     private final Screen parent;
 
@@ -18,7 +18,7 @@ public class SubAreaEditScreen extends Screen {
     private ButtonWidget buttonConfirm;
     private ButtonWidget buttonCancel;
 
-    public SubAreaEditScreen(Screen parent, SelectedAreaListWidget.Entry entry, Set<String> nameSet) {
+    public SubAreaConfigScreen(Screen parent, AreaListWidget.Entry entry, Set<String> nameSet) {
         super(Text.of(""));
         this.parent = parent;
         this.entry = entry;
@@ -45,12 +45,12 @@ public class SubAreaEditScreen extends Screen {
 
         this.nameField = this.addDrawableChild(new CustomTextFieldWidget(this.textRenderer, 200, 20, Text.of("Sub Area Name")));
         SimplePositioningWidget.setPos(this.nameField, 75, y, 200, 20);
-        this.nameField.setText(((SelectedAreaListWidget.OneAreaEntry) entry).getSelectBox().getName());
+        this.nameField.setText(((AreaListWidget.OneAreaEntry) entry).getSelectBox().getName());
         y += 25;
 
         this.buttonConfirm = this.addDrawableChild(ButtonWidget.builder(Text.of("Confirm"), button -> {
             String name = nameField.getText();
-            if (entry instanceof SelectedAreaListWidget.OneAreaEntry entry1) {
+            if (entry instanceof AreaListWidget.OneAreaEntry entry1) {
                 if (nameSet.contains(name) && !entry1.getSelectBox().getName().equals(name)) {
                     // 重复命名
                 } else if (name.isEmpty()) {

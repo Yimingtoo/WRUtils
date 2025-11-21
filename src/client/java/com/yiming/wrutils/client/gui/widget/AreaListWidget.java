@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget;
 
-import com.yiming.wrutils.client.gui.SubAreaEditScreen;
+import com.yiming.wrutils.client.gui.SubAreaConfigScreen;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
@@ -17,13 +17,13 @@ import java.util.*;
 
 
 @Environment(EnvType.CLIENT)
-public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<SelectedAreaListWidget.Entry> {
+public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget.Entry> {
     private final Map<SelectBox, OneAreaEntry> oneAreaEntriesMap = new LinkedHashMap<>();
     private final Set<String> areaNames = new HashSet<>();
     private SelectBoxes selectBoxes;
     private final Screen parent;
 
-    public SelectedAreaListWidget(Screen parent, MinecraftClient client, int width, int height, int top, int bottom) {
+    public AreaListWidget(Screen parent, MinecraftClient client, int width, int height, int top, int bottom) {
         super(client, width, height, top, bottom);
         this.parent = parent;
     }
@@ -96,12 +96,10 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
     private void deleteAction(OneAreaEntry entry) {
         this.removeAreaEntry(entry);
         this.updateEntries();
-        // Todo: 删除对应在Server中的对象
-
     }
 
     public void editAction(OneAreaEntry entry) {
-        this.client.setScreen(new SubAreaEditScreen(this.parent, entry, areaNames));
+        this.client.setScreen(new SubAreaConfigScreen(this.parent, entry, areaNames));
     }
 
     @Override
@@ -122,13 +120,12 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
         return this.getRight() - 10;
     }
 
-    public abstract static class Entry extends AlwaysSelectedEntryListWidget.Entry<SelectedAreaListWidget.Entry> {
+    public abstract static class Entry extends AlwaysSelectedEntryListWidget.Entry<AreaListWidget.Entry> {
 
     }
 
-
     @Environment(EnvType.CLIENT)
-    public static class OneAreaEntry extends SelectedAreaListWidget.Entry {
+    public static class OneAreaEntry extends AreaListWidget.Entry {
         private final Text name;
         private final int width;
         private final int height;
@@ -140,6 +137,7 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
 
         private Runnable deleteAction;
         private Runnable editAction;
+
 
         public OneAreaEntry(SelectBox selectBox, String name, int width, int height) {
             super();
@@ -220,6 +218,8 @@ public class SelectedAreaListWidget extends AlwaysSelectedEntryListWidget<Select
                 }
                 lastClickTime = currentTime;
             }
+
+
             return super.mouseClicked(mouseX, mouseY, button);
         }
 

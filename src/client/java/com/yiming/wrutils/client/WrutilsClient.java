@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -21,6 +22,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import org.lwjgl.glfw.GLFW;
 
 public class WrutilsClient implements ClientModInitializer {
+    public static Item debugItem = Items.WOODEN_SWORD;
+
     @Override
     public void onInitializeClient() {
         guiInitialize();

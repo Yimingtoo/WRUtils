@@ -4,6 +4,7 @@
   "package": "com.yiming.wrutils.client.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "MinecraftClientMixin",
     "WorldRendererMixin"
   ],
   "injectors": {
