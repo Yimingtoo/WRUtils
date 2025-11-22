@@ -45,7 +45,8 @@ public class CustomRender {
                     if (!selectBoxes.getList().isEmpty()) {
                         for (SelectBox box : selectBoxes.getList()) {
 
-                            DrawColor style = box == selectBoxes.getCurrentSelectBox() ? new DrawColor(DrawColor.PINK, 0.25f) : new DrawColor(DrawColor.LIGHT_BLUE, 0.25f);
+                            boolean isCurrent = box == selectBoxes.getCurrentSelectBox();
+                            DrawColor style = isCurrent ? new DrawColor(DrawColor.PINK, 0.25f) : new DrawColor(DrawColor.LIGHT_BLUE, 0.25f);
                             ZoneRenderer.drawSelectedBox(
                                     context.matrixStack(), context.camera(), context.consumers(),
                                     box.pos1(), new DrawColor(DrawColor.RED, 1f),
@@ -57,6 +58,23 @@ public class CustomRender {
                                     box.pos2(),
                                     style
                             );
+                            if (isCurrent) {
+
+                                if (box.getSelectedPos() != null) {
+                                    ZoneRenderer.drawSelectedBox(context.matrixStack(), context.camera(), context.consumers(),
+                                            box.getSelectedPos(),
+                                            new DrawColor(0x629755, 1f),
+                                            box.getSelectedPos(),
+                                            new DrawColor(0x629755, 1f),
+                                            new DrawColor(0x629755, 1f)
+                                    );
+                                    ZoneRenderer.drawBoxFaces(context.matrixStack(), context.camera(),
+                                            box.getSelectedPos(),
+                                            new DrawColor(DrawColor.RED, .3f)
+                                    );
+                                }
+
+                            }
                         }
                     }
                 }

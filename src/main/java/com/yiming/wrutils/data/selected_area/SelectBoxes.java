@@ -1,6 +1,7 @@
 package com.yiming.wrutils.data.selected_area;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class SelectBoxes {
     private ArrayList<SelectBox> selectBoxList = new ArrayList<>();
@@ -42,6 +43,14 @@ public class SelectBoxes {
 
     public String getName() {
         return this.selectBoxesName;
+    }
+
+    public HashSet<String> getSelectBoxListNames() {
+        HashSet<String> nameSet = new HashSet<>();
+        for (SelectBox box : this.selectBoxList) {
+            nameSet.add(box.getName());
+        }
+        return nameSet;
     }
 
     public void setName(String name) {

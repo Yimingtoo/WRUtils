@@ -10,6 +10,7 @@ import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -55,6 +56,8 @@ public class MouseClickManagement {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
                     Wrutils.getCurrentSelectBox().setPos2(pos);
+                    Wrutils.getCurrentSelectBox().setSelectedPos(pos);
+
                 }
             }
 
@@ -69,6 +72,7 @@ public class MouseClickManagement {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
                     Wrutils.getCurrentSelectBox().setPos1(pos);
+                    Wrutils.getCurrentSelectBox().setSelectedPos(pos);
                 }
             }
         }
@@ -89,41 +93,81 @@ public class MouseClickManagement {
             double distanceToBlock = -1;
             BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
             if (pos != null) {
-                ArrayList<GeometryUtil.Plane> planes = GeometryUtil.getPlanes(camPos, new Vec3d(pos), new Vec3d(pos).add(1, 1, 1));
-                for (GeometryUtil.Plane plane : planes) {
-                    double distance1 = GeometryUtil.intersectLineWithRectangle(camPos, camDir, plane, 128);
-                    if (distance1 > 0) {
-                        if (distanceToBlock < 0 || distance1 < distanceToBlock) {
-                            distanceToBlock = distance1;
-                        }
-                    }
+                double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, new Vec3d(pos), new Vec3d(pos).add(1, 1, 1));
+                if (distance1 >= 0) {
+                    distanceToBlock = distance1;
                 }
             }
 
             double distanceToBox = -1;
             SelectBox beingSelectedBox = null;
             for (SelectBox box : boxes.getList()) {
-                ArrayList<GeometryUtil.Plane> planes = GeometryUtil.getPlanes(camPos, box.getMinBorderPos(), box.getMaxBorderPos());
-                for (GeometryUtil.Plane plane : planes) {
-                    double distance1 = GeometryUtil.intersectLineWithRectangle(camPos, camDir, plane, 128);
-                    if (distance1 > 0) {
-                        if (distanceToBox < 0 || distance1 < distanceToBox) {
-                            distanceToBox = distance1;
-                            beingSelectedBox = box;
-                        }
+                double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, box.getMinBorderPos(), box.getMaxBorderPos());
+                if (distance1 >= 0) {
+                    if (distanceToBox < 0 || distance1 < distanceToBox) {
+                        distanceToBox = distance1;
+                        beingSelectedBox = box;
                     }
                 }
             }
 
-            if ((distanceToBlock >= 0 && distanceToBox >= 0 && distanceToBlock >= distanceToBox) || (distanceToBlock < 0 && distanceToBox >= 0)) {
-                boxes.setCurrentSelectBox(beingSelectedBox);
-                if (beingSelectedBox != null)
+            if (beingSelectedBox != null) {
+                if ((distanceToBlock >= 0 && distanceToBlock >= distanceToBox) || (distanceToBlock < 0)) {
+                    boxes.setCurrentSelectBox(beingSelectedBox);
                     Notification.addNotification(beingSelectedBox.getName() + "已经选中", 1000);
-                else
+
+                    ArrayList<Vec3i> cubePoses = SelectBox.CornerDirection.getCornerCubePoses(beingSelectedBox);
+                    Vec3i targetPos = null;
+                    double distanceToCube = -1;
+                    for (Vec3i cubePos : cubePoses) {
+                        double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, new Vec3d(cubePos), new Vec3d(cubePos).add(1, 1, 1));
+                        if (distance1 >= 0) {
+                            if (distanceToCube < 0 || distance1 < distanceToCube) {
+                                distanceToCube = distance1;
+                                targetPos = cubePos;
+                            }
+                        }
+                    }
+
+                    if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0) {
+                        beingSelectedBox.setSelectedPos(targetPos);
+                    } else {
+                        beingSelectedBox.setSelectedPos(null);
+                    }
+
+
+                } else {
+                    boxes.setCurrentSelectBox(null);
                     Notification.addNotification("取消选中", 1000);
+                }
+
+
             } else {
-                boxes.setCurrentSelectBox(null);
-                Notification.addNotification("取消选中", 1000);
+                Vec3i targetPos = null;
+                double distanceToCube = -1;
+                for (SelectBox box : boxes.getList()) {
+                    if (box.isContainVec3dPos(camPos)) {
+                        ArrayList<Vec3i> cubePoses = SelectBox.CornerDirection.getCornerCubePoses(box);
+                        for (Vec3i cubePos : cubePoses) {
+                            double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, new Vec3d(cubePos), new Vec3d(cubePos).add(1, 1, 1));
+                            if (distance1 >= 0) {
+                                if (distanceToCube < 0 || distance1 < distanceToCube) {
+                                    distanceToCube = distance1;
+                                    targetPos = cubePos;
+                                    beingSelectedBox = box;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0 && distanceToCube > 0) {
+                    boxes.setCurrentSelectBox(beingSelectedBox);
+                    beingSelectedBox.setSelectedPos(targetPos);
+                } else {
+                    boxes.setCurrentSelectBox(null);
+                    Notification.addNotification("取消选中", 1000);
+                }
 
             }
 

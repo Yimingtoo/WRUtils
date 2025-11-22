@@ -99,7 +99,7 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
     }
 
     public void editAction(OneAreaEntry entry) {
-        this.client.setScreen(new SubAreaConfigScreen(this.parent, entry, areaNames));
+        this.client.setScreen(new SubAreaConfigScreen(this.parent, this.selectBoxes, entry.getSelectBox()));
     }
 
     @Override
@@ -107,6 +107,8 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
         super.setSelected(entry);
         if (entry instanceof OneAreaEntry entry1) {
             this.selectBoxes.setCurrentSelectBox(entry1.getSelectBox());
+        } else if (entry == null) {
+            this.selectBoxes.setCurrentSelectBox(null);
         }
     }
 

@@ -1,43 +1,58 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
-import com.yiming.wrutils.client.gui.widget.AreaListWidget;
+import com.yiming.wrutils.data.selected_area.SelectBox;
+import com.yiming.wrutils.data.selected_area.SelectBoxes;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 
 import java.util.HashSet;
-import java.util.Set;
 
-public class SubAreaConfigScreen extends Screen {
-    private final AreaListWidget.Entry entry;
-    private final HashSet<String> nameSet;
-    private final Screen parent;
+public class SubAreaConfigScreen extends AbstractSetupScreen {
+    private final SelectBoxes upperSelectBoxes;
+    private final SelectBox selfSelectBox;
 
     private CustomTextFieldWidget nameField;
-    private ButtonWidget buttonConfirm;
-    private ButtonWidget buttonCancel;
 
-    public SubAreaConfigScreen(Screen parent, AreaListWidget.Entry entry, Set<String> nameSet) {
-        super(Text.of(""));
+    public SubAreaConfigScreen(Screen parent, SelectBoxes upperSelectBoxes, SelectBox selfSelectBox) {
+        super(Text.of("Sub Area Setting"), parent);
         this.parent = parent;
-        this.entry = entry;
-        this.nameSet = new HashSet<>(nameSet);
+        this.upperSelectBoxes = upperSelectBoxes;
+        this.selfSelectBox = selfSelectBox;
+    }
+
+    private void rename() {
+        String name = nameField.getText();
+        HashSet<String> nameSet = this.upperSelectBoxes.getSelectBoxListNames();
+        if (nameSet.contains(name) && !this.selfSelectBox.getName().equals(name)) {
+            // 重复命名
+        } else if (name.isEmpty()) {
+            // 输入为空
+        } else if (!this.selfSelectBox.getName().equals(name)) {
+            this.selfSelectBox.setName(name);
+        }
+    }
+
+    @Override
+    protected void upperScreen() {
+//        Screen screen = this.parent instanceof AreaListScreen ? this.parent : new AreaListScreen(this, upperSelectBoxes);
+
+        Screen screen = this.parent instanceof AreaListScreen ? this.parent : new AreaListScreen(this.parent, upperSelectBoxes);
+        MinecraftClient.getInstance().setScreen(screen);
     }
 
     @Override
     public void init() {
+        super.init();
         initWidgets();
-        this.addDrawableChild(new TextWidget(0, 40, this.width, 9, this.title, this.textRenderer));
     }
 
     private void initWidgets() {
-        int y = 0;
+        MinecraftClient client1 = MinecraftClient.getInstance();
 
-        Text text = Text.literal("Sub Area Edit").styled(style -> style.withBold(true));
-        TextWidget title = addDrawableChild(new TextWidget(text, this.textRenderer));
-        SimplePositioningWidget.setPos(title, 8, 0, this.textRenderer.getWidth(text), 20);
-        y += 25;
+        int y = 26;
 
         Text text1 = Text.of("Rename:");
         TextWidget textWidget = addDrawableChild(new TextWidget(text1, this.textRenderer));
@@ -45,36 +60,24 @@ public class SubAreaConfigScreen extends Screen {
 
         this.nameField = this.addDrawableChild(new CustomTextFieldWidget(this.textRenderer, 200, 20, Text.of("Sub Area Name")));
         SimplePositioningWidget.setPos(this.nameField, 75, y, 200, 20);
-        this.nameField.setText(((AreaListWidget.OneAreaEntry) entry).getSelectBox().getName());
+        this.nameField.setText(this.selfSelectBox.getName());
         y += 25;
 
-        this.buttonConfirm = this.addDrawableChild(ButtonWidget.builder(Text.of("Confirm"), button -> {
-            String name = nameField.getText();
-            if (entry instanceof AreaListWidget.OneAreaEntry entry1) {
-                if (nameSet.contains(name) && !entry1.getSelectBox().getName().equals(name)) {
-                    // 重复命名
-                } else if (name.isEmpty()) {
-                    // 输入为空
-
-                } else if (!entry1.getSelectBox().getName().equals(name)) {
-                    this.nameSet.remove(entry1.getSelectBox().getName());
-                    entry1.getSelectBox().setName(name);
-                    this.nameSet.add(name);
-                }
-            }
-
-            this.client.setScreen(this.parent);
+        ButtonWidget buttonConfirm = this.addDrawableChild(ButtonWidget.builder(Text.of("Confirm"), button -> {
+            rename();
+            client1.setScreen(this.parent);
         }).width(100).build());
-        this.buttonCancel = this.addDrawableChild(ButtonWidget.builder(Text.of("Cancel"), button -> {
-            this.client.setScreen(this.parent);
+        ButtonWidget buttonCancel = this.addDrawableChild(ButtonWidget.builder(Text.of("Cancel"), button -> {
+            client1.setScreen(this.parent);
         }).width(100).build());
-        SimplePositioningWidget.setPos(this.buttonConfirm, 12, y, 100, 20);
-        SimplePositioningWidget.setPos(this.buttonCancel, 120, y, 100, 20);
+        SimplePositioningWidget.setPos(buttonConfirm, 12, y, 100, 20);
+        SimplePositioningWidget.setPos(buttonCancel, 120, y, 100, 20);
     }
+
 
     @Override
     public void close() {
-        this.client.setScreen(this.parent);
+        MinecraftClient.getInstance().setScreen(this.parent);
     }
 
 }

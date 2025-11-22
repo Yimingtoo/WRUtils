@@ -100,7 +100,7 @@ public class AreaGroupWidget extends AlwaysSelectedEntryListWidget<AreaGroupWidg
     }
 
     public void editAction(OneGroupEntry entry) {
-        this.client.setScreen(new AreaListScreen(this.parent, entry, groupNames));
+        this.client.setScreen(new AreaListScreen(this.parent, entry.getSelectBoxes()));
     }
 
 
@@ -109,7 +109,10 @@ public class AreaGroupWidget extends AlwaysSelectedEntryListWidget<AreaGroupWidg
         super.setSelected(entry);
         if (entry instanceof OneGroupEntry entry1) {
             this.areaGroupManagement.setCurrentSelectBox(entry1.getSelectBoxes());
+        } else if (entry == null) {
+            this.areaGroupManagement.setCurrentSelectBox(null);
         }
+
     }
 
     @Override
@@ -191,10 +194,10 @@ public class AreaGroupWidget extends AlwaysSelectedEntryListWidget<AreaGroupWidg
                 }
             }
 
-            this.deleteButton.setPosition(this.width - 50, y+3);
+            this.deleteButton.setPosition(this.width - 50, y + 3);
             this.deleteButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.editButton.setPosition(this.width - 100, y+3);
+            this.editButton.setPosition(this.width - 100, y + 3);
             this.editButton.render(context, mouseX, mouseY, tickDelta);
 
             context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, name, 30, y + entryHeight / 2 - 9 / 2, Colors.WHITE);

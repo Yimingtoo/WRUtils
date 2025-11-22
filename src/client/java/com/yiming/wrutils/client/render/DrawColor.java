@@ -1,7 +1,7 @@
 package com.yiming.wrutils.client.render;
 
-public class DrawColor {
 
+public class DrawColor {
     public static final int RED = 0xFFFF0000;
     public static final int GREEN = 0xFF00FF00;
     public static final int BLUE = 0xFF0000FF;
