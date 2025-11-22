@@ -1,9 +1,11 @@
 package com.yiming.wrutils.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -72,6 +74,10 @@ public class ZoneRenderer {
         }
         matrices.pop();
 
+    }
+
+    public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos, DrawColor style) {
+        drawBoxFaces(matrices, camera, pos, pos, style);
     }
 
     public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos1, Vec3i pos2, DrawColor style) {

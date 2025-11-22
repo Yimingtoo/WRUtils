@@ -6,26 +6,28 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyBoardManagement {
-    private static KeyBinding keyBinding;
-    private static KeyBinding keyBinding2;
+    private static KeyBinding keyBindingI;
+    private static KeyBinding keyBindingLeftAlt;
 
     public static void keyBoardEventInit() {
-        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wrutils.setting", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, "key.wrutils.category"));
+        keyBindingI = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wrutils.key_i", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, "key.wrutils.category"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyBinding.wasPressed()) {
+            while (keyBindingI.wasPressed()) {
                 MinecraftClient client1 = MinecraftClient.getInstance();
-                client1.setScreen(new MainMenuScreen(Text.of("WRUtils Settings")));
+                client1.setScreen(new MainMenuScreen());
+                System.out.println("key.wrutils.key_i");
+
             }
         });
 
-        keyBinding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wrutils.setting1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, "key.wrutils.category1"));
+        keyBindingLeftAlt = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wrutils.key_left_alt", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, "key.wrutils.category1"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyBinding2.wasPressed()) {
+            while (keyBindingLeftAlt.wasPressed()) {
 
+                System.out.println("key.wrutils.setting1");
             }
         });
     }

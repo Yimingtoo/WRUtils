@@ -1,6 +1,7 @@
 package com.yiming.wrutils.data.selected_area;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AreaGroupManagement {
 
@@ -34,6 +35,14 @@ public class AreaGroupManagement {
         if (this.currentSelectBoxes == selectBoxes) {
             this.currentSelectBoxes = null;
         }
+    }
+
+    public HashSet<String> getSelectBoxesListNames() {
+        HashSet<String> nameSet = new HashSet<>();
+        for (SelectBoxes boxes : this.selectBoxesList) {
+            nameSet.add(boxes.getName());
+        }
+        return nameSet;
     }
 
     public ArrayList<SelectBoxes> getList() {

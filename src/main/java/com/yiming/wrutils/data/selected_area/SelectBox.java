@@ -3,10 +3,14 @@ package com.yiming.wrutils.data.selected_area;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SelectBox {
     private String selectBoxName = "Sub-Area-1";
     private Vec3i pos1;
     private Vec3i pos2;
+    private Vec3i selectedPos;
 
     private Vec3i minPos;
     private Vec3i maxPos;
@@ -20,6 +24,8 @@ public class SelectBox {
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.setMinMaxPos();
+//        this.selectedPos = pos1;
+
     }
 
     private void setMinMaxPos() {
@@ -61,6 +67,14 @@ public class SelectBox {
         return Vec3d.of(maxPos.add(1, 1, 1));
     }
 
+    public void setSelectedPos(Vec3i pos) {
+        this.selectedPos = pos;
+    }
+
+    public Vec3i getSelectedPos() {
+        return selectedPos;
+    }
+
 
     public boolean isContainVec3iPos(Vec3i pos) {
         return pos.getX() >= minPos.getX() && pos.getX() <= maxPos.getX()
@@ -74,6 +88,63 @@ public class SelectBox {
                 && pos.getZ() >= minPos.getZ() && pos.getZ() <= maxPos.getZ() + 1;
     }
 
-//    public List<>
+
+    public enum CornerDirection {
+        WEST_NORTH_DOWN(false, false, false, new Vec3i(-1, -1, -1)),
+        WEST_NORTH_UP__(false, false, true, new Vec3i(-1, -1, 1)),
+        WEST_SOUTH_DOWN(false, true, false, new Vec3i(-1, 1, -1)),
+        WEST_SOUTH_UP__(false, true, true, new Vec3i(-1, 1, 1)),
+        EAST_NORTH_DOWN(true, false, false, new Vec3i(1, -1, -1)),
+        EAST_NORTH_UP__(true, false, true, new Vec3i(1, -1, 1)),
+        EAST_SOUTH_DOWN(true, true, false, new Vec3i(1, 1, -1)),
+        EAST_SOUTH_UP__(true, true, true, new Vec3i(1, 1, 1));
+
+        private final Vec3i dir;
+        private final boolean xMax;
+        private final boolean yMax;
+        private final boolean zMax;
+
+        private CornerDirection(boolean xMax, boolean yMax, boolean zMax, Vec3i dir) {
+            this.xMax = xMax;
+            this.yMax = yMax;
+            this.zMax = zMax;
+            this.dir = dir;
+        }
+
+        public Vec3i getDir() {
+            return this.dir;
+        }
+
+        public boolean isXMax() {
+            return this.xMax;
+        }
+
+        public boolean isYMax() {
+            return this.yMax;
+        }
+
+        public boolean isZMax() {
+            return this.zMax;
+        }
+
+        public static Vec3i getPosWithDir(Vec3i minPos, Vec3i maxPos, CornerDirection dir) {
+            return new Vec3i(
+                    dir.isXMax() ? maxPos.getX() : minPos.getX(),
+                    dir.isYMax() ? maxPos.getY() : minPos.getY(),
+                    dir.isZMax() ? maxPos.getZ() : minPos.getZ()
+            );
+        }
+
+        public static ArrayList<Vec3i> getCornerCubePoses(SelectBox selectBox) {
+            Vec3i minPos = selectBox.minPos;
+            Vec3i maxPos = selectBox.maxPos;
+            ArrayList<Vec3i> poses = new ArrayList<>();
+            for (CornerDirection dir : CornerDirection.values()) {
+                poses.add(getPosWithDir(minPos, maxPos, dir));
+            }
+            return poses;
+        }
+
+    }
 
 }

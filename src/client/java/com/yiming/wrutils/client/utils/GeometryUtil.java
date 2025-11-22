@@ -70,7 +70,7 @@ public class GeometryUtil {
 
     /**
      * 根据摄像机位置和两个点定义的包围盒，获取面向摄像机的平面
-     * 
+     *
      * @param camPos 摄像机位置
      * @param pos1   包围盒的第一个角点
      * @param pos2   包围盒的第二个角点
@@ -93,6 +93,17 @@ public class GeometryUtil {
             }
         }
         return planes;
+    }
+
+    public static double intersectLineWithBox(Vec3d camPos, Vec3d camDir, Vec3d pos1, Vec3d pos2) {
+        ArrayList<GeometryUtil.Plane> planes = GeometryUtil.getPlanes(camPos, pos1, pos2);
+        for (GeometryUtil.Plane plane : planes) {
+            double distance1 = GeometryUtil.intersectLineWithRectangle(camPos, camDir, plane, 128);
+            if (distance1 > 0) {
+                return distance1;
+            }
+        }
+        return -1;
     }
 
 
