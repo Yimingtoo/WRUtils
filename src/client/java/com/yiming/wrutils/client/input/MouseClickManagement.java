@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class MouseClickManagement {
     public static MouseState wasLeftPressedLastTick = new MouseState(GLFW.GLFW_MOUSE_BUTTON_LEFT);
     public static MouseState wasRightPressedLastTick = new MouseState(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
@@ -24,8 +25,8 @@ public class MouseClickManagement {
     public static void clickEvent(MinecraftClient client) {
         if (client.currentScreen == null && client.isWindowFocused()) {
             long window = client.getWindow().getHandle();
-            checkClick(client, window, wasLeftPressedLastTick, () -> leftClickDown(client), null);
-            checkClick(client, window, wasRightPressedLastTick, () -> rightClickDown(client), null);
+            checkClick(client, window, wasLeftPressedLastTick, () -> leftClickDown1(client), null);
+            checkClick(client, window, wasRightPressedLastTick, () -> rightClickDown1(client), null);
             checkClick(client, window, wasMiddlePressedLastTick, () -> middleClickDown(client), null);
         }
     }
@@ -49,14 +50,14 @@ public class MouseClickManagement {
     }
 
 
-    private static void leftClickDown(MinecraftClient client) {
+    private static void leftClickDown1(MinecraftClient client) {
         if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
             if (Wrutils.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
                     Wrutils.getCurrentSelectBox().setPos2(pos);
-                    Wrutils.getCurrentSelectBox().setSelectedPos(pos);
+                    Wrutils.getCurrentSelectBox().setMoveCtrlPos(pos);
 
                 }
             }
@@ -65,14 +66,15 @@ public class MouseClickManagement {
         }
     }
 
-    private static void rightClickDown(MinecraftClient client) {
+
+    private static void rightClickDown1(MinecraftClient client) {
         if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
             if (Wrutils.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
                     Wrutils.getCurrentSelectBox().setPos1(pos);
-                    Wrutils.getCurrentSelectBox().setSelectedPos(pos);
+                    Wrutils.getCurrentSelectBox().setMoveCtrlPos(pos);
                 }
             }
         }
@@ -130,9 +132,9 @@ public class MouseClickManagement {
                     }
 
                     if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0) {
-                        beingSelectedBox.setSelectedPos(targetPos);
+                        beingSelectedBox.setMoveCtrlPos(targetPos);
                     } else {
-                        beingSelectedBox.setSelectedPos(null);
+                        beingSelectedBox.setMoveCtrlPos(null);
                     }
 
 
@@ -163,7 +165,7 @@ public class MouseClickManagement {
                 }
                 if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0 && distanceToCube > 0) {
                     boxes.setCurrentSelectBox(beingSelectedBox);
-                    beingSelectedBox.setSelectedPos(targetPos);
+                    beingSelectedBox.setMoveCtrlPos(targetPos);
                 } else {
                     boxes.setCurrentSelectBox(null);
                     Notification.addNotification("取消选中", 1000);

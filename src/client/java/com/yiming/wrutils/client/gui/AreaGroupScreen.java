@@ -16,7 +16,7 @@ public class AreaGroupScreen extends AbstractSetupScreen {
     private boolean initialized;
     private AreaGroupWidget areaGroupWidget;
 
-    protected AreaGroupScreen(Screen parent) {
+    public AreaGroupScreen(Screen parent) {
         super(Text.of("Area Group"), parent);
     }
 

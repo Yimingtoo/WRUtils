@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget;
 
-import com.yiming.wrutils.client.gui.SubAreaConfigScreen;
+import com.yiming.wrutils.client.gui.SubAreaScreen;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
@@ -99,7 +99,7 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
     }
 
     public void editAction(OneAreaEntry entry) {
-        this.client.setScreen(new SubAreaConfigScreen(this.parent, this.selectBoxes, entry.getSelectBox()));
+        this.client.setScreen(new SubAreaScreen(this.parent, this.selectBoxes, entry.getSelectBox()));
     }
 
     @Override

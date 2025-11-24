@@ -60,16 +60,16 @@ public class CustomRender {
                             );
                             if (isCurrent) {
 
-                                if (box.getSelectedPos() != null) {
+                                if (box.getMoveCtrlPos() != null) {
                                     ZoneRenderer.drawSelectedBox(context.matrixStack(), context.camera(), context.consumers(),
-                                            box.getSelectedPos(),
+                                            box.getMoveCtrlPos(),
                                             new DrawColor(0x629755, 1f),
-                                            box.getSelectedPos(),
+                                            box.getMoveCtrlPos(),
                                             new DrawColor(0x629755, 1f),
                                             new DrawColor(0x629755, 1f)
                                     );
                                     ZoneRenderer.drawBoxFaces(context.matrixStack(), context.camera(),
-                                            box.getSelectedPos(),
+                                            box.getMoveCtrlPos(),
                                             new DrawColor(DrawColor.RED, .3f)
                                     );
                                 }

@@ -1,16 +1,18 @@
 package com.yiming.wrutils.data.selected_area;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SelectBox {
     private String selectBoxName = "Sub-Area-1";
     private Vec3i pos1;
     private Vec3i pos2;
-    private Vec3i selectedPos;
+    private Vec3i moveCtrlPos;
+    SelectedCorner inertanceCorner;
 
     private Vec3i minPos;
     private Vec3i maxPos;
@@ -24,7 +26,7 @@ public class SelectBox {
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.setMinMaxPos();
-//        this.selectedPos = pos1;
+        this.inertanceCorner = SelectedCorner.CORNER_1;
 
     }
 
@@ -67,12 +69,12 @@ public class SelectBox {
         return Vec3d.of(maxPos.add(1, 1, 1));
     }
 
-    public void setSelectedPos(Vec3i pos) {
-        this.selectedPos = pos;
+    public void setMoveCtrlPos(Vec3i pos) {
+        this.moveCtrlPos = pos;
     }
 
-    public Vec3i getSelectedPos() {
-        return selectedPos;
+    public Vec3i getMoveCtrlPos() {
+        return moveCtrlPos;
     }
 
 
@@ -86,6 +88,50 @@ public class SelectBox {
         return pos.getX() >= minPos.getX() && pos.getX() <= maxPos.getX() + 1
                 && pos.getY() >= minPos.getY() && pos.getY() <= maxPos.getY() + 1
                 && pos.getZ() >= minPos.getZ() && pos.getZ() <= maxPos.getZ() + 1;
+    }
+
+    public void moveBox(Entity cameraEntity, int amount) {
+        if (cameraEntity == null) return;
+        Vec3d rotationVector = cameraEntity.getRotationVector();
+        Direction facing = Direction.getFacing(rotationVector);
+        Vec3i moveDist = facing.getVector().multiply(amount);
+        if (this.moveCtrlPos == null) {
+            this.pos1 = this.pos1.add(moveDist);
+            this.pos2 = this.pos2.add(moveDist);
+            this.setMinMaxPos();
+        } else {
+            switch (this.getBeMovingCorner(facing)) {
+                case SelectedCorner.CORNER_1:
+                    this.setPos1(this.pos1.add(moveDist));
+                    break;
+                case SelectedCorner.CORNER_2:
+                    this.setPos2(this.pos2.add(moveDist));
+                    break;
+            }
+            this.moveCtrlPos = this.moveCtrlPos.add(moveDist);
+        }
+
+    }
+
+    private SelectedCorner getBeMovingCorner(Direction facing) {
+        Direction.Axis axis = facing.getAxis();
+        boolean result1 = this.pos1.getComponentAlongAxis(axis) == this.moveCtrlPos.getComponentAlongAxis(axis);
+        boolean result2 = this.pos2.getComponentAlongAxis(axis) == this.moveCtrlPos.getComponentAlongAxis(axis);
+        if (result1 && !result2) {
+            this.inertanceCorner = SelectedCorner.CORNER_1;
+            return SelectedCorner.CORNER_1;
+        } else if (!result1 && result2) {
+            this.inertanceCorner = SelectedCorner.CORNER_2;
+            return SelectedCorner.CORNER_2;
+        } else if (result1 && result2) {
+            return this.inertanceCorner;
+        }
+        return this.inertanceCorner;
+    }
+
+    public enum SelectedCorner {
+        CORNER_1,
+        CORNER_2,
     }
 
 
