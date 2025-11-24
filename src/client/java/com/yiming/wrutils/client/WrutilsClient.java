@@ -3,8 +3,11 @@ package com.yiming.wrutils.client;
 import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.input.KeyBoardManagement;
+import com.yiming.wrutils.client.input.KeyCallbacks;
 import com.yiming.wrutils.client.input.MouseClickManagement;
+import com.yiming.wrutils.client.input.MouseManagement;
 import com.yiming.wrutils.client.render.CustomRender;
+import fi.dy.masa.malilib.event.InputEventHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -28,11 +31,18 @@ public class WrutilsClient implements ClientModInitializer {
     public void onInitializeClient() {
         guiInitialize();
         CustomRender.renderCustomModelOut();
+
+        InputEventHandler.getKeybindManager().registerKeybindProvider(KeyBoardManagement.getInstance());
+        InputEventHandler.getInputManager().registerKeyboardInputHandler(KeyBoardManagement.getInstance());
+        InputEventHandler.getInputManager().registerMouseInputHandler(MouseManagement.getInstance());
+
+        KeyCallbacks.keyCallBackInit(MinecraftClient.getInstance());
+
     }
 
     public void guiInitialize() {
-        KeyBoardManagement.keyBoardEventInit();
-        ClientTickEvents.END_CLIENT_TICK.register(MouseClickManagement::clickEvent);
+//        KeyBoardManagement.keyBoardEventInit();
+//        ClientTickEvents.END_CLIENT_TICK.register(MouseClickManagement::clickEvent);
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
             layeredDrawer.attachLayerAfter(
                     IdentifiedLayer.MISC_OVERLAYS,
@@ -47,7 +57,6 @@ public class WrutilsClient implements ClientModInitializer {
 
 
     }
-
 
 
 }

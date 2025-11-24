@@ -10,13 +10,13 @@ import net.minecraft.text.Text;
 
 import java.util.HashSet;
 
-public class SubAreaConfigScreen extends AbstractSetupScreen {
+public class SubAreaScreen extends AbstractSetupScreen {
     private final SelectBoxes upperSelectBoxes;
     private final SelectBox selfSelectBox;
 
     private CustomTextFieldWidget nameField;
 
-    public SubAreaConfigScreen(Screen parent, SelectBoxes upperSelectBoxes, SelectBox selfSelectBox) {
+    public SubAreaScreen(Screen parent, SelectBoxes upperSelectBoxes, SelectBox selfSelectBox) {
         super(Text.of("Sub Area Setting"), parent);
         this.parent = parent;
         this.upperSelectBoxes = upperSelectBoxes;

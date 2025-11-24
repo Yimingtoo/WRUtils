@@ -1,7 +1,9 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
+import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -42,15 +44,15 @@ public class MainMenuScreen extends Screen {
 
         adder.add(this.createButton(Text.of("Area Group"), () -> new AreaGroupScreen(this)));
 
-        adder.add(ButtonWidget.builder(Text.of("Test"), button -> {
-
+        adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
+            GuiBase.openGui(new ConfigsScreen());
         }).width(100).build());
 
         this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 204, 20, 3, Text.of("Test3")), 2);
         this.customButtonWidget.setOnClickAction(
                 () -> client1.setScreen(new AreaGroupScreen(this)),
                 () -> client1.setScreen(new AreaListScreen(this, Wrutils.getCurrentBoxes())),
-                () -> client1.setScreen(new SubAreaConfigScreen(this, Wrutils.getCurrentBoxes(), Wrutils.getCurrentSelectBox()))
+                () -> client1.setScreen(new SubAreaScreen(this, Wrutils.getCurrentBoxes(), Wrutils.getCurrentSelectBox()))
         );
 //        adder.add(ButtonWidget.builder(Text.of("Test"), button -> {
 //            if (cnt > 3) cnt = 0;
