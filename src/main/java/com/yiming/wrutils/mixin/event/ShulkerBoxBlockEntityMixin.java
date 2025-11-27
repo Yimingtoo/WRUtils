@@ -1,7 +1,7 @@
 package com.yiming.wrutils.mixin.event;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShulkerBoxBlockEntity.class)
 public class ShulkerBoxBlockEntityMixin {
@@ -22,11 +21,11 @@ public class ShulkerBoxBlockEntityMixin {
      */
     @Inject(method = "updateNeighborStates", at = @At("HEAD"))
     private static void updateNeighborStates(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
     }
 
     @Inject(method = "updateNeighborStates", at = @At("RETURN"))
     private static void updateNeighborStates1(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 }

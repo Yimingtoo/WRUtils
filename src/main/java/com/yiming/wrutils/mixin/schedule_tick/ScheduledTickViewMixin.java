@@ -1,7 +1,6 @@
 package com.yiming.wrutils.mixin.schedule_tick;
 
-import com.yiming.wrutils.data.event.EventRecorder;
-import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
+import com.yiming.wrutils.data.DataManager;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,7 +26,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V", at = @At("HEAD"))
     default void scheduleBlockTick1(BlockPos pos, Block block, int delay, TickPriority priority, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            EventRecorder.addScheduledTickTag(
+            DataManager.addScheduledTickTag(
                     worldTickScheduler,
                     pos,
                     ((World) (Object) this).getBlockState(pos),
@@ -42,14 +41,14 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V", at = @At("RETURN"))
     default void scheduleBlockTick2(BlockPos pos, Block block, int delay, TickPriority priority, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            EventRecorder.isScheduledTickAdded(worldTickScheduler, pos);
+            DataManager.isScheduledTickAdded(worldTickScheduler, pos);
         }
     }
 
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;I)V", at = @At("HEAD"))
     default void scheduleBlockTick3(BlockPos pos, Block block, int delay, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            EventRecorder.addScheduledTickTag(
+            DataManager.addScheduledTickTag(
                     worldTickScheduler,
                     pos,
                     ((World) (Object) this).getBlockState(pos),
@@ -63,7 +62,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;I)V", at = @At("RETURN"))
     default void scheduleBlockTick4(BlockPos pos, Block block, int delay, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            EventRecorder.isScheduledTickAdded(worldTickScheduler, pos);
+            DataManager.isScheduledTickAdded(worldTickScheduler, pos);
         }
 
     }

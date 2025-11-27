@@ -1,8 +1,7 @@
 package com.yiming.wrutils.client.gui;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.widget.AreaGroupWidget;
-import com.yiming.wrutils.client.gui.widget.AreaListWidget;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -36,7 +35,7 @@ public class AreaGroupScreen extends AbstractSetupScreen {
             this.initialized = true;
             this.areaGroupWidget = new AreaGroupWidget(this, this.client, this.width, this.height - 64, 50, 30);
         }
-        this.areaGroupWidget.setAreaEntries(Wrutils.areaGroupManagement);
+        this.areaGroupWidget.setAreaEntries(DataManager.areaGroupManagement);
         this.addDrawableChild(this.areaGroupWidget);
 
         Text text1 = Text.of("Areas:");
@@ -45,7 +44,7 @@ public class AreaGroupScreen extends AbstractSetupScreen {
 
         ButtonWidget createAreas = this.addDrawableChild(ButtonWidget.builder(Text.of("Create Area"), button -> {
             SelectBoxes selectBoxes = new SelectBoxes();
-            Wrutils.areaGroupManagement.addAndSetCurrent(selectBoxes);
+            DataManager.areaGroupManagement.addAndSetCurrent(selectBoxes);
             areaGroupWidget.appendAreaEntry(selectBoxes);
         }).width(100).build());
         SimplePositioningWidget.setPos(createAreas, 75, y, 100, 20);

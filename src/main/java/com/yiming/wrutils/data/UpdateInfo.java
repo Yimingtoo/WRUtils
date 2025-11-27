@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 方块的仅一个更新的信息<br>
  * 包括更新的类型，更新产生的计划刻
  */
+@Deprecated
 public class UpdateInfo {
     public enum UpdateType {NC, PP, S;}
 

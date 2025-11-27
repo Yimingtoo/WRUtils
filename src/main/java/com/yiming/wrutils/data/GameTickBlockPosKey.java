@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;
 
+@Deprecated
 public class GameTickBlockPosKey {
     private final long gameTick;
     private final long blockPos;

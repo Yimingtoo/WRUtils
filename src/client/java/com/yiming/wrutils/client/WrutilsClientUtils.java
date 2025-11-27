@@ -1,7 +1,7 @@
 package com.yiming.wrutils.client;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.utils.GeometryUtil;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
@@ -27,10 +27,10 @@ public class WrutilsClientUtils {
     }
 
     public static void setSelectBoxCorner(MinecraftClient client, SelectBox.SelectedCorner corner) {
-        if (Wrutils.getCurrentSelectBox() != null) {
+        if (DataManager.getCurrentSelectBox() != null) {
             BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
             if (pos != null) {
-                SelectBox selectBox = Wrutils.getCurrentSelectBox();
+                SelectBox selectBox = DataManager.getCurrentSelectBox();
                 switch (corner) {
                     case SelectBox.SelectedCorner.CORNER_1:
                         selectBox.setPos1(pos);
@@ -39,13 +39,13 @@ public class WrutilsClientUtils {
                         selectBox.setPos2(pos);
                         break;
                 }
-                Wrutils.getCurrentSelectBox().setMoveCtrlPos(pos);
+                DataManager.getCurrentSelectBox().setMoveCtrlPos(pos);
             }
         }
     }
 
     public static void selectElement(MinecraftClient client) {
-        SelectBoxes boxes = Wrutils.getCurrentBoxes();
+        SelectBoxes boxes = DataManager.getCurrentBoxes();
         if (boxes == null) {
             return;
         }
@@ -93,7 +93,15 @@ public class WrutilsClientUtils {
                 }
 
                 if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0) {
-                    beingSelectedBox.setMoveCtrlPos(targetPos);
+                    boolean bl1 = targetPos != null;
+                    boolean bl2 = beingSelectedBox.getMoveCtrlPos() != null;
+                    if (bl1 && bl2) {
+                        boolean isCurrent = beingSelectedBox.getMoveCtrlPos().equals(targetPos);
+                        beingSelectedBox.setMoveCtrlPos(isCurrent ? null : targetPos);
+                    } else {
+                        beingSelectedBox.setMoveCtrlPos(targetPos);
+                    }
+
                 } else {
                     beingSelectedBox.setMoveCtrlPos(null);
                 }
@@ -126,7 +134,14 @@ public class WrutilsClientUtils {
             }
             if (distanceToBlock >= 0 && distanceToCube >= 0 && distanceToBlock >= distanceToCube || distanceToBlock < 0 && distanceToCube > 0) {
                 boxes.setCurrentSelectBox(beingSelectedBox);
-                beingSelectedBox.setMoveCtrlPos(targetPos);
+//                boolean bl1 = targetPos != null;
+                boolean bl2 = beingSelectedBox.getMoveCtrlPos() != null;
+                if (bl2) {
+                    boolean isCurrent = beingSelectedBox.getMoveCtrlPos().equals(targetPos);
+                    beingSelectedBox.setMoveCtrlPos(isCurrent ? null : targetPos);
+                } else {
+                    beingSelectedBox.setMoveCtrlPos(targetPos);
+                }
             } else {
                 boxes.setCurrentSelectBox(null);
                 Notification.addNotification("取消选中", 1000);

@@ -10,7 +10,7 @@ public enum MicroTimingSequence {
     TE("Tile Entity"),
     NU("Network Update");
 
-    private String name;
+    private final String name;
 
     MicroTimingSequence(String name) {
         this.name = name;

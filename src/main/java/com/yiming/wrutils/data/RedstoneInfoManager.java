@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.tick.TickPriority;
 
 import java.util.*;
+@Deprecated
 
 public class RedstoneInfoManager {
 

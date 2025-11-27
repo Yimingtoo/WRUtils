@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+@Deprecated
 
 public class RedstoneInfoUnit {
     public BlockPos blockPos;

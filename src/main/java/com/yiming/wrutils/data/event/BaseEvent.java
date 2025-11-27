@@ -1,5 +1,6 @@
 package com.yiming.wrutils.data.event;
 
+import com.yiming.wrutils.data.DataManager;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseEvent {
@@ -8,16 +9,14 @@ public abstract class BaseEvent {
     BlockInfo targetBlockInfo = null;
     BlockInfo sourceBlockInfo = null;
 
-    public static TimeStamp lastTimeStamp;
-
     public BaseEvent(long gameTime, MicroTimingSequence microTimingSequence, BlockInfo targetBlockInfo, @Nullable BlockInfo sourceBlockInfo, EventType eventType) {
         this.targetBlockInfo = targetBlockInfo;
         this.sourceBlockInfo = sourceBlockInfo;
         this.eventType = eventType;
 
-        if (lastTimeStamp != null) {
-            if (lastTimeStamp.gameTime() == gameTime && lastTimeStamp.sequence() == microTimingSequence) {
-                timeStamp = new TimeStamp(gameTime, microTimingSequence, lastTimeStamp.eventId() + 1);
+        if (DataManager.lastTimeStamp != null) {
+            if (DataManager.lastTimeStamp.gameTime() == gameTime && DataManager.lastTimeStamp.sequence() == microTimingSequence) {
+                timeStamp = new TimeStamp(gameTime, microTimingSequence, DataManager.lastTimeStamp.eventId() + 1);
             } else {
                 timeStamp = new TimeStamp(gameTime, microTimingSequence, 0);
             }
@@ -25,14 +24,14 @@ public abstract class BaseEvent {
             timeStamp = new TimeStamp(gameTime, microTimingSequence, 0);
         }
 
-        lastTimeStamp = timeStamp;
+        DataManager.lastTimeStamp = timeStamp;
 
     }
 
 
     public static BlockInfo getFirstBlockInfoFromTop() {
-        if (!EventRecorder.BLOCK_INFO_STACK.isEmpty()) {
-            return EventRecorder.BLOCK_INFO_STACK.peek();
+        if (!DataManager.BLOCK_INFO_STACK.isEmpty()) {
+            return DataManager.BLOCK_INFO_STACK.peek();
         } else {
             return null;
         }

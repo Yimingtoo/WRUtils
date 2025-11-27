@@ -10,11 +10,18 @@ import net.minecraft.text.Text;
 public class AbstractSetupScreen extends Screen {
     protected Text title;
     protected Screen parent;
+    protected boolean allButtons = true;
+
 
     protected AbstractSetupScreen(Text title, Screen parent) {
         super(Text.of(""));
         this.title = title;
         this.parent = parent;
+    }
+
+    protected AbstractSetupScreen(Text title, Screen parent, boolean allButtons) {
+        this(title, parent);
+        this.allButtons = allButtons;
     }
 
 
@@ -31,11 +38,14 @@ public class AbstractSetupScreen extends Screen {
         ButtonWidget homeButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Home"), button -> client1.setScreen(new MainMenuScreen())).width(buttonWidth).build());
         SimplePositioningWidget.setPos(homeButton, this.width - (buttonWidth + 5) * ++i, y + 4, buttonWidth, 20);
 
-        ButtonWidget upperButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Upper"), button -> this.upperScreen()).width(buttonWidth).build());
-        SimplePositioningWidget.setPos(upperButton, this.width - (buttonWidth + 5) * ++i, y + 4, buttonWidth, 20);
+        if (this.allButtons) {
+            ButtonWidget upperButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Upper"), button -> this.upperScreen()).width(buttonWidth).build());
+            SimplePositioningWidget.setPos(upperButton, this.width - (buttonWidth + 5) * ++i, y + 4, buttonWidth, 20);
 
-        ButtonWidget backButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Back"), button -> client1.setScreen(this.parent)).width(buttonWidth).build());
-        SimplePositioningWidget.setPos(backButton, this.width - (buttonWidth + 5) * ++i, y + 4, buttonWidth, 20);
+            ButtonWidget backButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Back"), button -> client1.setScreen(this.parent)).width(buttonWidth).build());
+            SimplePositioningWidget.setPos(backButton, this.width - (buttonWidth + 5) * ++i, y + 4, buttonWidth, 20);
+
+        }
     }
 
     protected void upperScreen() {

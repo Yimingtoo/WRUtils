@@ -1,7 +1,6 @@
 package com.yiming.wrutils.mixin.schedule_tick;
 
-import com.yiming.wrutils.Wrutils;
-import com.yiming.wrutils.data.event.*;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.mixin_interface.ChunkTickScheduleAccessor;
 import com.yiming.wrutils.mixin_interface.OrderedTickAccessor;
 import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
@@ -22,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 @Mixin(WorldTickScheduler.class)
@@ -38,7 +36,7 @@ public class WorldTickSchedulerMixin<T> {
         // null
         OrderedTick<T> orderedTick = tickedTicks.getLast();
         if (orderedTick != null) {
-            EventRecorder.scheduledTickAddedEventForServerWorld = ((OrderedTickAccessor) (Object) orderedTick).getScheduledTickAddedEvent();
+            DataManager.scheduledTickAddedEventForServerWorld = ((OrderedTickAccessor) (Object) orderedTick).getScheduledTickAddedEvent();
         }
     }
 

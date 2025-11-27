@@ -1,10 +1,10 @@
 package com.yiming.wrutils.client.input;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.WrutilsClient;
 import com.yiming.wrutils.client.WrutilsClientUtils;
 import com.yiming.wrutils.client.utils.GeometryUtil;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
@@ -53,11 +53,11 @@ public class MouseClickManagement {
     private static void leftClickDown1(MinecraftClient client) {
         if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            if (Wrutils.getCurrentSelectBox() != null) {
+            if (DataManager.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
-                    Wrutils.getCurrentSelectBox().setPos2(pos);
-                    Wrutils.getCurrentSelectBox().setMoveCtrlPos(pos);
+                    DataManager.getCurrentSelectBox().setPos2(pos);
+                    DataManager.getCurrentSelectBox().setMoveCtrlPos(pos);
 
                 }
             }
@@ -70,11 +70,11 @@ public class MouseClickManagement {
     private static void rightClickDown1(MinecraftClient client) {
         if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            if (Wrutils.getCurrentSelectBox() != null) {
+            if (DataManager.getCurrentSelectBox() != null) {
                 BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
                 if (pos != null) {
-                    Wrutils.getCurrentSelectBox().setPos1(pos);
-                    Wrutils.getCurrentSelectBox().setMoveCtrlPos(pos);
+                    DataManager.getCurrentSelectBox().setPos1(pos);
+                    DataManager.getCurrentSelectBox().setMoveCtrlPos(pos);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class MouseClickManagement {
     private static void middleClickDown(MinecraftClient client) {
         if (client.player.getMainHandStack().getItem() == WrutilsClient.debugItem) {
             // 按下的是木剑
-            SelectBoxes boxes = Wrutils.getCurrentBoxes();
+            SelectBoxes boxes = DataManager.getCurrentBoxes();
             if (boxes == null) {
                 return;
             }

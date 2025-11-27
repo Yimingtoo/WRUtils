@@ -1,6 +1,6 @@
 package com.yiming.wrutils.mixin.event;
 
-import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.*;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
@@ -34,16 +34,16 @@ public abstract class AbstractBlockStateMixin {
      */
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdate(World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.asBlockStateMixin()));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.asBlockStateMixin()));
 
         if (!world.isClient()) {
             if (isBlockNeededForNeighborUpdate(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                Wrutils.eventRecorder.addEvent(
+                DataManager.eventRecorder.add(
                         new NeighborChangedEvent(
-                                EventRecorder.currentGameTime,
-                                EventRecorder.currentMicroTimingSequence,
+                                DataManager.currentGameTime,
+                                DataManager.currentMicroTimingSequence,
                                 new BlockInfo(pos, this.asBlockStateMixin()),
-                                EventRecorder.entrySourceBlockInfo,
+                                DataManager.entrySourceBlockInfo,
                                 EventType.NEIGHBOR_CHANGED));
             }
         }
@@ -51,7 +51,7 @@ public abstract class AbstractBlockStateMixin {
 
     @Inject(method = "neighborUpdate", at = @At("RETURN"))
     public void neighborUpdate1(World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"))
@@ -59,12 +59,12 @@ public abstract class AbstractBlockStateMixin {
 
         if (!world.isClient()) {
             if (isBlockNeededForPostPlacement(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                Wrutils.eventRecorder.addEvent(
+                DataManager.eventRecorder.add(
                         new SimpleEvent(
-                                EventRecorder.currentGameTime,
-                                EventRecorder.currentMicroTimingSequence,
+                                DataManager.currentGameTime,
+                                DataManager.currentMicroTimingSequence,
                                 new BlockInfo(pos, this.asBlockStateMixin()),
-                                EventRecorder.entrySourceBlockInfo,
+                                DataManager.entrySourceBlockInfo,
                                 EventType.POST_PLACEMENT));
             }
         }
@@ -74,14 +74,14 @@ public abstract class AbstractBlockStateMixin {
 
     @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("HEAD"))
     public void updateNeighbors(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
 //        System.out.println("asdffffffffffffffffffffafdsfasd" +  world.getBlockState(pos).getBlock());;
 
     }
 
     @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("RETURN"))
     public void updateNeighbors1(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
 
     }
 

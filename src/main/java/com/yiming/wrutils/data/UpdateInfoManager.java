@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
 
+@Deprecated
 public class UpdateInfoManager {
     // 主数据：复合键 -> UpdateInfo
     Map<GameTickBlockPosKey, Map<Integer, UpdateInfo>> dataMap = new HashMap<>();

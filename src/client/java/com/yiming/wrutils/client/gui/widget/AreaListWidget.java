@@ -122,6 +122,7 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
         return this.getRight() - 10;
     }
 
+
     public abstract static class Entry extends AlwaysSelectedEntryListWidget.Entry<AreaListWidget.Entry> {
 
     }
