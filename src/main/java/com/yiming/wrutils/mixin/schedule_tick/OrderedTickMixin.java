@@ -1,7 +1,6 @@
 package com.yiming.wrutils.mixin.schedule_tick;
 
-import com.yiming.wrutils.data.event.BaseEvent;
-import com.yiming.wrutils.data.event.EventRecorder;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.ScheduledTickAddEvent;
 import com.yiming.wrutils.mixin_interface.OrderedTickAccessor;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +23,7 @@ public class OrderedTickMixin<T>{
 
     @Inject(method = "<init>(Ljava/lang/Object;Lnet/minecraft/util/math/BlockPos;JLnet/minecraft/world/tick/TickPriority;J)V", at = @At("RETURN"))
     public void init(T object, BlockPos pos, long triggerTick, TickPriority priority, long subTickOrder, CallbackInfo ci) {
-        this.scheduledTickAddedEvent = EventRecorder.scheduledTickAddedEventForOrderedTick;
+        this.scheduledTickAddedEvent = DataManager.scheduledTickAddedEventForOrderedTick;
     }
 
 

@@ -1,6 +1,5 @@
 package com.yiming.wrutils.client.input;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.WrutilsClient;
 import com.yiming.wrutils.client.WrutilsClientUtils;
@@ -9,6 +8,7 @@ import com.yiming.wrutils.client.gui.AreaListScreen;
 import com.yiming.wrutils.client.gui.MainMenuScreen;
 import com.yiming.wrutils.client.gui.SubAreaScreen;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
@@ -68,18 +68,18 @@ public class KeyCallbacks {
                 this.client.setScreen(new AreaGroupScreen(null));
                 return true;
             } else if (key == HotkeysManagement.OPEN_AREA_LIST_SCREEN.getKeybind()) {
-                if (Wrutils.getCurrentBoxes() == null) {
+                if (DataManager.getCurrentBoxes() == null) {
                     Notification.addNotification("No Area is Selected!!!", 1000);
                     return false;
                 }
-                this.client.setScreen(new AreaListScreen(null, Wrutils.getCurrentBoxes()));
+                this.client.setScreen(new AreaListScreen(null, DataManager.getCurrentBoxes()));
                 return true;
             } else if (key == HotkeysManagement.OPEN_SUB_AREA_CONFIG_SCREEN.getKeybind()) {
-                if (Wrutils.getCurrentSelectBox() == null) {
+                if (DataManager.getCurrentSelectBox() == null) {
                     Notification.addNotification("No Sub Area is Selected!!!", 1000);
                     return false;
                 }
-                this.client.setScreen(new SubAreaScreen(null, Wrutils.getCurrentBoxes(), Wrutils.getCurrentSelectBox()));
+                this.client.setScreen(new SubAreaScreen(null, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()));
                 return true;
             } else if (key == HotkeysManagement.OPEN_CONFIGS_SCREEN.getKeybind()) {
                 GuiBase.openGui(new ConfigsScreen());

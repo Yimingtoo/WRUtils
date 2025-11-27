@@ -1,8 +1,8 @@
 package com.yiming.wrutils.mixin.chain_restricted_neighbor_updater;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +27,7 @@ public class StatefulEntryMixin {
 
     @Inject(method = "update", at = @At("HEAD"))
     public void update1(World world, CallbackInfoReturnable<Boolean> cir) {
-        EventRecorder.entrySourceBlockInfo = this.sourceBlockInfo;
+        DataManager.entrySourceBlockInfo = this.sourceBlockInfo;
 
     }
 

@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.render;
 
-import com.yiming.wrutils.Wrutils;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -40,7 +40,7 @@ public class CustomRender {
 //                        new DrawColor(DrawColor.WHITE, 0.2f)
 //                );
 
-                SelectBoxes selectBoxes = Wrutils.areaGroupManagement.getCurrentBoxes();
+                SelectBoxes selectBoxes = DataManager.areaGroupManagement.getCurrentBoxes();
                 if (selectBoxes != null) {
                     if (!selectBoxes.getList().isEmpty()) {
                         for (SelectBox box : selectBoxes.getList()) {

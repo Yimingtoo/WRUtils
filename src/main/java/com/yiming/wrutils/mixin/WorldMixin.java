@@ -1,7 +1,7 @@
 package com.yiming.wrutils.mixin;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -34,23 +34,23 @@ public abstract class WorldMixin {
 
     @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At("HEAD"))
     public void setBlockState2(BlockPos pos, BlockState state, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
 
     }
 
     @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At("RETURN"))
     public void setBlockState3(BlockPos pos, BlockState state, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
 
     }
 
     @Inject(method = "updateComparators", at = @At("HEAD"))
     public void updateComparators(BlockPos pos, Block block, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.getBlockStateMixin(pos)));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.getBlockStateMixin(pos)));
     }
 
     @Inject(method = "updateComparators", at = @At("RETURN"))
     public void updateComparators1(BlockPos pos, Block block, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 }

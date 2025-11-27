@@ -1,7 +1,7 @@
 package com.yiming.wrutils.mixin.event;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RepeaterBlockMixin {
     @Inject(method = "onUse", at = @At("HEAD"))
     public void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit,  CallbackInfoReturnable<ActionResult> cir) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
 
 
     }
     @Inject(method = "onUse", at = @At("RETURN"))
     public void onUse1(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit,  CallbackInfoReturnable<ActionResult> cir) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
 
     }
 }

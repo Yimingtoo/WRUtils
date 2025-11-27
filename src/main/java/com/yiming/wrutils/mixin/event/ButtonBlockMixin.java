@@ -1,10 +1,9 @@
 package com.yiming.wrutils.mixin.event;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ButtonBlock;
-import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ButtonBlockMixin {
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     public void updateNeighbors(BlockState blockState, World world, BlockPos pos, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, blockState));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, blockState));
     }
 
     @Inject(method = "updateNeighbors", at = @At("RETURN"))
     public void updateNeighbors1(BlockState blockState, World world, BlockPos pos, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 }

@@ -1,8 +1,8 @@
 package com.yiming.wrutils.client.gui;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
 import com.yiming.wrutils.client.gui.widget.AreaListWidget;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
@@ -31,7 +31,7 @@ public class AreaListScreen extends AbstractSetupScreen {
     public void setSelectBoxesName() {
         String name = AreaNameField.getText();
         String oldName = this.selfSelectBoxes.getName();
-        HashSet<String> nameSet = Wrutils.areaGroupManagement.getSelectBoxesListNames();
+        HashSet<String> nameSet = DataManager.areaGroupManagement.getSelectBoxesListNames();
         if (nameSet.contains(name) && !oldName.equals(name)) {
             // 重复命名
         } else if (name.isEmpty()) {

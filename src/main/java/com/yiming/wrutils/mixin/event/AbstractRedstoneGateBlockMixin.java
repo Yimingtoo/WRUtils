@@ -1,5 +1,6 @@
 package com.yiming.wrutils.mixin.event;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.*;
 import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.Block;
@@ -64,39 +65,39 @@ public abstract class AbstractRedstoneGateBlockMixin {
     // region Stack source position.
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdateMixinHead(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
 
     }
 
     @Inject(method = "neighborUpdate", at = @At("RETURN"))
     public void neighborUpdateMixinReturn(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 
 
     @Inject(method = "scheduledTick", at = @At("HEAD"))
     public void scheduledTickMixinHead(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
 //        System.out.println("AbstractRedstoneGateBlockMixin: sourceBlockPos is " + BaseEvent.entrySourcePos);
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
 
     }
 
     @Inject(method = "scheduledTick", at = @At("RETURN"))
     public void scheduledTickMixinReturn(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
 
     }
 
 
     @Inject(method = "updateTarget", at = @At("HEAD"))
     public void updateTargetMixinHead(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
 
     }
 
     @Inject(method = "updateTarget", at = @At("RETURN"))
     public void updateTargetMixinReturn(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
 
     }
     // endregion

@@ -181,7 +181,7 @@ public class AreaGroupWidget extends AlwaysSelectedEntryListWidget<AreaGroupWidg
 
         @Override
         public Text getNarration() {
-            return Text.of("One Area Entry");
+            return Text.of("One Group Entry");
         }
 
         @Override

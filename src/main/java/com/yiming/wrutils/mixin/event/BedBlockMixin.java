@@ -1,9 +1,8 @@
 package com.yiming.wrutils.mixin.event;
 
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BlockInfo;
-import com.yiming.wrutils.data.event.EventRecorder;
 import net.minecraft.block.BedBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -29,11 +28,11 @@ public class BedBlockMixin {
      */
     @Inject(method = "onPlaced", at = @At("HEAD"))
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
     }
 
     @Inject(method = "onPlaced", at = @At("RETURN"))
     public void onPlaced1(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        EventRecorder.BLOCK_INFO_STACK.pop();
+        DataManager.BLOCK_INFO_STACK.pop();
     }
 }

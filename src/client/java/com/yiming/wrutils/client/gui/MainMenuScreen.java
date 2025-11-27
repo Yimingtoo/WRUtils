@@ -1,8 +1,8 @@
 package com.yiming.wrutils.client.gui;
 
-import com.yiming.wrutils.Wrutils;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
+import com.yiming.wrutils.data.DataManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -42,7 +42,7 @@ public class MainMenuScreen extends Screen {
             client1.mouse.lockCursor();
         }).width(204).build(), 2, gridWidget.copyPositioner().marginTop(50));
 
-        adder.add(this.createButton(Text.of("Area Group"), () -> new AreaGroupScreen(this)));
+        adder.add(this.createButton(Text.of("Events"), () -> new GTEventsListScreen(this)));
 
         adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
             GuiBase.openGui(new ConfigsScreen());
@@ -51,8 +51,8 @@ public class MainMenuScreen extends Screen {
         this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 204, 20, 3, Text.of("Test3")), 2);
         this.customButtonWidget.setOnClickAction(
                 () -> client1.setScreen(new AreaGroupScreen(this)),
-                () -> client1.setScreen(new AreaListScreen(this, Wrutils.getCurrentBoxes())),
-                () -> client1.setScreen(new SubAreaScreen(this, Wrutils.getCurrentBoxes(), Wrutils.getCurrentSelectBox()))
+                () -> client1.setScreen(new AreaListScreen(this, DataManager.getCurrentBoxes())),
+                () -> client1.setScreen(new SubAreaScreen(this, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()))
         );
 //        adder.add(ButtonWidget.builder(Text.of("Test"), button -> {
 //            if (cnt > 3) cnt = 0;
@@ -70,14 +70,14 @@ public class MainMenuScreen extends Screen {
 
 
         int i = 1;
-        if (Wrutils.getCurrentBoxes() != null) {
+        if (DataManager.getCurrentBoxes() != null) {
             i++;
-            text1 = "Area: " + Wrutils.getCurrentBoxes().getName();
+            text1 = "Area: " + DataManager.getCurrentBoxes().getName();
         }
 
-        if (Wrutils.getCurrentSelectBox() != null) {
+        if (DataManager.getCurrentSelectBox() != null) {
             i++;
-            text2 = "SubArea: " + Wrutils.getCurrentSelectBox().getName();
+            text2 = "SubArea: " + DataManager.getCurrentSelectBox().getName();
         }
         this.customButtonWidget.setLevel(i);
         this.customButtonWidget.setText(text, text1, text2);

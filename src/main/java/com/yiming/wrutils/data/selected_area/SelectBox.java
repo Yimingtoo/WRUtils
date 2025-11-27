@@ -46,11 +46,14 @@ public class SelectBox {
     public void setPos1(Vec3i pos) {
         pos1 = pos;
         setMinMaxPos();
+        this.inertanceCorner = SelectedCorner.CORNER_1;
+
     }
 
     public void setPos2(Vec3i pos) {
         pos2 = pos;
         setMinMaxPos();
+        this.inertanceCorner = SelectedCorner.CORNER_2;
     }
 
     public String getName() {
