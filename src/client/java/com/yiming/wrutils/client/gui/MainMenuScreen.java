@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.gui;
 
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
 import com.yiming.wrutils.data.DataManager;
@@ -58,6 +59,7 @@ public class MainMenuScreen extends Screen {
         adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
             DataManager.isSelectionEnabled = !DataManager.isSelectionEnabled;
             button.setMessage(this.getSelectionButtonText());
+            System.out.println(DataManagerClient.getWorldFolderName());
         }).width(110).build());
 
 
