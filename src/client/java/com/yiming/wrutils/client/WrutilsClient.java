@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client;
 
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.input.KeyBoardManagement;
 import com.yiming.wrutils.client.input.KeyCallbacks;
 import com.yiming.wrutils.client.input.MouseManagement;
@@ -8,6 +9,7 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -18,7 +20,8 @@ public class WrutilsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        guiInitialize();
+        guiInit();
+        dataManagerInit();
         CustomRender.renderCustomModelOut();
 
         InputEventHandler.getKeybindManager().registerKeybindProvider(KeyBoardManagement.getInstance());
@@ -27,25 +30,24 @@ public class WrutilsClient implements ClientModInitializer {
 
         KeyCallbacks.keyCallBackInit(MinecraftClient.getInstance());
 
+
     }
 
-    public void guiInitialize() {
-//        KeyBoardManagement.keyBoardEventInit();
-//        ClientTickEvents.END_CLIENT_TICK.register(MouseClickManagement::clickEvent);
+    public void guiInit() {
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
             layeredDrawer.attachLayerAfter(
                     IdentifiedLayer.MISC_OVERLAYS,
                     Identifier.of("mymod", "notifications"),
                     (context, tickCounter) -> {
-                        // context = DrawContext，提供绘制方法
-                        // tickCounter = RenderTickCounter，提供时间信息
                         Notification.renderNotification(context);
                     }
             );
         });
-
-
     }
 
+    private void dataManagerInit() {
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 
+        });
+    }
 }
