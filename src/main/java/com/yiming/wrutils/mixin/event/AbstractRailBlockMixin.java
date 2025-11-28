@@ -23,11 +23,11 @@ public class AbstractRailBlockMixin {
 
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        System.out.println("AbstractRailBlockMixin :   NC update");
+//        System.out.println("AbstractRailBlockMixin :   NC update");
     }
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"))
     public void getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random, CallbackInfoReturnable<BlockState> cir) {
-        System.out.println("AbstractRailBlockMixin :   PP update");
+//        System.out.println("AbstractRailBlockMixin :   PP update");
     }
 
     // -----------------------------------------------------------------------------------------------------------------

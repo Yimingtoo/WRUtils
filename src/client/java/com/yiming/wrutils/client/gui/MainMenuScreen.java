@@ -40,27 +40,51 @@ public class MainMenuScreen extends Screen {
         adder.add(ButtonWidget.builder(Text.of("Back"), button -> {
             client1.setScreen(null);
             client1.mouse.lockCursor();
-        }).width(204).build(), 2, gridWidget.copyPositioner().marginTop(50));
+        }).width(228).build(), 2, gridWidget.copyPositioner().marginTop(50));
 
-        adder.add(this.createButton(Text.of("Events"), () -> new GTEventsListScreen(this)));
+        adder.add(ButtonWidget.builder(Text.of("Events"), button -> {
+            GuiBase.openGui(new GTEventsListScreen(this));
+        }).width(110).build());
 
         adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
             GuiBase.openGui(new ConfigsScreen());
-        }).width(100).build());
+        }).width(110).build());
 
-        this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 204, 20, 3, Text.of("Test3")), 2);
+        adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {
+            DataManager.isRecording = !DataManager.isRecording;
+            button.setMessage(this.getRecordButtonText());
+        }).width(110).build());
+
+        adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
+            DataManager.isSelectionEnabled = !DataManager.isSelectionEnabled;
+            button.setMessage(this.getSelectionButtonText());
+        }).width(110).build());
+
+
+        this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 228, 20, 3, Text.of("Test3")), 2);
         this.customButtonWidget.setOnClickAction(
                 () -> client1.setScreen(new AreaGroupScreen(this)),
                 () -> client1.setScreen(new AreaListScreen(this, DataManager.getCurrentBoxes())),
                 () -> client1.setScreen(new SubAreaScreen(this, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()))
         );
-//        adder.add(ButtonWidget.builder(Text.of("Test"), button -> {
-//            if (cnt > 3) cnt = 0;
-//            customButtonWidget.setLevel(cnt++);
-//        }).width(204).build(), 2);
+
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5F, 0.25F);
         gridWidget.forEachChild(this::addDrawableChild);
+    }
+
+    private Text getRecordButtonText() {
+        boolean bl = !DataManager.isRecording;
+        return Text.literal(bl ? "Start" : "Stop").styled(style -> style.withColor(bl ? 0xFFFFFFFF : 0xFFFFFF00))
+                .append(Text.literal(" "))
+                .append(Text.literal("Record").styled(style -> style.withColor(0xFFFFFFFF)));
+    }
+
+    private Text getSelectionButtonText() {
+        boolean bl1 = DataManager.isSelectionEnabled;
+        return Text.literal("Selection:").styled(style -> style.withColor(0xFFFFFFFF))
+                .append(Text.literal(" "))
+                .append(Text.literal(bl1 ? "Enabled" : "Disabled").styled(style -> style.withColor(bl1 ? 0xFF00FF00 : 0xFFFF6060)));
     }
 
     private void changeCustomButtonLevel() {
