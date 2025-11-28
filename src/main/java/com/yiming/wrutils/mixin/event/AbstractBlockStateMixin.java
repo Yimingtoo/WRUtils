@@ -38,13 +38,7 @@ public abstract class AbstractBlockStateMixin {
 
         if (!world.isClient()) {
             if (isBlockNeededForNeighborUpdate(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                DataManager.eventRecorder.add(
-                        new NeighborChangedEvent(
-                                DataManager.currentGameTime,
-                                DataManager.currentMicroTimingSequence,
-                                new BlockInfo(pos, this.asBlockStateMixin()),
-                                DataManager.entrySourceBlockInfo,
-                                EventType.NEIGHBOR_CHANGED));
+                DataManager.addNeighborChangedEvent(pos, this.asBlockStateMixin());
             }
         }
     }
@@ -59,18 +53,11 @@ public abstract class AbstractBlockStateMixin {
 
         if (!world.isClient()) {
             if (isBlockNeededForPostPlacement(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                DataManager.eventRecorder.add(
-                        new SimpleEvent(
-                                DataManager.currentGameTime,
-                                DataManager.currentMicroTimingSequence,
-                                new BlockInfo(pos, this.asBlockStateMixin()),
-                                DataManager.entrySourceBlockInfo,
-                                EventType.POST_PLACEMENT));
+                DataManager.addPostPlacementEvent(pos, this.asBlockStateMixin());
             }
         }
 
     }
-
 
     @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("HEAD"))
     public void updateNeighbors(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {

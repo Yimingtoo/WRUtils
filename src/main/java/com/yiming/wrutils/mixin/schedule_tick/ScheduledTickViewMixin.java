@@ -26,7 +26,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V", at = @At("HEAD"))
     default void scheduleBlockTick1(BlockPos pos, Block block, int delay, TickPriority priority, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.addScheduledTickTag(
+            DataManager.addScheduledTickAddEvent(
                     worldTickScheduler,
                     pos,
                     ((World) (Object) this).getBlockState(pos),
@@ -41,14 +41,14 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V", at = @At("RETURN"))
     default void scheduleBlockTick2(BlockPos pos, Block block, int delay, TickPriority priority, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.isScheduledTickAdded(worldTickScheduler, pos);
+            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, pos);
         }
     }
 
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;I)V", at = @At("HEAD"))
     default void scheduleBlockTick3(BlockPos pos, Block block, int delay, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.addScheduledTickTag(
+            DataManager.addScheduledTickAddEvent(
                     worldTickScheduler,
                     pos,
                     ((World) (Object) this).getBlockState(pos),
@@ -62,7 +62,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;I)V", at = @At("RETURN"))
     default void scheduleBlockTick4(BlockPos pos, Block block, int delay, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.isScheduledTickAdded(worldTickScheduler, pos);
+            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, pos);
         }
 
     }

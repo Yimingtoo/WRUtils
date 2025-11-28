@@ -17,21 +17,9 @@ public abstract class ServerWorldMixin {
     // 执行计划刻
     @Inject(method = "tickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;scheduledTick(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/random/Random;)V"))
     private void tickBlock(BlockPos pos, Block block, CallbackInfo ci) {
-        ScheduledTickAddEvent event = DataManager.scheduledTickAddedEventForServerWorld;
-
-        ScheduledTickExecEvent event1 = new ScheduledTickExecEvent(
-                ((World) (Object) this).getTime(),
-                DataManager.currentMicroTimingSequence,
-                new BlockInfo(pos, ((World) (Object) this).getBlockState(pos)),
-                event == null ? null : event.getTargetBlockInfo(),
-                EventType.SCHEDULED_TICK_EXEC,
-                event == null ? 0 :event.getDelay(),
-                event == null ? null :event.getPriority(),
-                "执行计划刻");
-        DataManager.eventRecorder.add(event1);
+        DataManager.addScheduleTickExecEvent(pos, ((World) (Object) this).getBlockState(pos));
 
     }
-
 
     // --------------------------------------------------------------------------------------------------------------------
     // Micro Timing Sequence
@@ -43,7 +31,7 @@ public abstract class ServerWorldMixin {
         DataManager.currentMicroTimingSequence = MicroTimingSequence.WTU;
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE",ordinal = 1, shift = At.Shift.AFTER, target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V"))
+    @Inject(method = "tick", at = @At(value = "INVOKE", ordinal = 1, shift = At.Shift.AFTER, target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V"))
     private void tick1(CallbackInfo ci) {
         // NTE
         DataManager.currentGameTime = ((World) (Object) this).getTime();

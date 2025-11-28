@@ -29,10 +29,75 @@ public class DataManager {
     public static AreaGroupManagement areaGroupManagement = new AreaGroupManagement();
     public static ArrayList<BaseEvent> eventRecorder = new ArrayList<>();
 
+    public static boolean isSelectionEnabled = false;
+    public static boolean isRecording = false;
+
 
     public static TimeStamp lastTimeStamp;
 
-    public static void addScheduledTickTag(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos, BlockState state, int delay, TickPriority priority) {
+    private static boolean shouldRecord(BlockPos pos) {
+        if (!isRecording) {
+            return false;
+        }
+        if (!isSelectionEnabled) {
+            return false;
+        }
+        for (SelectBox selectBox : getCurrentBoxes().getList()) {
+            if (selectBox.isContainVec3iPos(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void addNeighborChangedEvent(BlockPos pos, BlockState state) {
+        if (!shouldRecord(pos)) {
+            return;
+        }
+        NeighborChangedEvent event = new NeighborChangedEvent(
+                currentGameTime,
+                currentMicroTimingSequence,
+                new BlockInfo(pos, state),
+                entrySourceBlockInfo,
+                EventType.NEIGHBOR_CHANGED);
+        eventRecorder.add(event);
+    }
+
+    public static void addPostPlacementEvent(BlockPos pos, BlockState state) {
+        if (!shouldRecord(pos)) {
+            return;
+        }
+        PostPlacementEvent event = new PostPlacementEvent(
+                currentGameTime,
+                currentMicroTimingSequence,
+                new BlockInfo(pos, state),
+                entrySourceBlockInfo,
+                EventType.POST_PLACEMENT);
+        eventRecorder.add(event);
+    }
+
+    public static void addScheduleTickExecEvent(BlockPos pos, BlockState state) {
+        if (!shouldRecord(pos)) {
+            return;
+        }
+        ScheduledTickAddEvent event = scheduledTickAddedEventForServerWorld;
+
+        ScheduledTickExecEvent event1 = new ScheduledTickExecEvent(
+                currentGameTime,
+                currentMicroTimingSequence,
+                new BlockInfo(pos, state),
+                event == null ? null : event.getTargetBlockInfo(),
+                EventType.SCHEDULED_TICK_EXEC,
+                event == null ? 0 : event.getDelay(),
+                event == null ? null : event.getPriority(),
+                "执行计划刻");
+        eventRecorder.add(event1);
+    }
+
+    public static void addScheduledTickAddEvent(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos, BlockState state, int delay, TickPriority priority) {
+        if (!shouldRecord(pos)) {
+            return;
+        }
         tempTickSize = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(pos);
         // 添加计划刻标记
         ScheduledTickAddEvent event = new ScheduledTickAddEvent(
@@ -50,9 +115,12 @@ public class DataManager {
     }
 
     /**
-     * 必须搭配 {@link #addScheduledTickTag} 使用
+     * 必须搭配 {@link #addScheduledTickAddEvent} 使用
      */
-    public static void isScheduledTickAdded(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos) {
+    public static void checkIsScheduledTickAddedSuccessfully(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos) {
+        if (!shouldRecord(pos)) {
+            return;
+        }
         long tickSize1 = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(pos);
         ScheduledTickAddEvent.ScheduledTickAddState addedSuccess;
         if (tickSize1 == tempTickSize) {
@@ -91,5 +159,6 @@ public class DataManager {
             lastGameTime = event.getTimeStamp().gameTime();
         }
     }
+
 
 }
