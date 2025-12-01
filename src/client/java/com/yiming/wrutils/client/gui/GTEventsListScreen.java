@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
+import com.yiming.wrutils.client.gui.widget.search.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.search.SearchWidget;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
@@ -8,12 +9,15 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
     private SearchWidget searchWidget;
-//    private ItemListWidget itemListWidget;
+    //    private ItemListWidget itemListWidget;
+    private ItemTextFieldListWidget itemTextFieldListWidget;
 
     protected GTEventsListScreen(Screen parent) {
         super(Text.of("Game Tick Events"), parent, false);
@@ -41,9 +45,9 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         this.addDrawableChild(this.searchWidget);
 
 //        ArrayList<String> list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape", "Honeydew", "Iceberg"));
-//        this.itemListWidget = new ItemListWidget(MinecraftClient.getInstance(), 100, 100, 100, y, 18);
-//        this.itemListWidget.setItemEntries(list);
-//        this.addDrawableChild(this.itemListWidget);
+//        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), 100, 100, 10, y, 18);
+//        this.itemTextFieldListWidget.setItemEntries(list);
+//        this.addDrawableChild(this.itemTextFieldListWidget);
 
     }
 

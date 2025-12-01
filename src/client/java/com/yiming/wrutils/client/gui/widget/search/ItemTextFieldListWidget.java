@@ -5,18 +5,22 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
-    private final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
-    private final DropDownTextFieldListWidget parent;
+public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
+    private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
+    private final ArrayList<ItemTextFieldEntry> itemEntries = new ArrayList<>();
+    private DropDownTextFieldListWidget parent;
 
-    public ItemListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
+    public ItemTextFieldListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
         super(minecraftClient, width, height, y, itemHeight);
         this.parent = parent;
         this.setX(x);
@@ -29,25 +33,25 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
     public void setItemEntries(ArrayList<String> items) {
-        items.forEach(item -> this.itemEntries.add(new ItemEntry(item)));
+        items.forEach(item -> this.itemEntries.add(new ItemTextFieldEntry(item)));
         this.updateEntries();
     }
 
     public List<String> getCheckedItems() {
         return this.children().stream()
                 .filter(entry -> {
-                    if (entry instanceof ItemEntry itemEntry) {
-                        return itemEntry.isChecked;
+                    if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+                        return itemTextFieldEntry.isChecked;
                     }
                     return false;
                 })
-                .map(entry -> ((ItemEntry) entry).itemName).toList();
+                .map(entry -> ((ItemTextFieldEntry) entry).itemName).toList();
     }
 
     public void setCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
-            if (entry instanceof ItemEntry itemEntry) {
-                itemEntry.setChecked(checked);
+            if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+                itemTextFieldEntry.setChecked(checked);
             }
         });
     }
@@ -92,7 +96,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     @Override
     public void setFocused(@Nullable Element focused) {
         super.setFocused(focused);
-        if (this.getSelectedOrNull() instanceof ItemEntry entry) {
+        if (this.getSelectedOrNull() instanceof ItemTextFieldEntry entry) {
             entry.setChecked(!entry.isChecked());
         }
         int size = this.getCheckedItems().size();
@@ -130,13 +134,17 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         }
     }
 
-    public static class ItemEntry extends ItemListWidget.Entry {
+    public static class ItemTextFieldEntry extends ItemTextFieldListWidget.Entry {
         private final String itemName;
         private boolean isChecked;
+        private TextFieldWidget textField;
 
-        public ItemEntry(String itemName) {
+        public ItemTextFieldEntry(String itemName) {
             this.itemName = itemName;
             this.isChecked = true;
+            this.textField = new TextFieldWidget(this.textRenderer, 0, 0, 40, 14, Text.of(itemName));
+            this.textField.setText(itemName);
+
         }
 
         public boolean isChecked() {
@@ -151,7 +159,10 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 
-            context.drawTextWithShadow(this.textRenderer, itemName, x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
+            this.textField.setPosition(x + 15, y + entryHeight / 2 - 7);
+            this.textField.render(context, mouseX, mouseY, tickDelta);
+
+//            context.drawTextWithShadow(this.textRenderer, itemName, x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
             context.fill(x - 1, y + entryHeight / 2 - 4, x + 8, y + entryHeight / 2 + 5, Colors.WHITE);
             context.fill(x, y + entryHeight / 2 - 3, x + 7, y + entryHeight / 2 + 4, Colors.BLACK);
 
