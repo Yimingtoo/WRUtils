@@ -2,7 +2,7 @@ package com.yiming.wrutils.client.input;
 
 import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.WrutilsClient;
-import com.yiming.wrutils.client.WrutilsClientUtils;
+import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.client.gui.AreaGroupScreen;
 import com.yiming.wrutils.client.gui.AreaListScreen;
 import com.yiming.wrutils.client.gui.MainMenuScreen;

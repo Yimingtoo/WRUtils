@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SculkSensorBlockMixin {
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     private static void updateNeighbors(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "updateNeighbors", at = @At("RETURN"))

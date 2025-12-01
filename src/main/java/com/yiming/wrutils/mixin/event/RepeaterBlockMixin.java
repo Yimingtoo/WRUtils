@@ -17,13 +17,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RepeaterBlock.class)
 public class RepeaterBlockMixin {
     @Inject(method = "onUse", at = @At("HEAD"))
-    public void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit,  CallbackInfoReturnable<ActionResult> cir) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+    public void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
 
     }
+
     @Inject(method = "onUse", at = @At("RETURN"))
-    public void onUse1(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit,  CallbackInfoReturnable<ActionResult> cir) {
+    public void onUse1(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         DataManager.BLOCK_INFO_STACK.pop();
 
     }

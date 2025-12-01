@@ -65,7 +65,7 @@ public abstract class AbstractRedstoneGateBlockMixin {
     // region Stack source position.
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdateMixinHead(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
     }
 
@@ -78,7 +78,7 @@ public abstract class AbstractRedstoneGateBlockMixin {
     @Inject(method = "scheduledTick", at = @At("HEAD"))
     public void scheduledTickMixinHead(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
 //        System.out.println("AbstractRedstoneGateBlockMixin: sourceBlockPos is " + BaseEvent.entrySourcePos);
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractRedstoneGateBlockMixin {
 
     @Inject(method = "updateTarget", at = @At("HEAD"))
     public void updateTargetMixinHead(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
     }
 

@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.gui;
 
+import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
 import com.yiming.wrutils.client.gui.widget.AreaListWidget;
 import com.yiming.wrutils.data.DataManager;
@@ -83,7 +84,8 @@ public class AreaListScreen extends AbstractSetupScreen {
             if (client1.player == null) {
                 return;
             }
-            SelectBox selectBox = new SelectBox(client1.player.getBlockPos(), client1.player.getBlockPos());
+
+            SelectBox selectBox = new SelectBox(client1.player.getBlockPos(), client1.player.getBlockPos(), WrutilsClientUtils.getPlayerDimension());
             this.selfSelectBoxes.addAndSetCurrent(selectBox);
             areaListWidget.appendAreaEntry(selectBox);
         }).width(100).build());

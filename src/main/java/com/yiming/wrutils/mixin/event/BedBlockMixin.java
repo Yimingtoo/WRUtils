@@ -28,7 +28,7 @@ public class BedBlockMixin {
      */
     @Inject(method = "onPlaced", at = @At("HEAD"))
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "onPlaced", at = @At("RETURN"))

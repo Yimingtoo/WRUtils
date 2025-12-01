@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PoweredRailBlockMixin {
     @Inject(method = "updateBlockState", at = @At("HEAD"))
     public void updateBlockStateMixin(BlockState state, World world, BlockPos pos, Block sourceBlock, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "updateBlockState", at = @At("RETURN"))

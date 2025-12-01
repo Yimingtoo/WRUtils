@@ -35,7 +35,7 @@ public class DataManager {
 
     public static TimeStamp lastTimeStamp;
 
-    private static boolean shouldRecord(BlockPos pos) {
+    private static boolean shouldRecord(BlockInfo blockInfo) {
         if (!isRecording) {
             return false;
         }
@@ -43,41 +43,41 @@ public class DataManager {
             return false;
         }
         for (SelectBox selectBox : getCurrentBoxes().getList()) {
-            if (selectBox.isContainVec3iPos(pos)) {
+            if (selectBox.isContainVec3iPos(blockInfo.pos()) && selectBox.getDimension() == blockInfo.dimension()) {
                 return true;
             }
         }
         return false;
     }
 
-    public static void addNeighborChangedEvent(BlockPos pos, BlockState state) {
-        if (!shouldRecord(pos)) {
+    public static void addNeighborChangedEvent(BlockInfo blockInfo) {
+        if (!shouldRecord(blockInfo)) {
             return;
         }
         NeighborChangedEvent event = new NeighborChangedEvent(
                 currentGameTime,
                 currentMicroTimingSequence,
-                new BlockInfo(pos, state),
+                blockInfo,
                 entrySourceBlockInfo,
                 EventType.NEIGHBOR_CHANGED);
         eventRecorder.add(event);
     }
 
-    public static void addPostPlacementEvent(BlockPos pos, BlockState state) {
-        if (!shouldRecord(pos)) {
+    public static void addPostPlacementEvent(BlockInfo blockInfo) {
+        if (!shouldRecord(blockInfo)) {
             return;
         }
         PostPlacementEvent event = new PostPlacementEvent(
                 currentGameTime,
                 currentMicroTimingSequence,
-                new BlockInfo(pos, state),
+                blockInfo,
                 entrySourceBlockInfo,
                 EventType.POST_PLACEMENT);
         eventRecorder.add(event);
     }
 
-    public static void addScheduleTickExecEvent(BlockPos pos, BlockState state) {
-        if (!shouldRecord(pos)) {
+    public static void addScheduleTickExecEvent(BlockInfo blockInfo) {
+        if (!shouldRecord(blockInfo)) {
             return;
         }
         ScheduledTickAddEvent event = scheduledTickAddedEventForServerWorld;
@@ -85,7 +85,7 @@ public class DataManager {
         ScheduledTickExecEvent event1 = new ScheduledTickExecEvent(
                 currentGameTime,
                 currentMicroTimingSequence,
-                new BlockInfo(pos, state),
+                blockInfo,
                 event == null ? null : event.getTargetBlockInfo(),
                 EventType.SCHEDULED_TICK_EXEC,
                 event == null ? 0 : event.getDelay(),
@@ -94,22 +94,24 @@ public class DataManager {
         eventRecorder.add(event1);
     }
 
-    public static void addScheduledTickAddEvent(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos, BlockState state, int delay, TickPriority priority) {
-        if (!shouldRecord(pos)) {
+    public static void addScheduledTickAddEvent(WorldTickScheduler<Block> worldTickScheduler, BlockInfo blockInfo, int delay, TickPriority priority) {
+        if (!shouldRecord(blockInfo)) {
             return;
         }
-        tempTickSize = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(pos);
+        // TODO: 需要检查Pos的维度
+        tempTickSize = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(blockInfo.pos());
+//        System.out.println("添加计划刻" + tempTickSize);
         // 添加计划刻标记
         ScheduledTickAddEvent event = new ScheduledTickAddEvent(
                 currentGameTime,
                 currentMicroTimingSequence,
-                new BlockInfo(pos, state),
+                blockInfo,
                 entrySourceBlockInfo,
                 EventType.SCHEDULED_TICK_ADD,
                 ScheduledTickAddEvent.ScheduledTickAddState.NULL,
                 delay,
                 priority,
-                state.getBlock().toString());
+                blockInfo.state() == null ? "" : blockInfo.state().getBlock().toString());
         eventRecorder.add(event);
         scheduledTickAddedEventForOrderedTick = event;
     }
@@ -117,11 +119,11 @@ public class DataManager {
     /**
      * 必须搭配 {@link #addScheduledTickAddEvent} 使用
      */
-    public static void checkIsScheduledTickAddedSuccessfully(WorldTickScheduler<Block> worldTickScheduler, BlockPos pos) {
-        if (!shouldRecord(pos)) {
+    public static void checkIsScheduledTickAddedSuccessfully(WorldTickScheduler<Block> worldTickScheduler, BlockInfo blockInfo) {
+        if (!shouldRecord(blockInfo)) {
             return;
         }
-        long tickSize1 = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(pos);
+        long tickSize1 = ((WorldTickSchedulerAccessor) worldTickScheduler).getTicksSize(blockInfo.pos());
         ScheduledTickAddEvent.ScheduledTickAddState addedSuccess;
         if (tickSize1 == tempTickSize) {
             addedSuccess = ScheduledTickAddEvent.ScheduledTickAddState.FALSE;

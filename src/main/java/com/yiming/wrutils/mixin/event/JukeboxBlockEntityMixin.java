@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class JukeboxBlockEntityMixin {
     /**
      * Entry添加方块位置和状态信息
-     * @Uncheck
-     * TODO: 需要检查这个是否有必要，以及 pos 和 state 的是否正确
+     *
+     * @Uncheck TODO: 需要检查这个是否有必要，以及 pos 和 state 的是否正确
      */
     @Inject(method = "onManagerChange", at = @At("HEAD"))
     public void onManagerChange(CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(((JukeboxBlockEntity)(Object)this).getPos(), ((JukeboxBlockEntity)(Object)this).getCachedState()));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(((JukeboxBlockEntity) (Object) this).getPos(), ((JukeboxBlockEntity) (Object) this).getWorld(), ((JukeboxBlockEntity) (Object) this).getCachedState()));
     }
 
     @Inject(method = "onManagerChange", at = @At("RETURN"))

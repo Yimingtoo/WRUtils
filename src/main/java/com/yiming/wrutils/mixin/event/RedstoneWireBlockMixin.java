@@ -1,6 +1,7 @@
 package com.yiming.wrutils.mixin.event;
 
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.Dimension;
 import com.yiming.wrutils.data.event.BlockInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -20,9 +21,14 @@ public class RedstoneWireBlockMixin {
 
     @Inject(method = "prepare", at = @At("HEAD"))
     public void prepare(BlockState state, WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        if (world instanceof World world1) {
+            DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world1, state));
+        } else {
+            DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, Dimension.NONE, state));
+        }
 
     }
+
     @Inject(method = "prepare", at = @At("RETURN"))
     public void prepare1(BlockState state, WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
         DataManager.BLOCK_INFO_STACK.pop();
@@ -30,16 +36,18 @@ public class RedstoneWireBlockMixin {
 
     @Inject(method = "update", at = @At("HEAD"))
     public void update(World world, BlockPos pos, BlockState state, @Nullable WireOrientation orientation, boolean blockAdded, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
-
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
+
     @Inject(method = "update", at = @At("RETURN"))
     public void update1(World world, BlockPos pos, BlockState state, @Nullable WireOrientation orientation, boolean blockAdded, CallbackInfo ci) {
         DataManager.BLOCK_INFO_STACK.pop();
     }
+
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     public void updateNeighbors(World world, BlockPos pos, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, Blocks.REDSTONE_WIRE.getDefaultState()));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, Blocks.REDSTONE_WIRE.getDefaultState()));
+
     }
 
     @Inject(method = "updateNeighbors", at = @At("RETURN"))
@@ -50,7 +58,7 @@ public class RedstoneWireBlockMixin {
 
     @Inject(method = "onBlockAdded", at = @At("HEAD"))
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "onBlockAdded", at = @At("RETURN"))
@@ -60,7 +68,7 @@ public class RedstoneWireBlockMixin {
 
     @Inject(method = "onStateReplaced", at = @At("HEAD"))
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "onStateReplaced", at = @At("RETURN"))
@@ -70,7 +78,7 @@ public class RedstoneWireBlockMixin {
 
     @Inject(method = "updateForNewState", at = @At("HEAD"))
     public void updateForNewState(World world, BlockPos pos, BlockState oldState, BlockState newState, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, newState));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, newState));
 
     }
 

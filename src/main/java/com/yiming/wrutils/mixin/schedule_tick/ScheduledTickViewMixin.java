@@ -1,6 +1,7 @@
 package com.yiming.wrutils.mixin.schedule_tick;
 
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.event.BlockInfo;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,8 +29,7 @@ public interface ScheduledTickViewMixin {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
             DataManager.addScheduledTickAddEvent(
                     worldTickScheduler,
-                    pos,
-                    ((World) (Object) this).getBlockState(pos),
+                    new BlockInfo(pos, ((World) (Object) this), ((World) (Object) this).getBlockState(pos)),
                     delay,
                     priority
             );
@@ -41,7 +41,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;ILnet/minecraft/world/tick/TickPriority;)V", at = @At("RETURN"))
     default void scheduleBlockTick2(BlockPos pos, Block block, int delay, TickPriority priority, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, pos);
+            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, new BlockInfo(pos, ((World) (Object) this), ((World) (Object) this).getBlockState(pos)));
         }
     }
 
@@ -50,8 +50,7 @@ public interface ScheduledTickViewMixin {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
             DataManager.addScheduledTickAddEvent(
                     worldTickScheduler,
-                    pos,
-                    ((World) (Object) this).getBlockState(pos),
+                    new BlockInfo(pos, ((World) (Object) this), ((World) (Object) this).getBlockState(pos)),
                     delay,
                     TickPriority.NORMAL
             );
@@ -62,7 +61,7 @@ public interface ScheduledTickViewMixin {
     @Inject(method = "scheduleBlockTick(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;I)V", at = @At("RETURN"))
     default void scheduleBlockTick4(BlockPos pos, Block block, int delay, CallbackInfo ci) {
         if (this.getBlockTickSchedulerMixin() instanceof WorldTickScheduler<Block> worldTickScheduler) {
-            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, pos);
+            DataManager.checkIsScheduledTickAddedSuccessfully(worldTickScheduler, new BlockInfo(pos, ((World) (Object) this), ((World) (Object) this).getBlockState(pos)));
         }
 
     }

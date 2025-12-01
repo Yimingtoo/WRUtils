@@ -36,7 +36,7 @@ public class ObserverBlockMixin {
 //    }
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     public void updateNeighbors(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
     }
 

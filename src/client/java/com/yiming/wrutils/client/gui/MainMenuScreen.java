@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.gui;
 
+import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
@@ -11,7 +12,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 import java.util.function.Supplier;
 
@@ -45,6 +49,7 @@ public class MainMenuScreen extends Screen {
 
         adder.add(ButtonWidget.builder(Text.of("Events"), button -> {
             GuiBase.openGui(new GTEventsListScreen(this));
+//            GuiBase.openGui(new TestScreen(Text.of("Test"),this));
         }).width(110).build());
 
         adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
@@ -52,14 +57,22 @@ public class MainMenuScreen extends Screen {
         }).width(110).build());
 
         adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {
+            if (!DataManager.isSelectionEnabled) {
+                // "请先开启选取!"
+                return;
+            }
             DataManager.isRecording = !DataManager.isRecording;
             button.setMessage(this.getRecordButtonText());
         }).width(110).build());
 
         adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
+            if (DataManager.isRecording) {
+                // "请先停止记录!"
+                return;
+            }
             DataManager.isSelectionEnabled = !DataManager.isSelectionEnabled;
             button.setMessage(this.getSelectionButtonText());
-            System.out.println(DataManagerClient.getWorldFolderName());
+            this.customButtonWidget.setEnabled(DataManager.isSelectionEnabled);
         }).width(110).build());
 
 

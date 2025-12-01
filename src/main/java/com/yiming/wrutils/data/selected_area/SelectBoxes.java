@@ -1,5 +1,7 @@
 package com.yiming.wrutils.data.selected_area;
 
+import com.yiming.wrutils.data.Dimension;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -38,6 +40,13 @@ public class SelectBoxes {
 
     public ArrayList<SelectBox> getList() {
         return this.selectBoxList;
+    }
+
+    public ArrayList<SelectBox> getList(Dimension dimension) {
+        // 返回指定维度的SelectBox
+        ArrayList<SelectBox> list = new ArrayList<>();
+        this.selectBoxList.stream().filter(box -> box.getDimension() == dimension).forEach(list::add);
+        return list;
     }
 
 
