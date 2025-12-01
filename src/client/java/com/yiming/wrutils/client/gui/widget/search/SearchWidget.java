@@ -12,11 +12,14 @@ import java.util.List;
 public class SearchWidget extends ClickableWidget {
     //    private final ItemListWidget dropDownWidget;
     private final DropDownSelectListWidget dropDownSelectListWidget;
+    private final DropDownTextFieldListWidget dropDownTextFieldListWidget;;
 
     public SearchWidget(int x, int y, int width, int height, Text message) {
         super(x, y, width, height, message);
         ArrayList<String> list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape", "Honeydew", "Iceberg"));
-        this.dropDownSelectListWidget = new DropDownSelectListWidget(100, y, 100, 100, 18, 18, Text.of("DropDown"), list);
+        this.dropDownSelectListWidget = new DropDownSelectListWidget(10, y, 100, 100, 18, 18, Text.of("DropDown"), list);
+
+        this.dropDownTextFieldListWidget = new DropDownTextFieldListWidget(115, y, 100, 100, 18, 18, Text.of("DropDownText"), list);
 
     }
 

@@ -92,9 +92,10 @@ public class EventsListWidget extends ClickableWidget {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+
     @Override
     public void onClick(double mouseX, double mouseY) {
-//        System.out.println(this.getMessage().getString() + " clicked");
+        System.out.println(this.getMessage().getString() + " clicked");
         if (mouseY > this.getY() && mouseY < this.getY() + 20) {
             this.isExpanded = !this.isExpanded;
         }
@@ -120,7 +121,7 @@ public class EventsListWidget extends ClickableWidget {
 
         @Override
         public void onClick(double mouseX, double mouseY) {
-//            System.out.println(this.getMessage().getString() + " " + event.getTimeStamp().eventId() + " clicked");
+            System.out.println(this.getMessage().getString() + " " + event.getTimeStamp().eventId() + " clicked");
         }
     }
 
