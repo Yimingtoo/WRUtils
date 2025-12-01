@@ -1,5 +1,6 @@
 package com.yiming.wrutils.data.selected_area;
 
+import com.yiming.wrutils.data.Dimension;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -11,6 +12,9 @@ public class SelectBox {
     private String selectBoxName = "Sub-Area-1";
     private Vec3i pos1;
     private Vec3i pos2;
+
+    private Dimension dimension;
+
     private Vec3i moveCtrlPos;
     SelectedCorner inertanceCorner;
 
@@ -22,9 +26,10 @@ public class SelectBox {
     boolean isUsed;
 
 
-    public SelectBox(Vec3i pos1, Vec3i pos2) {
+    public SelectBox(Vec3i pos1, Vec3i pos2, Dimension dimension) {
         this.pos1 = pos1;
         this.pos2 = pos2;
+        this.dimension = dimension;
         this.setMinMaxPos();
         this.inertanceCorner = SelectedCorner.CORNER_1;
 
@@ -78,6 +83,14 @@ public class SelectBox {
 
     public Vec3i getMoveCtrlPos() {
         return moveCtrlPos;
+    }
+
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 
 

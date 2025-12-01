@@ -34,7 +34,7 @@ public abstract class WorldMixin {
 
     @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At("HEAD"))
     public void setBlockState2(BlockPos pos, BlockState state, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, ((World) (Object) this), state));
 
     }
 
@@ -46,7 +46,7 @@ public abstract class WorldMixin {
 
     @Inject(method = "updateComparators", at = @At("HEAD"))
     public void updateComparators(BlockPos pos, Block block, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.getBlockStateMixin(pos)));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, ((World) (Object) this), this.getBlockStateMixin(pos)));
     }
 
     @Inject(method = "updateComparators", at = @At("RETURN"))

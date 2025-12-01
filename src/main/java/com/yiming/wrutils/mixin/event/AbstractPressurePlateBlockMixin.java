@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class AbstractPressurePlateBlockMixin {
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     public void updateNeighbors(World world, BlockPos pos, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, world.getBlockState(pos)));
     }
 
     @Inject(method = "updateNeighbors", at = @At("RETURN"))

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class CactusBlockMixin {
     @Inject(method = "randomTick", at = @At("HEAD"))
     private void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "randomTick", at = @At("RETURN"))

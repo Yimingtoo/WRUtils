@@ -25,6 +25,7 @@ public class AbstractRailBlockMixin {
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
 //        System.out.println("AbstractRailBlockMixin :   NC update");
     }
+
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"))
     public void getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random, CallbackInfoReturnable<BlockState> cir) {
 //        System.out.println("AbstractRailBlockMixin :   PP update");
@@ -33,9 +34,10 @@ public class AbstractRailBlockMixin {
     // -----------------------------------------------------------------------------------------------------------------
     @Inject(method = "updateCurves", at = @At("HEAD"))
     public void updateCurves(BlockState state, World world, BlockPos pos, boolean notify, CallbackInfoReturnable<BlockState> cir) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
 
     }
+
     @Inject(method = "updateCurves", at = @At("RETURN"))
     public void updateCurves1(BlockState state, World world, BlockPos pos, boolean notify, CallbackInfoReturnable<BlockState> cir) {
         DataManager.BLOCK_INFO_STACK.pop();

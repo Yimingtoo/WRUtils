@@ -6,10 +6,13 @@ import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
@@ -134,9 +137,11 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
         private final int height;
         private final ButtonWidget deleteButton;
         private final ButtonWidget editButton;
+        private final TextWidget dimensionText;
         private final SelectBox selectBox;
         private long lastClickTime = 0;
         private final MinecraftClient client;
+        private final TextRenderer textRenderer;
 
         private Runnable deleteAction;
         private Runnable editAction;
@@ -148,6 +153,7 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
             this.width = width;
             this.height = height;
             this.name = Text.of(name);
+            this.textRenderer = MinecraftClient.getInstance().textRenderer;
             this.deleteButton = ButtonWidget.builder(Text.of("x"), button -> {
                 if (deleteAction != null) {
                     deleteAction.run();
@@ -158,6 +164,7 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
                     editAction.run();
                 }
             }).dimensions(0, 0, 40, 20).build();
+            this.dimensionText = new TextWidget(60, 20,Text.of(selectBox.getDimension().getName()), this.textRenderer);
             if (!selectBox.getName().equals(name)) {
                 selectBox.setName(name);
             }
@@ -197,6 +204,9 @@ public class AreaListWidget extends AlwaysSelectedEntryListWidget<AreaListWidget
 
             this.editButton.setPosition(this.width - 100, y);
             this.editButton.render(context, mouseX, mouseY, tickDelta);
+
+            this.dimensionText.setPosition(this.width - 170, y);
+            this.dimensionText.render(context, mouseX, mouseY, tickDelta);
 
             context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, name, 30, y + entryHeight / 2 - 9 / 2, Colors.WHITE);
         }

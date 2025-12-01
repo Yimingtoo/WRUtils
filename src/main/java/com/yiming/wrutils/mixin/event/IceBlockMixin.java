@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class IceBlockMixin {
     @Inject(method = "melt", at = @At("HEAD"))
     private void melt(BlockState state, World world, BlockPos pos, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "melt", at = @At("RETURN"))

@@ -16,12 +16,13 @@ public class ShulkerBoxBlockEntityMixin {
 
     /**
      * Entry添加方块位置和状态信息
+     *
      * @Checked
      * @潜影盒开启的时和完全打开时均会执行 updateNeighborStates
      */
     @Inject(method = "updateNeighborStates", at = @At("HEAD"))
     private static void updateNeighborStates(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "updateNeighborStates", at = @At("RETURN"))

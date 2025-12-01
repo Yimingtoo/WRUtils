@@ -20,7 +20,7 @@ public class PistonBlockMixin {
     // TODO:这里的 onSyncedBlockEvent 的 BlockState state 和 BlockPos pos 待检查
     @Inject(method = "onSyncedBlockEvent", at = @At("HEAD"))
     public void onSyncedBlockEvent(BlockState state, World world, BlockPos pos, int type, int data, CallbackInfoReturnable<Boolean> cir) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "onSyncedBlockEvent", at = @At("RETURN"))
@@ -30,7 +30,7 @@ public class PistonBlockMixin {
 
     @Inject(method = "move", at = @At("HEAD"))
     public void move(World world, BlockPos pos, Direction dir, boolean extend, CallbackInfoReturnable<Boolean> cir) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, world.getBlockState(pos)));
     }
 
     @Inject(method = "move", at = @At("RETURN"))

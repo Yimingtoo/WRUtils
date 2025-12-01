@@ -15,8 +15,9 @@ public class PistonBlockEntityMixin {
 
     @Inject(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
     private void finish(CallbackInfo ci, @Local BlockState blockState) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(((PistonBlockEntity) (Object) this).getPos(), blockState));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(((PistonBlockEntity) (Object) this).getPos(), ((PistonBlockEntity) (Object) this).getWorld(), blockState));
     }
+
     // TODO：可能存在注入位置问题
     @Inject(method = "finish", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/World;updateNeighbor(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/world/block/WireOrientation;)V"))
     private void finish1(CallbackInfo ci) {

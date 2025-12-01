@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ButtonBlockMixin {
     @Inject(method = "updateNeighbors", at = @At("HEAD"))
     public void updateNeighbors(BlockState blockState, World world, BlockPos pos, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, blockState));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, blockState));
     }
 
     @Inject(method = "updateNeighbors", at = @At("RETURN"))

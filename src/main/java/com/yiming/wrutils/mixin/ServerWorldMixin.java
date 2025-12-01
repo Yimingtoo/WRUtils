@@ -17,7 +17,7 @@ public abstract class ServerWorldMixin {
     // 执行计划刻
     @Inject(method = "tickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;scheduledTick(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/random/Random;)V"))
     private void tickBlock(BlockPos pos, Block block, CallbackInfo ci) {
-        DataManager.addScheduleTickExecEvent(pos, ((World) (Object) this).getBlockState(pos));
+        DataManager.addScheduleTickExecEvent(new BlockInfo(pos, (World) (Object) this, ((World) (Object) this).getBlockState(pos)));
 
     }
 

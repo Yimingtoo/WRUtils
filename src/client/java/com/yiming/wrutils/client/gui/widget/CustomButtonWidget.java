@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.gui.widget;
 
+import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,6 +16,8 @@ public class CustomButtonWidget extends ClickableWidget {
     private final ButtonWidget button2;
     private int button1PosY;
     private int button2PosY;
+
+//    private boolean isEnabled = false;
 
     TextWidget textWidget;
     TextWidget textWidget1;
@@ -46,6 +49,11 @@ public class CustomButtonWidget extends ClickableWidget {
         this.setMessage(Text.of("OutSide"));
         this.button1.setMessage(Text.of("Middle"));
         this.button2.setMessage(Text.of("Inside"));
+
+        this.active = DataManager.isSelectionEnabled;
+        this.button1.active = DataManager.isSelectionEnabled;
+        this.button2.active = DataManager.isSelectionEnabled;
+
     }
 
     public void setText(String text, String text1, String text2) {
@@ -109,31 +117,46 @@ public class CustomButtonWidget extends ClickableWidget {
         this.button2.setOnClickAction(onClickAction2);
     }
 
+    public void setEnabled(boolean enabled) {
+        this.active = enabled;
+        this.button1.active = enabled;
+        this.button2.active = enabled;
+    }
+
+
     private static void renderButton(ClickableWidget widget, DrawContext context, boolean highlight) {
         context.fill(widget.getX(), widget.getY(), widget.getX() + widget.getWidth(), widget.getY() + widget.getHeight(), highlight ? 0xFFFFFFFF : 0xFFA0A0A0);
         context.fill(widget.getX() + 1, widget.getY() + 1, widget.getX() + widget.getWidth() - 1, widget.getY() + widget.getHeight() - 1, 0xFF000000);
+
     }
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         this.showButtonLevel();
 
-        CustomButtonWidget.renderButton(this, context, this.isHovered() && !button1.isHovered() && !button2.isHovered());
-        button1.setHighlight(button1.isHovered() && !button2.isHovered());
-        button2.setHighlight(button2.isHovered());
+        boolean isHighlight = this.isHovered() && !this.button1.isHovered() && !this.button2.isHovered() && this.active;
+        CustomButtonWidget.renderButton(this, context, isHighlight);
+        this.button1.setHighlight(this.button1.isHovered() && !this.button2.isHovered());
+        this.button2.setHighlight(this.button2.isHovered());
 
-        this.button1.setPosition(this.getX() + this.margin, button1PosY);
+        this.button1.setPosition(this.getX() + this.margin, this.button1PosY);
         this.button1.render(context, mouseX, mouseY, delta);
 
-        this.button2.setPosition(this.getX() + this.margin * 2, button2PosY);
+        this.button2.setPosition(this.getX() + this.margin * 2, this.button2PosY);
         this.button2.render(context, mouseX, mouseY, delta);
 
-        this.textWidget.setPosition(this.getX(), textWidgetPosY);
+        this.textWidget.setPosition(this.getX(), this.textWidgetPosY);
         this.textWidget.render(context, mouseX, mouseY, delta);
-        this.textWidget1.setPosition(this.getX(), textWidget1PosY);
+        this.textWidget1.setPosition(this.getX(), this.textWidget1PosY);
         this.textWidget1.render(context, mouseX, mouseY, delta);
-        this.textWidget2.setPosition(this.getX(), textWidget2PosY);
+        this.textWidget2.setPosition(this.getX(), this.textWidget2PosY);
         this.textWidget2.render(context, mouseX, mouseY, delta);
+
+        if (!this.active) {
+            context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0x20FFFFFF);
+        }
+
+
     }
 
 
@@ -180,7 +203,7 @@ public class CustomButtonWidget extends ClickableWidget {
 
         @Override
         protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            CustomButtonWidget.renderButton(this, context, this.shouldHighlight);
+            CustomButtonWidget.renderButton(this, context, this.shouldHighlight && this.active);
         }
 
         @Override

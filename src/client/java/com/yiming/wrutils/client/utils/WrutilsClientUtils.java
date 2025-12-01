@@ -1,15 +1,19 @@
-package com.yiming.wrutils.client;
+package com.yiming.wrutils.client.utils;
 
-import com.yiming.wrutils.client.utils.GeometryUtil;
+import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.Dimension;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
@@ -27,24 +31,36 @@ public class WrutilsClientUtils {
     }
 
     public static void setSelectBoxCorner(MinecraftClient client, SelectBox.SelectedCorner corner) {
-        if (DataManager.getCurrentSelectBox() != null) {
-            BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
-            if (pos != null) {
-                SelectBox selectBox = DataManager.getCurrentSelectBox();
-                switch (corner) {
-                    case SelectBox.SelectedCorner.CORNER_1:
-                        selectBox.setPos1(pos);
-                        break;
-                    case SelectBox.SelectedCorner.CORNER_2:
-                        selectBox.setPos2(pos);
-                        break;
-                }
-                DataManager.getCurrentSelectBox().setMoveCtrlPos(pos);
+        if (!DataManager.isSelectionEnabled && DataManager.isRecording) {
+            return;
+        }
+        SelectBox selectBox = DataManager.getCurrentSelectBox();
+        if (selectBox == null) {
+            return;
+        }
+        if (selectBox.getDimension() != getPlayerDimension()) {
+//            System.out.println("当前维度与玩家维度不一致");
+            return;
+        }
+
+        BlockPos pos = WrutilsClientUtils.getLookingBlockPosClient(client, 128, 1);
+        if (pos != null) {
+            switch (corner) {
+                case SelectBox.SelectedCorner.CORNER_1:
+                    selectBox.setPos1(pos);
+                    break;
+                case SelectBox.SelectedCorner.CORNER_2:
+                    selectBox.setPos2(pos);
+                    break;
             }
+            selectBox.setMoveCtrlPos(pos);
         }
     }
 
     public static void selectElement(MinecraftClient client) {
+        if (!DataManager.isSelectionEnabled && DataManager.isRecording) {
+            return;
+        }
         SelectBoxes boxes = DataManager.getCurrentBoxes();
         if (boxes == null) {
             return;
@@ -64,7 +80,7 @@ public class WrutilsClientUtils {
 
         double distanceToBox = -1;
         SelectBox beingSelectedBox = null;
-        for (SelectBox box : boxes.getList()) {
+        for (SelectBox box : boxes.getList(getPlayerDimension())) {
             double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, box.getMinBorderPos(), box.getMaxBorderPos());
             if (distance1 >= 0) {
                 if (distanceToBox < 0 || distance1 < distanceToBox) {
@@ -116,7 +132,7 @@ public class WrutilsClientUtils {
         } else {
             Vec3i targetPos = null;
             double distanceToCube = -1;
-            for (SelectBox box : boxes.getList()) {
+            for (SelectBox box : boxes.getList(getPlayerDimension())) {
                 if (box.isContainVec3dPos(camPos)) {
                     ArrayList<Vec3i> cubePoses = SelectBox.CornerDirection.getCornerCubePoses(box);
                     for (Vec3i cubePos : cubePoses) {
@@ -149,5 +165,23 @@ public class WrutilsClientUtils {
 
         }
 
+    }
+
+    public static Dimension getPlayerDimension() {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player == null) {
+            return Dimension.NONE;
+        }
+
+        RegistryKey<World> dimensionKey = client.player.getWorld().getRegistryKey();
+        Identifier dimensionId = dimensionKey.getValue();
+
+        return switch (dimensionId.toString()) {
+            case "minecraft:overworld" -> Dimension.OVERWORLD;
+            case "minecraft:the_nether" -> Dimension.NETHER;
+            case "minecraft:the_end" -> Dimension.END;
+            default -> Dimension.NONE;
+        };
     }
 }

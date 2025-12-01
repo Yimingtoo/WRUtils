@@ -1,8 +1,11 @@
 package com.yiming.wrutils.mixin.event;
 
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.Dimension;
 import com.yiming.wrutils.data.event.*;
 import net.minecraft.block.*;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -13,6 +16,7 @@ import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,11 +38,12 @@ public abstract class AbstractBlockStateMixin {
      */
     @Inject(method = "neighborUpdate", at = @At("HEAD"))
     public void neighborUpdate(World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, this.asBlockStateMixin()));
+        BlockInfo blockInfo = new BlockInfo(pos, world, this.asBlockStateMixin());
+        DataManager.BLOCK_INFO_STACK.push(blockInfo);
 
         if (!world.isClient()) {
             if (isBlockNeededForNeighborUpdate(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                DataManager.addNeighborChangedEvent(pos, this.asBlockStateMixin());
+                DataManager.addNeighborChangedEvent(blockInfo);
             }
         }
     }
@@ -53,7 +58,9 @@ public abstract class AbstractBlockStateMixin {
 
         if (!world.isClient()) {
             if (isBlockNeededForPostPlacement(((AbstractBlock.AbstractBlockState) (Object) this).getBlock())) {
-                DataManager.addPostPlacementEvent(pos, this.asBlockStateMixin());
+                if (world instanceof World world1) {
+                    DataManager.addPostPlacementEvent(new BlockInfo(pos, world1, this.asBlockStateMixin()));
+                }
             }
         }
 
@@ -61,7 +68,11 @@ public abstract class AbstractBlockStateMixin {
 
     @Inject(method = "updateNeighbors(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;II)V", at = @At("HEAD"))
     public void updateNeighbors(WorldAccess world, BlockPos pos, int flags, int maxUpdateDepth, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world.getBlockState(pos)));
+        BlockInfo blockInfo = new BlockInfo(pos, Dimension.NONE, null);
+        if (world instanceof World world1) {
+            blockInfo = new BlockInfo(pos, world1, world.getBlockState(pos));
+        }
+        DataManager.BLOCK_INFO_STACK.push(blockInfo);
 //        System.out.println("asdffffffffffffffffffffafdsfasd" +  world.getBlockState(pos).getBlock());;
 
     }

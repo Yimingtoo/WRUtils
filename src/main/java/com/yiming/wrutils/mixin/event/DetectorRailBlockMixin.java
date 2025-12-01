@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class DetectorRailBlockMixin {
     @Inject(method = "updatePoweredStatus", at = @At("HEAD"))
     public void updatePoweredStatus(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "updatePoweredStatus", at = @At("RETURN"))
@@ -25,7 +25,7 @@ public class DetectorRailBlockMixin {
 
     @Inject(method = "updateNearbyRails", at = @At("HEAD"))
     public void updateNearbyRails(World world, BlockPos pos, BlockState state, boolean unpowering, CallbackInfo ci) {
-        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, state));
+        DataManager.BLOCK_INFO_STACK.push(new BlockInfo(pos, world, state));
     }
 
     @Inject(method = "updateNearbyRails", at = @At("RETURN"))

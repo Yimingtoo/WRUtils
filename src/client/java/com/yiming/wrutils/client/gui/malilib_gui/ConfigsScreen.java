@@ -35,7 +35,6 @@ public class ConfigsScreen extends GuiConfigsBase {
         this.addButton(button1, (buttonBase, mouseButton) -> {
             this.setButtonListener(Tabs.HOTKEYS);
         });
-
     }
 
     private void setButtonListener(Tabs tab) {
