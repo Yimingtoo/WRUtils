@@ -2,6 +2,7 @@ package com.yiming.wrutils.client.gui.widget.search;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -17,6 +18,8 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
     private final int expandWidth;
     private boolean isExpanded = false;
 
+    private final AddButton addButton;
+
     private final int interval = 2;
 
     private CheckState checkState = CheckState.CHECKED;
@@ -31,6 +34,8 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
         this.itemHeight = itemHeight;
         this.expandWidth = expandWidth;
         this.setItemListWidgetEnabled(false);
+
+        this.addButton = new AddButton(0, 0, 14, headerHeight, Text.of("+"));
     }
 
     public void setItemListWidgetEnabled(boolean enabled) {
@@ -76,30 +81,9 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
                 context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2, this.getX() + this.headerWidth - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 1, Colors.GREEN);
             }
         }
-        context.fill(
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 4,
-                this.getY() + this.headerHeight / 2 - 4,
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 5,
-                this.getY() + this.headerHeight / 2 + 5,
-                Colors.WHITE);
-        context.fill(
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 3,
-                this.getY() + this.headerHeight / 2 - 3,
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 4,
-                this.getY() + this.headerHeight / 2 + 4,
-                Colors.BLACK);
-        context.fill(
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 2,
-                this.getY() + this.headerHeight / 2,
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 3,
-                this.getY() + this.headerHeight / 2 + 1,
-                Colors.WHITE);
-        context.fill(
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4,
-                this.getY() + this.headerHeight / 2 - 2,
-                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 1,
-                this.getY() + this.headerHeight / 2 + 3,
-                Colors.WHITE);
+        this.addButton.setPosition(this.getX() + this.headerWidth - this.headerHeight - this.headerHeight / 2,
+                this.getY() + this.headerHeight / 2 - this.addButton.getHeight() / 2);
+        this.addButton.render(context, mouseX, mouseY, delta);
 
         matrixStack.pop();
 
@@ -111,6 +95,10 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
         if (!this.isMouseOver(mouseX, mouseY)) {
             this.setExpanded(false);
         }
+        if (this.addButton.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+
         if (this.itemTextFieldListWidget.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
@@ -178,11 +166,52 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
             return;
         } else if (mouseX > this.getX() + this.headerWidth - (double) (this.headerHeight * 5) / 3
                 && mouseY < this.getY() + this.headerHeight
-        ){
+        ) {
             System.out.println("clicked");
         }
 
-            this.setExpanded(!this.isExpanded);
+        this.setExpanded(!this.isExpanded);
+    }
+
+    private static class AddButton extends BaseClickableWidget {
+
+        public AddButton(int x, int y, int width, int height, Text message) {
+            super(x, y, width, height, message);
+        }
+
+        @Override
+        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+            int length = 9;
+
+            context.fill(this.getX() + this.getWidth() / 2 - length / 2,
+                    this.getY() + this.getHeight() / 2 - length / 2,
+                    this.getX() + this.getWidth() / 2 + length - length / 2,
+                    this.getY() + this.getHeight() / 2 + length - length / 2,
+                    0xFFC0C0C0);
+            context.fill(this.getX() + this.getWidth() / 2 - length / 2 + 1,
+                    this.getY() + this.getHeight() / 2 - length / 2 + 1,
+                    this.getX() + this.getWidth() / 2 + length - length / 2 - 1,
+                    this.getY() + this.getHeight() / 2 + length - length / 2 - 1,
+                    Colors.BLACK);
+            context.fill(
+                    this.getX() + this.getWidth() / 2 - length / 2 + 2,
+                    this.getY() + this.getHeight() / 2,
+                    this.getX() + this.getWidth() / 2 + length - length / 2 - 2,
+                    this.getY() + this.getHeight() / 2 + 1,
+                    Colors.GREEN);
+            context.fill(
+                    this.getX() + this.getWidth() / 2,
+                    this.getY() + this.getHeight() / 2 - length / 2 + 2,
+                    this.getX() + this.getWidth() / 2 + 1,
+                    this.getY() + this.getHeight() / 2 + length - length / 2 - 2,
+                    Colors.GREEN);
+
+        }
+
+        @Override
+        public void onClick(double mouseX, double mouseY) {
+            System.out.println("sdfsf clicked");
+        }
     }
 
 
