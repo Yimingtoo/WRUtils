@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
     private final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
-    private final DropDownTextFieldListWidget parent;
+    private final DropDownSelectListWidget parent;
 
-    public ItemListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
+    public ItemListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownSelectListWidget parent) {
         super(minecraftClient, width, height, y, itemHeight);
         this.parent = parent;
         this.setX(x);

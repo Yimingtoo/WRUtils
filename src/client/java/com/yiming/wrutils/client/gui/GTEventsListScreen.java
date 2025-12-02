@@ -81,5 +81,16 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         return bl || super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
+    @Override
+    public boolean charTyped(char chr, int keyCode) {
+        boolean bl = handleMouseEvent(widget -> widget.charTyped(chr, keyCode));
+        return bl || super.charTyped(chr, keyCode);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        boolean bl = handleMouseEvent(widget -> widget.keyPressed(keyCode, scanCode, modifiers));
+        return bl || super.keyPressed(keyCode, scanCode, modifiers);
+    }
 
 }
