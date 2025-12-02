@@ -11,19 +11,25 @@ import java.util.ArrayList;
 public class DropDownTextFieldListWidget extends BaseClickableWidget {
     private final ItemTextFieldListWidget itemTextFieldListWidget;
     private final int headerHeight;
+    private final int headerWidth;
     private final int totalHeight;
     private final int itemHeight;
+    private final int expandWidth;
     private boolean isExpanded = false;
+
+    private final int interval = 2;
 
     private CheckState checkState = CheckState.CHECKED;
 
-    public DropDownTextFieldListWidget(int x, int y, int width, int height, int headerHeight, int itemHeight, Text message, ArrayList<String> list) {
-        super(x, y, width, headerHeight, message);
-        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), width, height - headerHeight, x, y + headerHeight, itemHeight, this);
+    public DropDownTextFieldListWidget(int x, int y, int expandWidth, int totalHeight, int headerWidth, int headerHeight, int itemHeight, Text message, ArrayList<String> list) {
+        super(x, y, headerWidth, headerHeight, message);
+        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, totalHeight - headerHeight - this.interval, x, y + headerHeight + this.interval, itemHeight, this);
         this.itemTextFieldListWidget.setItemEntries(list);
+        this.headerWidth = headerWidth;
         this.headerHeight = headerHeight;
-        this.totalHeight = height;
+        this.totalHeight = totalHeight;
         this.itemHeight = itemHeight;
+        this.expandWidth = expandWidth;
         this.setItemListWidgetEnabled(false);
     }
 
@@ -31,6 +37,7 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
         this.itemTextFieldListWidget.visible = enabled;
         this.itemTextFieldListWidget.active = enabled;
         this.height = enabled ? this.totalHeight : this.headerHeight;
+        this.width = enabled ? this.expandWidth : this.headerWidth;
     }
 
     public ItemTextFieldListWidget getItemTextFieldListWidget() {
@@ -44,6 +51,7 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
     public void setExpanded(boolean expanded) {
         this.isExpanded = expanded;
         this.setItemListWidgetEnabled(expanded);
+
     }
 
     @Override
@@ -52,16 +60,46 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
         matrixStack.push();
         matrixStack.translate(0, 0, 1); // 背景层级
         // 绘制背景
-        super.renderWidget(context, mouseX, mouseY, delta);
+//        super.renderWidget(context, mouseX, mouseY, delta);
+        int interval = this.isExpanded ? this.interval : 0;
+        context.drawTextWithShadow(this.textRenderer, this.getMessage(), this.getX() + 5, this.getY() + 5, Colors.WHITE);
+        context.fill(this.getX(), this.getY(), this.getX() + this.headerWidth, this.getY() + this.headerHeight + interval, 0xFFC0C0C0);
+        context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.headerWidth - 1, this.getY() + this.headerHeight + interval - 1, 0xFF000000);
         this.itemTextFieldListWidget.render(context, mouseX, mouseY, delta);
 
-        context.fill(this.getRight() - this.headerHeight / 2 - 4, this.getY() + this.headerHeight / 2 - 4, this.getRight() - this.headerHeight / 2 + 5, this.getY() + this.headerHeight / 2 + 5, Colors.WHITE);
-        context.fill(this.getRight() - this.headerHeight / 2 - 3, this.getY() + this.headerHeight / 2 - 3, this.getRight() - this.headerHeight / 2 + 4, this.getY() + this.headerHeight / 2 + 4, Colors.BLACK);
+        context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 4, this.getY() + this.headerHeight / 2 - 4, this.getX() + this.headerWidth - this.headerHeight / 2 + 5, this.getY() + this.headerHeight / 2 + 5, Colors.WHITE);
+        context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 3, this.getY() + this.headerHeight / 2 - 3, this.getX() + this.headerWidth - this.headerHeight / 2 + 4, this.getY() + this.headerHeight / 2 + 4, Colors.BLACK);
         if (this.checkState == CheckState.CHECKED) {
-            context.fill(this.getRight() - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2 - 2, this.getRight() - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 3, Colors.GREEN);
-        } else if (this.checkState == CheckState.INDETERMINATE) {
-            context.fill(this.getRight() - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2, this.getRight() - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 1, Colors.GREEN);
+            context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2 - 2, this.getX() + this.headerWidth - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 3, Colors.GREEN);
+        } else {
+            if (this.checkState == CheckState.INDETERMINATE) {
+                context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2, this.getX() + this.headerWidth - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 1, Colors.GREEN);
+            }
         }
+        context.fill(
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 4,
+                this.getY() + this.headerHeight / 2 - 4,
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 5,
+                this.getY() + this.headerHeight / 2 + 5,
+                Colors.WHITE);
+        context.fill(
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 3,
+                this.getY() + this.headerHeight / 2 - 3,
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 4,
+                this.getY() + this.headerHeight / 2 + 4,
+                Colors.BLACK);
+        context.fill(
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 - 2,
+                this.getY() + this.headerHeight / 2,
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 3,
+                this.getY() + this.headerHeight / 2 + 1,
+                Colors.WHITE);
+        context.fill(
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4,
+                this.getY() + this.headerHeight / 2 - 2,
+                this.getX() + this.headerWidth - this.headerHeight * 5 / 4 + 1,
+                this.getY() + this.headerHeight / 2 + 3,
+                Colors.WHITE);
 
         matrixStack.pop();
 
@@ -105,8 +143,27 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
     }
 
     @Override
+    public boolean charTyped(char chr, int keyCode) {
+        if (this.itemTextFieldListWidget.charTyped(chr, keyCode)) {
+            return true;
+        }
+        return super.charTyped(chr, keyCode);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.itemTextFieldListWidget.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public void onClick(double mouseX, double mouseY) {
-        if (mouseX > this.getRight() - this.headerHeight && mouseY < this.getY() + this.headerHeight) {
+        if (mouseX > this.getX() + this.headerWidth - this.headerHeight
+                && mouseX < this.getX() + this.headerWidth
+                && mouseY < this.getY() + this.headerHeight
+        ) {
             switch (this.checkState) {
                 case CHECKED:
                     this.checkState = CheckState.UNCHECKED;
@@ -119,9 +176,13 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
                     break;
             }
             return;
+        } else if (mouseX > this.getX() + this.headerWidth - (double) (this.headerHeight * 5) / 3
+                && mouseY < this.getY() + this.headerHeight
+        ){
+            System.out.println("clicked");
         }
 
-        this.setExpanded(!this.isExpanded);
+            this.setExpanded(!this.isExpanded);
     }
 
 

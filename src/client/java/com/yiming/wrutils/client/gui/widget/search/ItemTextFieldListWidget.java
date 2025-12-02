@@ -1,9 +1,12 @@
 package com.yiming.wrutils.client.gui.widget.search;
 
+import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
@@ -96,6 +99,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     @Override
     public void setFocused(@Nullable Element focused) {
         super.setFocused(focused);
+
         if (this.getSelectedOrNull() instanceof ItemTextFieldEntry entry) {
             entry.setChecked(!entry.isChecked());
         }
@@ -112,7 +116,15 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean bl = this.isMouseOver(mouseX, mouseY);
-        return this.isMouseOver(mouseX, mouseY) && super.mouseClicked(mouseX, mouseY, button);
+        for (Entry entry : this.children()) {
+            if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+                if (!itemTextFieldEntry.getTextField().isMouseOver(mouseX, mouseY)) {
+                    itemTextFieldEntry.getTextField().setFocused(false);
+                }
+            }
+        }
+
+        return bl && super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -122,6 +134,17 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
 
         return false;
+    }
+
+    @Override
+    public boolean charTyped(char chr, int keyCode) {
+
+        return super.charTyped(chr, keyCode);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
 
@@ -137,14 +160,24 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     public static class ItemTextFieldEntry extends ItemTextFieldListWidget.Entry {
         private final String itemName;
         private boolean isChecked;
-        private TextFieldWidget textField;
+        private CustomTextFieldWidget textField;
+
+        @Nullable
+        private Element focused;
+        private boolean dragging;
+
 
         public ItemTextFieldEntry(String itemName) {
             this.itemName = itemName;
             this.isChecked = true;
-            this.textField = new TextFieldWidget(this.textRenderer, 0, 0, 40, 14, Text.of(itemName));
+            this.textField = new CustomTextFieldWidget(this.textRenderer, 60, 14, Text.of(itemName));
             this.textField.setText(itemName);
+            this.textField.setEditable(true);
 
+        }
+
+        public TextFieldWidget getTextField() {
+            return textField;
         }
 
         public boolean isChecked() {
@@ -152,7 +185,9 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
 
         public void setChecked(boolean checked) {
-            this.isChecked = checked;
+            if (!this.textField.isFocused()) {
+                this.isChecked = checked;
+            }
         }
 
 
@@ -170,5 +205,26 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
                 context.fill(x + 1, y + entryHeight / 2 - 2, x + 6, y + entryHeight / 2 + 3, Colors.GREEN);
             }
         }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (this.textField.mouseClicked(mouseX, mouseY, button)) {
+                this.textField.setFocused(true);
+                return true;
+            }
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+
+        @Override
+        public boolean charTyped(char chr, int keyCode) {
+            return this.textField.charTyped(chr, keyCode);
+        }
+
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            return this.textField.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+
     }
 }
