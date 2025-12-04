@@ -1,11 +1,11 @@
-package com.yiming.wrutils.client.gui.widget.search;
+package com.yiming.wrutils.client.gui.widget.search.clickable;
 
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
-class AddRemoveButtonWidget extends BaseClickableWidget {
+public class AddRemoveButtonWidget extends BaseClickableWidget {
     private final boolean addOrRemove;
 
     public AddRemoveButtonWidget(int x, int y, int width, int height, boolean addOrRemove, Runnable onClickAction) {

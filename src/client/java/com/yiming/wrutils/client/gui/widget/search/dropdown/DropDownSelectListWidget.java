@@ -1,5 +1,7 @@
-package com.yiming.wrutils.client.gui.widget.search;
+package com.yiming.wrutils.client.gui.widget.search.dropdown;
 
+import com.yiming.wrutils.client.gui.widget.search.clickable.BaseClickableWidget;
+import com.yiming.wrutils.client.gui.widget.search.dropdown.item.ItemListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -9,13 +11,13 @@ import net.minecraft.util.Colors;
 import java.util.ArrayList;
 
 public class DropDownSelectListWidget extends BaseClickableWidget {
-    private final ItemListWidget itemListWidget;
-    private final int headerHeight;
-    private final int totalHeight;
-    private final int itemHeight;
-    private boolean isExpanded = false;
+    protected final ItemListWidget itemListWidget;
+    protected final int headerHeight;
+    protected final int totalHeight;
+    protected final int itemHeight;
+    protected boolean isExpanded = false;
 
-    private CheckState checkState = CheckState.CHECKED;
+    protected CheckState checkState = CheckState.CHECKED;
 
     public DropDownSelectListWidget(int x, int y, int width, int height, int headerHeight, int itemHeight, Text message, ArrayList<String> list) {
         super(x, y, width, headerHeight, message);

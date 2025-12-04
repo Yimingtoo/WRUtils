@@ -1,4 +1,4 @@
-package com.yiming.wrutils.client.gui.widget.search;
+package com.yiming.wrutils.client.gui.widget.search.clickable;
 
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.gui.DrawContext;

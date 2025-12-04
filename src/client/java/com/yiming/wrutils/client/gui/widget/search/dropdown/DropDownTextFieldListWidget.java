@@ -1,5 +1,8 @@
-package com.yiming.wrutils.client.gui.widget.search;
+package com.yiming.wrutils.client.gui.widget.search.dropdown;
 
+import com.yiming.wrutils.client.gui.widget.search.clickable.AddRemoveButtonWidget;
+import com.yiming.wrutils.client.gui.widget.search.clickable.BaseClickableWidget;
+import com.yiming.wrutils.client.gui.widget.search.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

@@ -1,7 +1,7 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
-import com.yiming.wrutils.client.gui.widget.search.ItemTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.search.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.search.SearchWidget;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
@@ -9,8 +9,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 public class GTEventsListScreen extends AbstractSetupScreen {
