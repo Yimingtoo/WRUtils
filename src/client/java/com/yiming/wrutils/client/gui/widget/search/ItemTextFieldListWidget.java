@@ -3,10 +3,8 @@ package com.yiming.wrutils.client.gui.widget.search;
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
@@ -21,34 +19,74 @@ import java.util.List;
 public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
     private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
     private final ArrayList<ItemTextFieldEntry> itemEntries = new ArrayList<>();
+    private final ItemHeaderTextFieldEntry headerEntry = new ItemHeaderTextFieldEntry("");
     private DropDownTextFieldListWidget parent;
 
-    public ItemTextFieldListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
-        super(minecraftClient, width, height, y, itemHeight);
+    public ItemTextFieldListWidget(MinecraftClient minecraftClient, int width, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
+        super(minecraftClient, width, itemHeight * 2 + 6, y, itemHeight);
         this.parent = parent;
         this.setX(x);
+        this.itemEntries.add(this.headerEntry);
     }
 
     public void updateEntries() {
         this.clearEntries();
         this.itemEntries.forEach(this::addEntry);
         this.refreshScroll();
+        this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
     public void setItemEntries(ArrayList<String> items) {
-        items.forEach(item -> this.itemEntries.add(new ItemTextFieldEntry(item)));
+        items.forEach(item -> {
+            ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(item);
+            itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
+            this.itemEntries.add(itemTextFieldEntry);
+        });
         this.updateEntries();
     }
+
+
+    public void addItemEntry(String itemName) {
+        ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(itemName);
+        itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
+        this.itemEntries.add(itemTextFieldEntry);
+        this.updateEntries();
+        this.setSelected(itemTextFieldEntry);
+        this.setScrollY(this.getMaxScrollY());
+    }
+
+    public void removeItemTextFieldEntry(ItemTextFieldEntry itemTextFieldEntry) {
+        this.itemEntries.remove(itemTextFieldEntry);
+        this.updateEntries();
+    }
+
+    public void setHeaderEntryText(String text) {
+        this.headerEntry.getTextField().setText(text);
+    }
+
 
     public List<String> getCheckedItems() {
         return this.children().stream()
                 .filter(entry -> {
                     if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
-                        return itemTextFieldEntry.isChecked;
+                        if (!(entry instanceof ItemHeaderTextFieldEntry)) {
+                            return itemTextFieldEntry.isChecked;
+                        }
                     }
                     return false;
                 })
                 .map(entry -> ((ItemTextFieldEntry) entry).itemName).toList();
+    }
+
+    public void updateParentWidgetCheckedState() {
+        int size = this.getCheckedItems().size();
+        if (size == 0) {
+            this.parent.setCheckState(CheckState.UNCHECKED);
+        } else if (size < this.children().size() - 1) {
+            this.parent.setCheckState(CheckState.INDETERMINATE);
+        } else {
+            this.parent.setCheckState(CheckState.CHECKED);
+        }
     }
 
     public void setCheckedItems(boolean checked) {
@@ -91,8 +129,8 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
     @Override
     protected void drawSelectionHighlight(DrawContext context, int y, int entryWidth, int entryHeight, int borderColor, int fillColor) {
-        int i = this.getX() + (this.width - entryWidth) / 2;
-        int j = this.getX() + (this.width + entryWidth) / 2;
+        int i = this.getX() + (this.width - entryWidth) / 2 - 3;
+        int j = this.getX() + (this.width + entryWidth) / 2 - 3;
         context.fill(i, y, j, y + entryHeight + 4, 0xFF202020);
     }
 
@@ -100,18 +138,9 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     public void setFocused(@Nullable Element focused) {
         super.setFocused(focused);
 
-        if (this.getSelectedOrNull() instanceof ItemTextFieldEntry entry) {
-            entry.setChecked(!entry.isChecked());
-        }
-        int size = this.getCheckedItems().size();
-        if (size == 0) {
-            this.parent.setCheckState(CheckState.UNCHECKED);
-        } else if (size < this.children().size()) {
-            this.parent.setCheckState(CheckState.INDETERMINATE);
-        } else {
-            this.parent.setCheckState(CheckState.CHECKED);
-        }
+        this.updateParentWidgetCheckedState();
     }
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -123,8 +152,8 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
                 }
             }
         }
-
-        return bl && super.mouseClicked(mouseX, mouseY, button);
+        boolean bl1 = this.checkScrollbarDragged(mouseX, mouseY, button);
+        return bl1 || bl && super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -147,6 +176,11 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+    @Override
+    protected int getContentsHeightWithPadding() {
+        return this.getEntryCount() * this.itemHeight + this.headerHeight + 8;
+    }
+
 
     public abstract static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         protected final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -158,22 +192,31 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     }
 
     public static class ItemTextFieldEntry extends ItemTextFieldListWidget.Entry {
-        private final String itemName;
-        private boolean isChecked;
-        private CustomTextFieldWidget textField;
+        protected final String itemName;
+        protected boolean isChecked;
+        protected final CustomTextFieldWidget textField;
+        protected final AddRemoveButtonWidget removeButton;
 
-        @Nullable
-        private Element focused;
-        private boolean dragging;
+        protected Runnable onRemoveAction = null;
 
 
         public ItemTextFieldEntry(String itemName) {
             this.itemName = itemName;
             this.isChecked = true;
-            this.textField = new CustomTextFieldWidget(this.textRenderer, 60, 14, Text.of(itemName));
+            this.textField = new CustomTextFieldWidget(this.textRenderer, 120, 14, Text.of(itemName));
             this.textField.setText(itemName);
             this.textField.setEditable(true);
+            this.textField.setMaxLength(20);
+            this.removeButton = new AddRemoveButtonWidget(0, 0, 14, 14, false, () -> {
+                System.out.println("remove click");
+                if (this.onRemoveAction != null) {
+                    this.onRemoveAction.run();
+                }
+            });
+        }
 
+        public void setOnRemoveAction(Runnable onRemoveAction) {
+            this.onRemoveAction = onRemoveAction;
         }
 
         public TextFieldWidget getTextField() {
@@ -185,7 +228,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
 
         public void setChecked(boolean checked) {
-            if (!this.textField.isFocused()) {
+            if (!(this.textField.isFocused() || this.removeButton.isFocused())) {
                 this.isChecked = checked;
             }
         }
@@ -193,16 +236,17 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-
-            this.textField.setPosition(x + 15, y + entryHeight / 2 - 7);
+            int yCenter = y + entryHeight / 2 + 2;
+            this.textField.setPosition(x + 15, yCenter - this.textField.getHeight() / 2);
             this.textField.render(context, mouseX, mouseY, tickDelta);
+            this.removeButton.setPosition(x + 150, yCenter - this.removeButton.getHeight() / 2);
+            this.removeButton.render(context, mouseX, mouseY, tickDelta);
 
-//            context.drawTextWithShadow(this.textRenderer, itemName, x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
-            context.fill(x - 1, y + entryHeight / 2 - 4, x + 8, y + entryHeight / 2 + 5, Colors.WHITE);
-            context.fill(x, y + entryHeight / 2 - 3, x + 7, y + entryHeight / 2 + 4, Colors.BLACK);
+            context.fill(x - 1, yCenter - 4, x + 8, yCenter + 5, Colors.WHITE);
+            context.fill(x, yCenter - 3, x + 7, yCenter + 4, Colors.BLACK);
 
             if (this.isChecked) {
-                context.fill(x + 1, y + entryHeight / 2 - 2, x + 6, y + entryHeight / 2 + 3, Colors.GREEN);
+                context.fill(x + 1, yCenter - 2, x + 6, yCenter + 3, Colors.GREEN);
             }
         }
 
@@ -212,6 +256,10 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
                 this.textField.setFocused(true);
                 return true;
             }
+            if (this.removeButton.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            this.isChecked = !this.isChecked;
             return super.mouseClicked(mouseX, mouseY, button);
         }
 
@@ -224,7 +272,45 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
             return this.textField.keyPressed(keyCode, scanCode, modifiers);
         }
+    }
 
+    public static class ItemHeaderTextFieldEntry extends ItemTextFieldEntry {
+        TextButtonWidget textButtonWidget;
+        private final String titleText = "Origin Tick:";
+        int textWidth;
+
+        public ItemHeaderTextFieldEntry(String itemName) {
+            super(itemName);
+            this.removeButton.active = false;
+            this.removeButton.visible = false;
+            this.textWidth = this.textRenderer.getWidth(this.titleText);
+
+            this.textButtonWidget = new TextButtonWidget(0, 0, 35, 14, Text.of("Reset"), () -> {
+                System.out.println("reset click");
+            });
+            this.textField.setWidth(142 - this.textWidth - 6);
+
+        }
+
+        @Override
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            int yCenter = y + entryHeight / 2 + 2;
+            context.drawTextWithShadow(this.textRenderer, this.titleText, x, yCenter - 4, Colors.WHITE);
+            this.textField.setPosition(x + this.textWidth + 6, yCenter - this.textField.getHeight() / 2);
+            this.textField.render(context, mouseX, mouseY, tickDelta);
+
+            this.textButtonWidget.setPosition(x + 145, yCenter - this.textButtonWidget.getHeight() / 2);
+            this.textButtonWidget.render(context, mouseX, mouseY, tickDelta);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (this.textButtonWidget.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
 
     }
+
 }

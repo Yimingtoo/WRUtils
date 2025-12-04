@@ -4,6 +4,7 @@ import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
@@ -99,7 +100,7 @@ public class MainMenuScreen extends Screen {
         boolean bl1 = DataManager.isSelectionEnabled;
         return Text.literal("Selection:").styled(style -> style.withColor(0xFFFFFFFF))
                 .append(Text.literal(" "))
-                .append(Text.literal(bl1 ? "Enabled" : "Disabled").styled(style -> style.withColor(bl1 ? 0xFF00FF00 : 0xFFFF6060)));
+                .append(Text.literal(bl1 ? "Enabled" : "Disabled").styled(style -> style.withColor(bl1 ? 0xFF00FF00 : WrutilsColor.RED_0)));
     }
 
     private void changeCustomButtonLevel() {
