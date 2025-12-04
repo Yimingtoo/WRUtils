@@ -1,8 +1,8 @@
 package com.yiming.wrutils.client.gui.widget.search;
 
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -13,35 +13,38 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
     private final ItemTextFieldListWidget itemTextFieldListWidget;
     private final int headerHeight;
     private final int headerWidth;
-    private final int totalHeight;
     private final int itemHeight;
     private final int expandWidth;
     private boolean isExpanded = false;
 
-    private final AddButton addButton;
+    private final AddRemoveButtonWidget addButton;
 
     private final int interval = 2;
 
     private CheckState checkState = CheckState.CHECKED;
 
-    public DropDownTextFieldListWidget(int x, int y, int expandWidth, int totalHeight, int headerWidth, int headerHeight, int itemHeight, Text message, ArrayList<String> list) {
+    public DropDownTextFieldListWidget(int x, int y, int expandWidth, int headerWidth, int headerHeight, int itemHeight, Text message, ArrayList<String> list) {
         super(x, y, headerWidth, headerHeight, message);
-        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, totalHeight - headerHeight - this.interval, x, y + headerHeight + this.interval, itemHeight, this);
+        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, x, y + headerHeight + this.interval, itemHeight, this);
         this.itemTextFieldListWidget.setItemEntries(list);
         this.headerWidth = headerWidth;
         this.headerHeight = headerHeight;
-        this.totalHeight = totalHeight;
         this.itemHeight = itemHeight;
         this.expandWidth = expandWidth;
         this.setItemListWidgetEnabled(false);
 
-        this.addButton = new AddButton(0, 0, 14, headerHeight, Text.of("+"));
+        this.addButton = new AddRemoveButtonWidget(0, 0, 14, headerHeight, true, () -> {
+            System.out.println("add clicked");
+            this.itemTextFieldListWidget.addItemEntry("New Item");
+            this.itemTextFieldListWidget.updateParentWidgetCheckedState();
+            this.setExpanded(true);
+        });
     }
 
     public void setItemListWidgetEnabled(boolean enabled) {
         this.itemTextFieldListWidget.visible = enabled;
         this.itemTextFieldListWidget.active = enabled;
-        this.height = enabled ? this.totalHeight : this.headerHeight;
+        this.height = this.headerHeight + (enabled ? this.itemTextFieldListWidget.getHeight() : 0);
         this.width = enabled ? this.expandWidth : this.headerWidth;
     }
 
@@ -68,8 +71,8 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
 //        super.renderWidget(context, mouseX, mouseY, delta);
         int interval = this.isExpanded ? this.interval : 0;
         context.drawTextWithShadow(this.textRenderer, this.getMessage(), this.getX() + 5, this.getY() + 5, Colors.WHITE);
-        context.fill(this.getX(), this.getY(), this.getX() + this.headerWidth, this.getY() + this.headerHeight + interval, 0xFFC0C0C0);
-        context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.headerWidth - 1, this.getY() + this.headerHeight + interval - 1, 0xFF000000);
+        context.fill(this.getX(), this.getY(), this.getX() + this.headerWidth, this.getY() + this.headerHeight + interval, WrutilsColor.GREY_0);
+        context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.headerWidth - 1, this.getY() + this.headerHeight + interval - 1, WrutilsColor.BLACK);
         this.itemTextFieldListWidget.render(context, mouseX, mouseY, delta);
 
         context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 4, this.getY() + this.headerHeight / 2 - 4, this.getX() + this.headerWidth - this.headerHeight / 2 + 5, this.getY() + this.headerHeight / 2 + 5, Colors.WHITE);
@@ -81,6 +84,7 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
                 context.fill(this.getX() + this.headerWidth - this.headerHeight / 2 - 2, this.getY() + this.headerHeight / 2, this.getX() + this.headerWidth - this.headerHeight / 2 + 3, this.getY() + this.headerHeight / 2 + 1, Colors.GREEN);
             }
         }
+
         this.addButton.setPosition(this.getX() + this.headerWidth - this.headerHeight - this.headerHeight / 2,
                 this.getY() + this.headerHeight / 2 - this.addButton.getHeight() / 2);
         this.addButton.render(context, mouseX, mouseY, delta);
@@ -95,8 +99,10 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
         if (!this.isMouseOver(mouseX, mouseY)) {
             this.setExpanded(false);
         }
-        if (this.addButton.mouseClicked(mouseX, mouseY, button)) {
-            return true;
+        if (this.active) {
+            if (this.addButton.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
         }
 
         if (this.itemTextFieldListWidget.mouseClicked(mouseX, mouseY, button)) {
@@ -164,54 +170,9 @@ public class DropDownTextFieldListWidget extends BaseClickableWidget {
                     break;
             }
             return;
-        } else if (mouseX > this.getX() + this.headerWidth - (double) (this.headerHeight * 5) / 3
-                && mouseY < this.getY() + this.headerHeight
-        ) {
-            System.out.println("clicked");
         }
 
         this.setExpanded(!this.isExpanded);
-    }
-
-    private static class AddButton extends BaseClickableWidget {
-
-        public AddButton(int x, int y, int width, int height, Text message) {
-            super(x, y, width, height, message);
-        }
-
-        @Override
-        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            int length = 9;
-
-            context.fill(this.getX() + this.getWidth() / 2 - length / 2,
-                    this.getY() + this.getHeight() / 2 - length / 2,
-                    this.getX() + this.getWidth() / 2 + length - length / 2,
-                    this.getY() + this.getHeight() / 2 + length - length / 2,
-                    0xFFC0C0C0);
-            context.fill(this.getX() + this.getWidth() / 2 - length / 2 + 1,
-                    this.getY() + this.getHeight() / 2 - length / 2 + 1,
-                    this.getX() + this.getWidth() / 2 + length - length / 2 - 1,
-                    this.getY() + this.getHeight() / 2 + length - length / 2 - 1,
-                    Colors.BLACK);
-            context.fill(
-                    this.getX() + this.getWidth() / 2 - length / 2 + 2,
-                    this.getY() + this.getHeight() / 2,
-                    this.getX() + this.getWidth() / 2 + length - length / 2 - 2,
-                    this.getY() + this.getHeight() / 2 + 1,
-                    Colors.GREEN);
-            context.fill(
-                    this.getX() + this.getWidth() / 2,
-                    this.getY() + this.getHeight() / 2 - length / 2 + 2,
-                    this.getX() + this.getWidth() / 2 + 1,
-                    this.getY() + this.getHeight() / 2 + length - length / 2 - 2,
-                    Colors.GREEN);
-
-        }
-
-        @Override
-        public void onClick(double mouseX, double mouseY) {
-            System.out.println("sdfsf clicked");
-        }
     }
 
 
