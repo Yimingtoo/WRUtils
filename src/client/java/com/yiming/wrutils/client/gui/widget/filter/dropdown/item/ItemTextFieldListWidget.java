@@ -1,10 +1,10 @@
-package com.yiming.wrutils.client.gui.widget.search.dropdown.item;
+package com.yiming.wrutils.client.gui.widget.filter.dropdown.item;
 
 import com.yiming.wrutils.client.gui.widget.CustomTextFieldWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.CheckState;
-import com.yiming.wrutils.client.gui.widget.search.clickable.AddRemoveButtonWidget;
-import com.yiming.wrutils.client.gui.widget.search.clickable.TextButtonWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.DropDownTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.CheckState;
+import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
+import com.yiming.wrutils.client.gui.widget.filter.clickable.TextButtonWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

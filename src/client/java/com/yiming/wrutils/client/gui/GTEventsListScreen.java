@@ -1,8 +1,8 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.item.ItemTextFieldListWidget;
-import com.yiming.wrutils.client.gui.widget.search.SearchWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
-    private SearchWidget searchWidget;
+    private FilterWidget filterWidget;
     //    private ItemListWidget itemListWidget;
     private ItemTextFieldListWidget itemTextFieldListWidget;
 
@@ -22,7 +22,7 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     }
 
     private boolean handleMouseEvent(Function<Element, Boolean> handler) {
-        if (handler.apply(this.searchWidget)) return true;
+        if (handler.apply(this.filterWidget)) return true;
         if (handler.apply(this.gameTickEventsListWidget)) return true;
         return false;
     }
@@ -39,8 +39,8 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         this.gameTickEventsListWidget.setEvents(DataManager.eventRecorder);
         this.addDrawableChild(this.gameTickEventsListWidget);
 
-        this.searchWidget = new SearchWidget(0, y, this.width, this.height - y - 10, Text.of("Search"));
-        this.addDrawableChild(this.searchWidget);
+        this.filterWidget = new FilterWidget(0, y, this.width, this.height - y - 10, Text.of("Filter"));
+        this.addDrawableChild(this.filterWidget);
 
 //        ArrayList<String> list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape", "Honeydew", "Iceberg"));
 //        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), 100, 100, 10, y, 18);

@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui;
 
-import com.yiming.wrutils.client.gui.widget.search.dropdown.item.ItemListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
