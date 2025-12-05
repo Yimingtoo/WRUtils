@@ -1,9 +1,10 @@
-package com.yiming.wrutils.client.gui.widget.search;
+package com.yiming.wrutils.client.gui.widget.filter;
 
-import com.yiming.wrutils.client.gui.widget.search.clickable.BaseClickableWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.DropDownSelectListWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.DropDownSingleSelectListWidget;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.DropDownTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownSelectListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownSingleSelectListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-public class SearchWidget extends ClickableWidget {
+public class FilterWidget extends ClickableWidget {
     //    private final ItemListWidget dropDownWidget;
 //    private final DropDownSelectListWidget tickSequenceSelectWidget;
 //    private final DropDownTextFieldListWidget gameTickSelectWidget;
@@ -34,10 +35,10 @@ public class SearchWidget extends ClickableWidget {
     private BaseClickableWidget currentWidget = null;
 
 
-    public SearchWidget(int x, int y, int width, int height, Text message) {
+    public FilterWidget(int x, int y, int width, int height, Text message) {
         super(x, y, width, height, message);
         ArrayList<String> list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape", "Honeydew", "Iceberg"));
-//        list = new ArrayList<>(List.of("Apple"));
+        list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian"));
 
 
         int x1 = 10;
@@ -55,13 +56,23 @@ public class SearchWidget extends ClickableWidget {
 //        this.areaListSelectListWidget = new DropDownSelectListWidget(10, y + 23, 100, 100, 18, 18, Text.of("Area"), list);
 
         this.widgetMap.put(this.timeButton, new HashMap<>());
-        this.widgetMap.get(this.timeButton).put("GameTick", new DropDownTextFieldListWidget(10, y + 23, 200, 100, 18, 18, Text.of("Game Tick"), list));
-        this.widgetMap.get(this.timeButton).put("TickSequence", new DropDownSelectListWidget(115, y + 23, 100, 100, 18, 18, Text.of("Sequence"), list));
+        this.widgetMap.get(this.timeButton).put("GameTick", new DropDownTextFieldListWidget(10, y + 23, 100, 18, 200, 18, Text.of("Game Tick"), list));
+        this.widgetMap.get(this.timeButton).put("TickSequence", new DropDownSelectListWidget(115, y + 23, 100, 18, 100, 18, Text.of("Sequence"), list));
 
         this.widgetMap.put(this.positionButton, new HashMap<>());
-        this.widgetMap.get(this.positionButton).put("AreaSelect", new DropDownSingleSelectListWidget(10, y + 23, 100, 100, 18, 18, Text.of("Area"), list));
+        this.widgetMap.get(this.positionButton).put("TargetArea", new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), list));
+        this.widgetMap.get(this.positionButton).put("TargetBlock", new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), list));
+        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), list);
+        sourceAreaWidget.getItemListWidget().setHeaderItemEntry(new ItemListWidget.HeaderItemEntry("Any"));
+        this.widgetMap.get(this.positionButton).put("SourceArea", sourceAreaWidget);
 
+        this.widgetMap.get(this.positionButton).put("SourceBlock", new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), list));
         this.widgetMap.put(this.eventButton, new HashMap<>());
+
+        this.widgetMap.get(this.eventButton).put("EventType", new DropDownSelectListWidget(10, y + 23, 95, 18, 200, 18, Text.of("Event Type"), list));
+        this.widgetMap.get(this.eventButton).put("Delay", new DropDownSelectListWidget(110, y + 23, 95, 18, 200, 18, Text.of("Delay"), list));
+        this.widgetMap.get(this.eventButton).put("Priority", new DropDownSelectListWidget(210, y + 23, 95, 18, 200, 18, Text.of("Priority"), new ArrayList<>(List.of("High", "Medium", "Low"))));
+        this.widgetMap.get(this.eventButton).put("IsAdded", new DropDownSelectListWidget(310, y + 23, 95, 18, 200, 18, Text.of("Is Added"), new ArrayList<>(List.of("True", "False"))));
 
         this.enableSubWidgets(null);
 

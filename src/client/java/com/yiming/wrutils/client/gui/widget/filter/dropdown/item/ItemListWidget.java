@@ -1,7 +1,6 @@
-package com.yiming.wrutils.client.gui.widget.search.dropdown.item;
+package com.yiming.wrutils.client.gui.widget.filter.dropdown.item;
 
-import com.yiming.wrutils.client.gui.widget.search.dropdown.CheckState;
-import com.yiming.wrutils.client.gui.widget.search.dropdown.DropDownSelectListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.CheckState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,28 +14,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
-    private final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
-    private final DropDownSelectListWidget parent;
-    private boolean isSingleChecked;
+    protected final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
+    protected String masterString = null;
+    private HeaderItemEntry headerItemEntry = null;
+    protected Runnable onFocusedAction;
 
-    public ItemListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownSelectListWidget parent) {
-        this(minecraftClient, width, height, x, y, itemHeight, parent, false);
-    }
-
-    public ItemListWidget(MinecraftClient minecraftClient, int width, int height, int x, int y, int itemHeight, DropDownSelectListWidget parent, boolean isSingleChecked) {
-        super(minecraftClient, width, height, y, itemHeight);
-        this.parent = parent;
+    public ItemListWidget(MinecraftClient minecraftClient, int width, int x, int y, int itemHeight) {
+        super(minecraftClient, width, 0, y, itemHeight);
         this.setX(x);
-        this.isSingleChecked = isSingleChecked;
     }
 
     public void updateEntries() {
         this.clearEntries();
         this.itemEntries.forEach(this::addEntry);
         this.refreshScroll();
+        this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
     public void setItemEntries(ArrayList<String> items) {
+        this.itemEntries.clear();
+        if (this.headerItemEntry != null) {
+            this.itemEntries.add(this.headerItemEntry);
+        }
         items.forEach(item -> this.itemEntries.add(new ItemEntry(item)));
         this.updateEntries();
     }
@@ -45,7 +44,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         return this.children().stream()
                 .filter(entry -> {
                     if (entry instanceof ItemEntry itemEntry) {
-                        return itemEntry.isChecked;
+                        return itemEntry.getCheckState() != CheckState.UNCHECKED;
                     }
                     return false;
                 })
@@ -53,46 +52,38 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
     public void setCheckedItems(boolean checked) {
-        if (!this.isSingleChecked) {
-            this.children().forEach(entry -> {
-                if (entry instanceof ItemEntry itemEntry) {
-                    itemEntry.setChecked(checked);
-                }
-            });
-        } else {
-            if (!checked) {
-                this.children().forEach(entry -> {
-                    if (entry instanceof ItemEntry itemEntry) {
-                        itemEntry.setChecked(false);
-                    }
-                });
-            } else {
-
-            }
-        }
-    }
-
-    public void setSingleCheckedItem(ItemEntry itemEntry) {
         this.children().forEach(entry -> {
-            if (entry instanceof ItemEntry itemEntry1) {
-                itemEntry1.setChecked(itemEntry1 == itemEntry && !itemEntry1.isChecked());
+            if (entry instanceof ItemEntry itemEntry) {
+                itemEntry.setChecked(checked);
             }
         });
     }
 
-    public void setSingleChecked(boolean isSingleChecked) {
-        this.isSingleChecked = isSingleChecked;
-        this.children().forEach(entry -> {
-            if (entry instanceof ItemEntry itemEntry1) {
-                itemEntry1.setIsSingleChecked(isSingleChecked);
-            }
-        });
+
+    public void setOnFocusedAction(Runnable onFocusedAction) {
+        this.onFocusedAction = onFocusedAction;
     }
 
     public int getItemCount() {
         return this.children().size();
     }
 
+    public void setMasterString(String masterString) {
+        this.masterString = masterString;
+    }
+
+    public String getMasterString() {
+        return this.masterString;
+    }
+
+    public void setHeaderItemEntry(HeaderItemEntry headerItemEntry) {
+        this.headerItemEntry = headerItemEntry;
+        ArrayList<ItemEntry> itemEntriesClone = new ArrayList<>(this.itemEntries);
+        this.itemEntries.clear();
+        this.itemEntries.add(this.headerItemEntry);
+        this.itemEntries.addAll(itemEntriesClone);
+        this.updateEntries();
+    }
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -129,27 +120,20 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     @Override
     public void setFocused(@Nullable Element focused) {
         super.setFocused(focused);
+        this.setOnFocused();
+    }
+
+    protected void setOnFocused() {
         if (this.getSelectedOrNull() instanceof ItemEntry entry) {
-            if (this.isSingleChecked) {
-                this.setSingleCheckedItem(entry);
-                if(this.getCheckedItems().isEmpty()){
-                    this.parent.setCheckState(CheckState.UNCHECKED);
-                }else {
-                    this.parent.setCheckState(CheckState.CHECKED);
-                }
+            if (entry.getCheckState() == CheckState.CHECKED) {
+                entry.setCheckState(CheckState.UNCHECKED);
             } else {
-                entry.setChecked(!entry.isChecked());
-                int size = this.getCheckedItems().size();
-                if (size == 0) {
-                    this.parent.setCheckState(CheckState.UNCHECKED);
-                } else if (size < this.children().size()) {
-                    this.parent.setCheckState(CheckState.INDETERMINATE);
-                } else {
-                    this.parent.setCheckState(CheckState.CHECKED);
-                }
+                entry.setCheckState(CheckState.CHECKED);
+            }
+            if (this.onFocusedAction != null) {
+                this.onFocusedAction.run();
             }
         }
-
     }
 
     @Override
@@ -178,45 +162,50 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
     public static class ItemEntry extends ItemListWidget.Entry {
-        private final String itemName;
-        private boolean isChecked;
-        private boolean isSingleChecked;
+        protected final String itemName;
+        CheckState checkState = CheckState.UNCHECKED;
 
         public ItemEntry(String itemName) {
             this.itemName = itemName;
-            this.isChecked = true;
-            this.isSingleChecked = false;
         }
 
-        public ItemEntry(String itemName, boolean isSingleChecked) {
-            this.itemName = itemName;
-            this.isChecked = true;
-            this.isSingleChecked = isSingleChecked;
+        public void setCheckState(CheckState checkState) {
+            this.checkState = checkState;
         }
 
-        public boolean isChecked() {
-            return isChecked;
+        public CheckState getCheckState() {
+            return checkState;
+        }
+
+        public String getItemName() {
+            return itemName;
         }
 
         public void setChecked(boolean checked) {
-            this.isChecked = checked;
+            if (checked) {
+                this.checkState = CheckState.CHECKED;
+            } else {
+                this.checkState = CheckState.UNCHECKED;
+            }
         }
 
-        public void setIsSingleChecked(boolean checked) {
-            this.isSingleChecked = checked;
-        }
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-
             context.drawTextWithShadow(this.textRenderer, itemName, x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
-            if (!this.isSingleChecked) {
-                context.fill(x - 1, y + entryHeight / 2 - 4, x + 8, y + entryHeight / 2 + 5, Colors.WHITE);
-                context.fill(x, y + entryHeight / 2 - 3, x + 7, y + entryHeight / 2 + 4, Colors.BLACK);
-            }
-            if (this.isChecked) {
+            context.fill(x - 1, y + entryHeight / 2 - 4, x + 8, y + entryHeight / 2 + 5, Colors.WHITE);
+            context.fill(x, y + entryHeight / 2 - 3, x + 7, y + entryHeight / 2 + 4, Colors.BLACK);
+            if (this.checkState == CheckState.CHECKED) {
                 context.fill(x + 1, y + entryHeight / 2 - 2, x + 6, y + entryHeight / 2 + 3, Colors.GREEN);
+            } else if (this.checkState == CheckState.INDETERMINATE) {
+                context.fill(x + 1, y + entryHeight / 2, x + 6, y + entryHeight / 2 + 1, Colors.GREEN);
             }
+        }
+    }
+
+    public static class HeaderItemEntry extends ItemEntry {
+        public HeaderItemEntry(String itemName) {
+            super(itemName);
         }
     }
 }
