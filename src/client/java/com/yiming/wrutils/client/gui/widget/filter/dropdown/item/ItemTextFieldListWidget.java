@@ -5,6 +5,9 @@ import com.yiming.wrutils.client.gui.widget.filter.dropdown.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.TextButtonWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.item.IntegerItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.LongItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -19,12 +22,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
     private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
-    private final ArrayList<ItemTextFieldEntry> itemEntries = new ArrayList<>();
-    private final ItemHeaderTextFieldEntry headerEntry = new ItemHeaderTextFieldEntry("");
+    private final ArrayList<ItemTextFieldEntry<? extends FilterType>> itemEntries = new ArrayList<>();
+    private final ItemHeaderTextFieldEntry<? extends FilterType> headerEntry = new ItemHeaderTextFieldEntry<>(new LongItem(0), this.headerTextFieldLostFocusFunction);
     private DropDownTextFieldListWidget parent;
+    private Function<String, Boolean> itemTextFieldLostFocusFunction = null;
+    private Function<String, Boolean> headerTextFieldLostFocusFunction = null;
+
 
     public ItemTextFieldListWidget(MinecraftClient minecraftClient, int width, int x, int y, int itemHeight, DropDownTextFieldListWidget parent) {
         super(minecraftClient, width, itemHeight * 2 + 6, y, itemHeight);
@@ -40,9 +47,9 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
-    public void setItemEntries(ArrayList<String> items) {
+    public void setItemEntries(ArrayList<? extends FilterType> items) {
         items.forEach(item -> {
-            ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(item);
+            ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry = new ItemTextFieldEntry<>(item, this.itemTextFieldLostFocusFunction);
             itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
             this.itemEntries.add(itemTextFieldEntry);
         });
@@ -50,8 +57,8 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     }
 
 
-    public void addItemEntry(String itemName) {
-        ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(itemName);
+    public void addItemEntry(FilterType item) {
+        ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry = new ItemTextFieldEntry<>(item, this.itemTextFieldLostFocusFunction);
         itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
         this.itemEntries.add(itemTextFieldEntry);
         this.updateEntries();
@@ -59,7 +66,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         this.setScrollY(this.getMaxScrollY());
     }
 
-    public void removeItemTextFieldEntry(ItemTextFieldEntry itemTextFieldEntry) {
+    public void removeItemTextFieldEntry(ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
         this.itemEntries.remove(itemTextFieldEntry);
         this.updateEntries();
     }
@@ -68,18 +75,36 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         this.headerEntry.getTextField().setText(text);
     }
 
+    public void setItemTextFieldLostFocusFunction(Function<String, Boolean> function) {
+        this.itemTextFieldLostFocusFunction = function;
+        for (ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry : this.itemEntries) {
+            if (!(itemTextFieldEntry instanceof ItemHeaderTextFieldEntry)) {
+                itemTextFieldEntry.setTextFieldLostFocusFunction(function);
+            }
+        }
+    }
+
+    public void setHeaderTextFieldLostFocusFunction(Function<String, Boolean> function) {
+        this.headerTextFieldLostFocusFunction = function;
+        this.headerEntry.setTextFieldLostFocusFunction(function);
+    }
+
+    public ItemHeaderTextFieldEntry<? extends FilterType> getHeaderEntry() {
+        return this.headerEntry;
+    }
+
 
     public List<String> getCheckedItems() {
         return this.children().stream()
                 .filter(entry -> {
-                    if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+                    if (entry instanceof ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
                         if (!(entry instanceof ItemHeaderTextFieldEntry)) {
                             return itemTextFieldEntry.isChecked;
                         }
                     }
                     return false;
                 })
-                .map(entry -> ((ItemTextFieldEntry) entry).itemName).toList();
+                .map(entry -> ((ItemTextFieldEntry<? extends FilterType>) entry).getItemName()).toList();
     }
 
     public void updateParentWidgetCheckedState() {
@@ -95,7 +120,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
     public void setCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
-            if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+            if (entry instanceof ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
                 itemTextFieldEntry.setChecked(checked);
             }
         });
@@ -103,6 +128,18 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
     public int getItemCount() {
         return this.children().size();
+    }
+
+    public boolean isTextFieldFocused() {
+        return this.children().stream().anyMatch(entry -> entry instanceof ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry && itemTextFieldEntry.getTextField().isFocused());
+    }
+
+    public void removeTextFieldFocused() {
+        this.children().forEach(entry -> {
+            if (entry instanceof ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
+                itemTextFieldEntry.getTextField().setFocused(false);
+            }
+        });
     }
 
 
@@ -150,7 +187,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean bl = this.isMouseOver(mouseX, mouseY);
         for (Entry entry : this.children()) {
-            if (entry instanceof ItemTextFieldEntry itemTextFieldEntry) {
+            if (entry instanceof ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
                 if (!itemTextFieldEntry.getTextField().isMouseOver(mouseX, mouseY)) {
                     itemTextFieldEntry.getTextField().setFocused(false);
                 }
@@ -195,20 +232,25 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
     }
 
-    public static class ItemTextFieldEntry extends ItemTextFieldListWidget.Entry {
-        protected final String itemName;
+    public static class ItemTextFieldEntry<T extends FilterType> extends ItemTextFieldListWidget.Entry {
+        protected final T item;
+
         protected boolean isChecked;
         protected final CustomTextFieldWidget textField;
         protected final AddRemoveButtonWidget removeButton;
 
         protected Runnable onRemoveAction = null;
 
+        public ItemTextFieldEntry(T item, Function<String, Boolean> textFieldLostFocusFunction) {
+            this(item);
+            this.textField.setLostFocusFunction(textFieldLostFocusFunction);
+        }
 
-        public ItemTextFieldEntry(String itemName) {
-            this.itemName = itemName;
+        public ItemTextFieldEntry(T item) {
+            this.item = item;
             this.isChecked = true;
-            this.textField = new CustomTextFieldWidget(this.textRenderer, 120, 14, Text.of(itemName));
-            this.textField.setText(itemName);
+            this.textField = new CustomTextFieldWidget(this.textRenderer, 120, 14, Text.of(this.getItemName()));
+            this.textField.setText(this.getItemName());
             this.textField.setEditable(true);
             this.textField.setMaxLength(20);
             this.removeButton = new AddRemoveButtonWidget(0, 0, 14, 14, false, () -> {
@@ -219,12 +261,28 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
             });
         }
 
+        public void setTextFieldLostFocusFunction(Function<String, Boolean> textFieldLostFocusFunction) {
+            this.textField.setLostFocusFunction(textFieldLostFocusFunction);
+        }
+
         public void setOnRemoveAction(Runnable onRemoveAction) {
             this.onRemoveAction = onRemoveAction;
         }
 
         public TextFieldWidget getTextField() {
             return textField;
+        }
+
+        public T getItem() {
+            return item;
+        }
+
+        public void updateTextField() {
+            this.textField.setText(this.getItemName());
+        }
+
+        public String getItemName() {
+            return item.getName();
         }
 
         public boolean isChecked() {
@@ -278,19 +336,25 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
     }
 
-    public static class ItemHeaderTextFieldEntry extends ItemTextFieldEntry {
+    public static class ItemHeaderTextFieldEntry<T extends FilterType> extends ItemTextFieldEntry<FilterType> {
         TextButtonWidget textButtonWidget;
         private final String titleText = "Origin Tick:";
         int textWidth;
 
-        public ItemHeaderTextFieldEntry(String itemName) {
-            super(itemName);
+        public ItemHeaderTextFieldEntry(T item, Function<String, Boolean> textFieldLostFocusFunction) {
+            this(item);
+            this.textField.setLostFocusFunction(textFieldLostFocusFunction);
+        }
+
+        public ItemHeaderTextFieldEntry(T item) {
+            super(item);
             this.removeButton.active = false;
             this.removeButton.visible = false;
             this.textWidth = this.textRenderer.getWidth(this.titleText);
 
             this.textButtonWidget = new TextButtonWidget(0, 0, 35, 14, Text.of("Reset"), () -> {
-                System.out.println("reset click");
+//                System.out.println("reset click");
+                this.textField.setText(this.getItemName());
             });
             this.textField.setWidth(142 - this.textWidth - 6);
 

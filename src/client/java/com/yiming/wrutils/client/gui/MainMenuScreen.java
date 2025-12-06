@@ -54,7 +54,7 @@ public class MainMenuScreen extends Screen {
         }).width(110).build());
 
         adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
-            GuiBase.openGui(new ConfigsScreen());
+            GuiBase.openGui(new ConfigsScreen(this));
         }).width(110).build());
 
         adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {

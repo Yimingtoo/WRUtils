@@ -5,6 +5,8 @@ import com.yiming.wrutils.client.input.HotkeysManagement;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,11 @@ public class ConfigsScreen extends GuiConfigsBase {
 
     public ConfigsScreen() {
         super(10, 50, ModInfo.MOD_ID, null, ModInfo.MOD_ID + ".gui.title.malilib_gui.configs_screen", ModInfo.MOD_VERSION);
+    }
+
+    public ConfigsScreen(Screen parent) {
+        this();
+        this.setParent( parent);
     }
 
     @Override
@@ -67,4 +74,5 @@ public class ConfigsScreen extends GuiConfigsBase {
         GENERIC,
         HOTKEYS
     }
+
 }

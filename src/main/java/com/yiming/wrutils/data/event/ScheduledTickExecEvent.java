@@ -21,6 +21,14 @@ public class ScheduledTickExecEvent extends BaseEvent {
         this.description = description;
     }
 
+    public int getDelay() {
+        return delay;
+    }
+
+    public TickPriority getPriority() {
+        return priority;
+    }
+
 
     @Override
     public String toString() {

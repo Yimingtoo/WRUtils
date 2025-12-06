@@ -1,21 +1,28 @@
 package com.yiming.wrutils.data.event;
 
 public enum MicroTimingSequence {
-    WTU("World Time Update"),
-    NTE("Next Tick Entry"),
-    RAID("Raid"),
-    RT("Random Tick"),
-    BE("Block Event"),
-    EU("Entity Update"),
-    TE("Tile Entity"),
-    NU("Network Update");
+    WTU("WTU", "World Time Update"),
+    NTE("NTE", "Next Tick Entry"),
+    RAID("RAID", "Raid"),
+    RT("RT", "Random Tick"),
+    BE("BE", "Block Event"),
+    EU("EU", "Entity Update"),
+    TE("TE", "Tile Entity"),
+    NU("NU", "Network Update");
 
     private final String name;
+    private final String abbr;
 
-    MicroTimingSequence(String name) {
+    MicroTimingSequence(String abbr, String name) {
         this.name = name;
+        this.abbr = abbr;
     }
+
     public String getName() {
         return name;
+    }
+
+    public String getAbbr() {
+        return abbr;
     }
 }
