@@ -3,6 +3,9 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.item.AreaListItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.item.SubAreaItem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -14,19 +17,27 @@ import java.util.List;
 public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
     private final ItemListWidget subItemListWidget;
     private LinkedHashMap<String, ArrayList<String>> itemStringMap;
+    private LinkedHashMap<FilterType, ArrayList<? extends FilterType>> itemMap = new LinkedHashMap<>();
 
 
-    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<String> list) {
+    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
         super(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
 
-        this.tempInit();
+//        this.tempInit();
         this.itemListWidget = new SingleSelectItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
         this.subItemListWidget = new ItemListWidget(this.client, this.expandWidth - headerWidth, x + this.itemListWidget.getWidth(), y + headerHeight + this.interval, itemHeight);
 
 //        this.subItemListWidget.setItemEntries(list);
+        for (FilterType entry : list) {
+            if (entry instanceof AreaListItem areaListItem) {
+                this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getSelectBoxes().getList()));
+            }
+        }
+
+
         this.setSubItemListWidgetEnabled(false);
         this.subItemListWidget.setOnFocusedAction(() -> {
-            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
+            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry<? extends FilterType> entry) {
                 int size = this.subItemListWidget.getCheckedItems().size();
                 if (size == 0) {
                     entry.setCheckState(CheckState.UNCHECKED);
@@ -41,18 +52,18 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
             }
         });
 
-        this.itemListWidget.setItemEntries(new ArrayList<>(this.itemStringMap.keySet()));
+        this.itemListWidget.setItemEntries(new ArrayList<>(this.itemMap.keySet()));
         this.setItemListWidgetEnabled(false);
         this.itemListWidget.setOnFocusedAction(() -> {
             if (this.itemListWidget.getFocused() != null) {
-                if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
+                if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry<? extends FilterType> entry) {
                     if (!(entry instanceof ItemListWidget.HeaderItemEntry)) {
                         this.setCheckState(entry.getCheckState());
                         String entryName = entry.getItemName();
                         String masterString = this.subItemListWidget.getMasterString();
                         this.setSubItemListWidgetEnabled(true);
                         if (!entryName.equals(masterString)) {
-                            this.setSubItemListWidgetItems(entryName);
+                            this.setSubItemListWidgetItems(entry.getItem());
                         } else {
                             if (entry.getCheckState() == CheckState.CHECKED) {
                                 this.subItemListWidget.setCheckedItems(true);
@@ -72,25 +83,30 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
             }
         });
 
-
     }
 
-    public void setSubItemListWidgetItems(@Nullable String key) {
-        this.subItemListWidget.setMasterString(key);
-        this.subItemListWidget.setItemEntries(key != null ? this.itemStringMap.get(key) : new ArrayList<>());
+    public void setSubItemListWidgetItems(@Nullable FilterType key) {
+        if (key != null) {
+            this.subItemListWidget.setMasterString(key.getName());
+            this.subItemListWidget.setItemEntries(this.itemMap.get(key));
+        } else {
+            this.subItemListWidget.setMasterString(null);
+            this.subItemListWidget.setItemEntries(new ArrayList<>());
+        }
         this.subItemListWidget.setCheckedItems(true);
         this.subItemListWidget.setScrollY(0);
     }
 
-    private void tempInit() {
-        this.itemStringMap = new LinkedHashMap<>();
-        this.itemStringMap.put("Car", new ArrayList<>());
-        this.itemStringMap.put("Plane", new ArrayList<>());
-        this.itemStringMap.put("Bike", new ArrayList<>());
-        this.itemStringMap.get("Car").addAll(new ArrayList<>(List.of("BMW", "Audi", "Mercedes", "Volvo", "Porsche", "Lamborghini", "Mercedes", "Volvo", "Porsche")));
-        this.itemStringMap.get("Plane").addAll(new ArrayList<>(List.of("Boeing", "Airbus", "Embraer", "Bombardier", "Dassault", "Cessna", "Mercedes", "Volvo", "Porsche")));
-        this.itemStringMap.get("Bike").addAll(new ArrayList<>(List.of("Motorcycle", "Scooter", "Bicycle", "Electric Bike", "Electric Scooter", "Electric Motorcycle", "Mercedes", "Volvo", "Porsche")));
-    }
+
+//    private void tempInit() {
+//        this.itemStringMap = new LinkedHashMap<>();
+//        this.itemStringMap.put("Car", new ArrayList<>());
+//        this.itemStringMap.put("Plane", new ArrayList<>());
+//        this.itemStringMap.put("Bike", new ArrayList<>());
+//        this.itemStringMap.get("Car").addAll(new ArrayList<>(List.of("BMW", "Audi", "Mercedes", "Volvo", "Porsche", "Lamborghini", "Mercedes", "Volvo", "Porsche")));
+//        this.itemStringMap.get("Plane").addAll(new ArrayList<>(List.of("Boeing", "Airbus", "Embraer", "Bombardier", "Dassault", "Cessna", "Mercedes", "Volvo", "Porsche")));
+//        this.itemStringMap.get("Bike").addAll(new ArrayList<>(List.of("Motorcycle", "Scooter", "Bicycle", "Electric Bike", "Electric Scooter", "Electric Motorcycle", "Mercedes", "Volvo", "Porsche")));
+//    }
 
     public void setSubItemListWidgetEnabled(boolean enabled) {
         this.subItemListWidget.visible = enabled;

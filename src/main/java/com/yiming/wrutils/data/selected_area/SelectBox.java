@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3i;
 import java.util.ArrayList;
 
 public class SelectBox {
-    private String selectBoxName = "Sub-Area-1";
+    private String selectBoxName = "Sub-Area-0";
     private Vec3i pos1;
     private Vec3i pos2;
 

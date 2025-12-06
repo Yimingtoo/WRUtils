@@ -23,16 +23,20 @@ public class SubAreaScreen extends AbstractSetupScreen {
         this.selfSelectBox = selfSelectBox;
     }
 
-    private void rename() {
-        String name = nameField.getText();
+    private boolean rename(String name) {
+//        String name = nameField.getText();
         HashSet<String> nameSet = this.upperSelectBoxes.getSelectBoxListNames();
         if (nameSet.contains(name) && !this.selfSelectBox.getName().equals(name)) {
             // 重复命名
+            System.out.println("Repeat Name");
         } else if (name.isEmpty()) {
             // 输入为空
-        } else if (!this.selfSelectBox.getName().equals(name)) {
+            System.out.println("Empty Name");
+        } else {
             this.selfSelectBox.setName(name);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -61,11 +65,15 @@ public class SubAreaScreen extends AbstractSetupScreen {
         this.nameField = this.addDrawableChild(new CustomTextFieldWidget(this.textRenderer, 200, 20, Text.of("Sub Area Name")));
         SimplePositioningWidget.setPos(this.nameField, 75, y, 200, 20);
         this.nameField.setText(this.selfSelectBox.getName());
+        this.nameField.setLostFocusFunction(this::rename);
         y += 25;
 
         ButtonWidget buttonConfirm = this.addDrawableChild(ButtonWidget.builder(Text.of("Confirm"), button -> {
-            rename();
-            client1.setScreen(this.parent);
+            if (rename(this.nameField.getText())) {
+                client1.setScreen(this.parent);
+            } else {
+                System.out.println("rename fail");
+            }
         }).width(100).build());
         ButtonWidget buttonCancel = this.addDrawableChild(ButtonWidget.builder(Text.of("Cancel"), button -> {
             client1.setScreen(this.parent);

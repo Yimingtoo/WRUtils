@@ -22,7 +22,8 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     }
 
     private boolean handleMouseEvent(Function<Element, Boolean> handler) {
-        if (handler.apply(this.filterWidget)) return true;
+        if (this.filterWidget != null)
+            if (handler.apply(this.filterWidget)) return true;
         if (handler.apply(this.gameTickEventsListWidget)) return true;
         return false;
     }

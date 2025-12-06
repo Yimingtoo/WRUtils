@@ -29,17 +29,21 @@ public class AreaListScreen extends AbstractSetupScreen {
         this.selfSelectBoxes = selfSelectBoxes;
     }
 
-    public void setSelectBoxesName() {
-        String name = AreaNameField.getText();
+    public boolean setSelectBoxesName(String name) {
+//        String name = AreaNameField.getText();
         String oldName = this.selfSelectBoxes.getName();
         HashSet<String> nameSet = DataManager.areaGroupManagement.getSelectBoxesListNames();
         if (nameSet.contains(name) && !oldName.equals(name)) {
             // 重复命名
+            System.out.println("Area name already exists!");
         } else if (name.isEmpty()) {
             // 输入为空
-        } else if (!oldName.equals(name)) {
+            System.out.println("Area name cannot be empty!");
+        } else {
             this.selfSelectBoxes.setName(name);
+            return true;
         }
+        return false;
     }
 
 
@@ -70,9 +74,7 @@ public class AreaListScreen extends AbstractSetupScreen {
         SimplePositioningWidget.setPos(textWidget, 12, y, this.textRenderer.getWidth(text1), 20);
 
         this.AreaNameField = this.addDrawableChild(new CustomTextFieldWidget(this.textRenderer, 200, 20, Text.of("Area Name")));
-        this.AreaNameField.setLostFocusAction(() -> {
-            setSelectBoxesName();
-        });
+        this.AreaNameField.setLostFocusFunction(this::setSelectBoxesName);
         SimplePositioningWidget.setPos(this.AreaNameField, 75, y, 200, 20);
         this.AreaNameField.setText(this.selfSelectBoxes.getName());
 
@@ -102,7 +104,7 @@ public class AreaListScreen extends AbstractSetupScreen {
 
     @Override
     public void close() {
-        this.setSelectBoxesName();
+        this.setSelectBoxesName(this.AreaNameField.getText());
         MinecraftClient.getInstance().setScreen(this.parent);
     }
 
@@ -114,7 +116,7 @@ public class AreaListScreen extends AbstractSetupScreen {
     @Override
     protected void refreshWidgetPositions() {
 //        super.refreshWidgetPositions();
-        this.setSelectBoxesName();
+        this.setSelectBoxesName(this.AreaNameField.getText());
         MinecraftClient.getInstance().setScreen(new AreaListScreen(this.parent, this.selfSelectBoxes));
 
     }

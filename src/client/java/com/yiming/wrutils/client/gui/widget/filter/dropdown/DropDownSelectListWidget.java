@@ -2,6 +2,7 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,13 +12,13 @@ import net.minecraft.util.Colors;
 
 import java.util.ArrayList;
 
-public class DropDownSelectListWidget extends BaseClickableWidget {
+public class DropDownSelectListWidget extends ExpandableClickableWidget {
     protected ItemListWidget itemListWidget;
     protected int headerHeight;
     protected int headerWidth;
     protected int itemHeight;
     protected int expandWidth;
-    protected boolean isExpanded = false;
+//    protected boolean isExpanded = false;
 
     protected final int interval = 2;
 
@@ -29,7 +30,7 @@ public class DropDownSelectListWidget extends BaseClickableWidget {
     protected CheckState checkState = CheckState.CHECKED;
 
 
-    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<String> list) {
+    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
         this(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
         this.itemListWidget = new ItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
         this.itemListWidget.setItemEntries(list);
