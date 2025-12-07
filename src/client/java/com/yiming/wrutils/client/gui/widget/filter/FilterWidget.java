@@ -23,14 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.function.Function;
 
 public class FilterWidget extends ClickableWidget {
-    //    private final ItemListWidget dropDownWidget;
-//    private final DropDownSelectListWidget tickSequenceSelectWidget;
-//    private final DropDownTextFieldListWidget gameTickSelectWidget;
-//    private final DropDownSelectListWidget areaListSelectListWidget;
     private final HashMap<TabButton, HashMap<String, ExpandableClickableWidget>> widgetMap = new HashMap<>();
 
     private boolean isOpen = false;
@@ -40,6 +35,8 @@ public class FilterWidget extends ClickableWidget {
     private final TabButton eventButton;
 
     private BaseClickableWidget currentWidget = null;
+
+    private Runnable onOpenStateChangeAction;
 
 
     public FilterWidget(int x, int y, int width, int height, Text message) {
@@ -54,6 +51,7 @@ public class FilterWidget extends ClickableWidget {
                 context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, WrutilsColor.BLACK);
             }
         };
+
         x1 += 23;
         this.timeButton = new TabButton(x + x1, y, 80, 18, Text.of("Time"), this::timeButtonOnClick);
         x1 += 85;
@@ -119,37 +117,52 @@ public class FilterWidget extends ClickableWidget {
 
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        this.isOpen = open;
+        if (this.onOpenStateChangeAction != null) {
+            this.onOpenStateChangeAction.run();
+        }
+    }
+
+    public void setOnOpenStateChangeAction(Runnable action) {
+        this.onOpenStateChangeAction = action;
+    }
+
     public void switchButtonOnClick() {
         if (this.isOpen) {
-            this.isOpen = false;
+            this.setOpen(false);
             this.enableSubWidgets(null);
         } else {
-            this.isOpen = true;
+            this.setOpen(true);
             if (this.currentWidget == null) {
                 this.currentWidget = this.timeButton;
             }
             this.enableSubWidgets(this.currentWidget);
         }
+
     }
 
     public void timeButtonOnClick() {
-        this.isOpen = true;
-        this.currentWidget = this.timeButton;
-        this.enableSubWidgets(this.timeButton);
-        this.currentWidget = this.timeButton;
+        this.selectTabButton(this.timeButton);
     }
 
     public void positionButtonOnClick() {
-        this.isOpen = true;
-        this.enableSubWidgets(this.positionButton);
-        this.currentWidget = this.positionButton;
+        this.selectTabButton(this.positionButton);
     }
 
 
     public void eventButtonOnClick() {
-        this.isOpen = true;
-        this.enableSubWidgets(this.eventButton);
-        this.currentWidget = this.eventButton;
+        this.selectTabButton(this.eventButton);
+    }
+
+    private void selectTabButton(TabButton eventButton) {
+        this.setOpen(true);
+        this.enableSubWidgets(eventButton);
+        this.currentWidget = eventButton;
     }
 
     public void enableSubWidgets(@Nullable BaseClickableWidget widget) {
@@ -187,9 +200,9 @@ public class FilterWidget extends ClickableWidget {
         return result;
     }
 
+
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-
         if (this.isOpen) {
             context.fill(this.getX() + 5, this.getY() + 17, this.getX() + this.getWidth() - 5, this.getY() + 18 + 30, WrutilsColor.GREY_0);
             context.fill(this.getX() + 5 + 1, this.getY() + 17 + 1, this.getX() + this.getWidth() - 5 - 1, this.getY() + 18 + 30 - 1, WrutilsColor.BLACK);
@@ -204,8 +217,6 @@ public class FilterWidget extends ClickableWidget {
                 widget.render(context, mouseX, mouseY, delta);
             }
         }
-
-
     }
 
     @Override

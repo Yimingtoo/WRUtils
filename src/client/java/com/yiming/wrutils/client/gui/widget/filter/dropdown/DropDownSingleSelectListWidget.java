@@ -98,16 +98,6 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
     }
 
 
-//    private void tempInit() {
-//        this.itemStringMap = new LinkedHashMap<>();
-//        this.itemStringMap.put("Car", new ArrayList<>());
-//        this.itemStringMap.put("Plane", new ArrayList<>());
-//        this.itemStringMap.put("Bike", new ArrayList<>());
-//        this.itemStringMap.get("Car").addAll(new ArrayList<>(List.of("BMW", "Audi", "Mercedes", "Volvo", "Porsche", "Lamborghini", "Mercedes", "Volvo", "Porsche")));
-//        this.itemStringMap.get("Plane").addAll(new ArrayList<>(List.of("Boeing", "Airbus", "Embraer", "Bombardier", "Dassault", "Cessna", "Mercedes", "Volvo", "Porsche")));
-//        this.itemStringMap.get("Bike").addAll(new ArrayList<>(List.of("Motorcycle", "Scooter", "Bicycle", "Electric Bike", "Electric Scooter", "Electric Motorcycle", "Mercedes", "Volvo", "Porsche")));
-//    }
-
     public void setSubItemListWidgetEnabled(boolean enabled) {
         this.subItemListWidget.visible = enabled;
         this.subItemListWidget.active = enabled;

@@ -1,10 +1,13 @@
 package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -14,18 +17,18 @@ import java.util.function.Function;
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
     private FilterWidget filterWidget;
-    //    private ItemListWidget itemListWidget;
-    private ItemTextFieldListWidget itemTextFieldListWidget;
+    private BaseClickableWidget filterButton;
 
     protected GTEventsListScreen(Screen parent) {
         super(Text.of("Game Tick Events"), parent, false);
     }
 
     private boolean handleMouseEvent(Function<Element, Boolean> handler) {
-        if (this.filterWidget != null)
-            if (handler.apply(this.filterWidget)) return true;
-        if (handler.apply(this.gameTickEventsListWidget)) return true;
-        return false;
+        boolean result = false;
+        if (handler.apply(this.filterWidget)) result = true;
+        if (handler.apply(this.filterButton)) result = true;
+        if (!result && handler.apply(this.gameTickEventsListWidget)) result = true;
+        return result;
     }
 
 
@@ -35,19 +38,39 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         super.init();
         int y = 26;
 
-
-        this.gameTickEventsListWidget = new GameTickEventsListWidget(this, 0, 80, this.width, this.height - 64 - 30);
+        int height1 = this.height - 50;
+        int y1 = 45;
+        this.gameTickEventsListWidget = new GameTickEventsListWidget(this, 0, y1, this.width, height1);
         this.gameTickEventsListWidget.setEvents(DataManager.eventRecorder);
         this.addDrawableChild(this.gameTickEventsListWidget);
 
         this.filterWidget = new FilterWidget(0, y, this.width, this.height - y - 10, Text.of("Filter"));
+        this.filterWidget.setOnOpenStateChangeAction(() -> {
+            if (this.filterWidget.isOpen()) {
+                this.gameTickEventsListWidget.setHeight(height1 - 30);
+                this.gameTickEventsListWidget.setY(y1 + 30);
+            } else {
+                this.gameTickEventsListWidget.setHeight(height1);
+                this.gameTickEventsListWidget.setY(y1);
+            }
+        });
         this.addDrawableChild(this.filterWidget);
 
-//        ArrayList<String> list = new ArrayList<>(List.of("Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape", "Honeydew", "Iceberg"));
-//        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), 100, 100, 10, y, 18);
-//        this.itemTextFieldListWidget.setItemEntries(list);
-//        this.addDrawableChild(this.itemTextFieldListWidget);
+        int x1 = 288;
+        this.filterButton = new BaseClickableWidget(this.filterWidget.getX() + x1, this.filterWidget.getY(), 18, 18, Text.of("F"), this::filterButtonOnClick) {
+            @Override
+            protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+                context.drawTextWithShadow(this.textRenderer, this.getMessage(), this.getX() + 6, this.getY() + 5, WrutilsColor.WHITE);
+                context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), WrutilsColor.GREY_0);
+                context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, WrutilsColor.BLACK);
+            }
+        };
+        this.addDrawableChild(this.filterButton);
 
+    }
+
+    private void filterButtonOnClick() {
+        System.out.println("Filter button clicked");
     }
 
 
