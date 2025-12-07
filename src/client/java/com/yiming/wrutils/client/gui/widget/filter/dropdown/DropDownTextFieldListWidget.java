@@ -5,6 +5,7 @@ import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.GameTickItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -13,6 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
     private final ItemTextFieldListWidget itemTextFieldListWidget;
@@ -61,10 +63,36 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         this.checkState = checkState;
     }
 
+    public CheckState getCheckState() {
+        return this.checkState;
+    }
+
     public void setExpanded(boolean expanded) {
         this.isExpanded = expanded;
         this.setItemListWidgetEnabled(expanded);
     }
+
+    public ArrayList<FilterType> getFilterItemList() {
+        ArrayList<FilterType> list = new ArrayList<>();
+        if (this.itemTextFieldListWidget.children().size() == 1) {
+            list.add(new SkipFilterItem());
+        } else if (this.itemTextFieldListWidget.children().size() > 1) {
+            if (this.checkState != CheckState.UNCHECKED) {
+                for (ItemTextFieldListWidget.Entry entry : this.itemTextFieldListWidget.children()) {
+                    if (entry instanceof ItemTextFieldListWidget.ItemHeaderTextFieldEntry<?>) {
+                        continue;
+                    }
+                    if (entry instanceof ItemTextFieldListWidget.ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
+                        if (itemTextFieldEntry.isChecked()) {
+                            list.add(itemTextFieldEntry.getItem());
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {

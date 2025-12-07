@@ -8,6 +8,8 @@ import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldLis
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.IntegerItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.LongItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.OriginTickItem;
+import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -23,11 +25,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
     private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
     private final ArrayList<ItemTextFieldEntry<? extends FilterType>> itemEntries = new ArrayList<>();
-    private final ItemHeaderTextFieldEntry<? extends FilterType> headerEntry = new ItemHeaderTextFieldEntry<>(new LongItem(0), this.headerTextFieldLostFocusFunction);
+    private final ItemHeaderTextFieldEntry<? extends FilterType> headerEntry = new ItemHeaderTextFieldEntry<>(new OriginTickItem(0), this.headerTextFieldLostFocusFunction);
     private DropDownTextFieldListWidget parent;
     private Function<String, Boolean> itemTextFieldLostFocusFunction = null;
     private Function<String, Boolean> headerTextFieldLostFocusFunction = null;
@@ -243,7 +247,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
         public ItemTextFieldEntry(T item, Function<String, Boolean> textFieldLostFocusFunction) {
             this(item);
-            this.textField.setLostFocusFunction(textFieldLostFocusFunction);
+            this.setTextFieldLostFocusFunction(textFieldLostFocusFunction);
         }
 
         public ItemTextFieldEntry(T item) {
@@ -262,7 +266,11 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
 
         public void setTextFieldLostFocusFunction(Function<String, Boolean> textFieldLostFocusFunction) {
-            this.textField.setLostFocusFunction(textFieldLostFocusFunction);
+            Function<String, Boolean> function = (String text) -> {
+                this.item.setData(text);
+                return textFieldLostFocusFunction.apply(text);
+            };
+            this.textField.setLostFocusFunction(function);
         }
 
         public void setOnRemoveAction(Runnable onRemoveAction) {
@@ -338,6 +346,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
     public static class ItemHeaderTextFieldEntry<T extends FilterType> extends ItemTextFieldEntry<FilterType> {
         TextButtonWidget textButtonWidget;
+
         private final String titleText = "Origin Tick:";
         int textWidth;
 
@@ -353,8 +362,9 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
             this.textWidth = this.textRenderer.getWidth(this.titleText);
 
             this.textButtonWidget = new TextButtonWidget(0, 0, 35, 14, Text.of("Reset"), () -> {
-//                System.out.println("reset click");
-                this.textField.setText(this.getItemName());
+                String text = String.valueOf(DataManager.eventRecorder.getFirst().getTimeStamp().gameTime());
+                this.textField.setText(text);
+                this.item.setData(text);
             });
             this.textField.setWidth(142 - this.textWidth - 6);
 

@@ -34,6 +34,7 @@ public class DataManager {
 
 
     public static TimeStamp lastTimeStamp;
+    public static long eventOriginTick = 0;
 
     private static boolean shouldRecord(BlockInfo blockInfo) {
         if (!isRecording) {

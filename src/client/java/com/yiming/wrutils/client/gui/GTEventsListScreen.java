@@ -4,15 +4,19 @@ import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
@@ -67,10 +71,19 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         };
         this.addDrawableChild(this.filterButton);
 
+        this.filterButtonOnClick();
     }
 
     private void filterButtonOnClick() {
         System.out.println("Filter button clicked");
+
+        ArrayList<FilterType> items = this.filterWidget.getFilterItems();
+        ArrayList<BaseEvent> list = DataManager.eventRecorder.stream()
+                .filter(event -> items.stream().anyMatch(item -> item.collectOrNot(event)))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        this.gameTickEventsListWidget.setEvents(list);
+
     }
 
 
