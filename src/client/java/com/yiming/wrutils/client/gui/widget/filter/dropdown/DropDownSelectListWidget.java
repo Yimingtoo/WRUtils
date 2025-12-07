@@ -106,14 +106,17 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!this.isMouseOver(mouseX, mouseY)) {
+        boolean bl = mouseX < this.getX() + this.headerWidth && mouseY < this.getY() + this.headerHeight;
+        boolean bl2 = mouseY > this.getY() + this.headerHeight;
+        boolean bl3 = bl || bl2;
+        if (!(this.isMouseOver(mouseX, mouseY) && bl3)) {
             this.setExpanded(false);
         }
         if (this.itemListWidget.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return bl3 && super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

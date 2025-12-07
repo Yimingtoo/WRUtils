@@ -98,6 +98,7 @@ public class GameTickEventsListWidget extends ScrollableWidget {
         return super.mouseClicked(mouseX, mouseY, button) || bl;
     }
 
+
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
         builder.put(NarrationPart.TITLE, this.getMessage());
