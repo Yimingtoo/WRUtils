@@ -3,7 +3,7 @@ package com.yiming.wrutils.data.event;
 import net.minecraft.world.tick.TickPriority;
 import org.jetbrains.annotations.Nullable;
 
-public class ScheduledTickExecEvent extends BaseEvent {
+public class ScheduledTickExecEvent extends BaseEvent implements ScheduledTickInfo {
 
     protected int delay;
     protected TickPriority priority;
@@ -14,17 +14,19 @@ public class ScheduledTickExecEvent extends BaseEvent {
     }
 
 
-    public ScheduledTickExecEvent(long gameTime, MicroTimingSequence microTimingSequence, BlockInfo targetBlockInfo,@Nullable  BlockInfo sourceBlockInfo, EventType eventType, int delay, TickPriority priority, String description) {
+    public ScheduledTickExecEvent(long gameTime, MicroTimingSequence microTimingSequence, BlockInfo targetBlockInfo, @Nullable BlockInfo sourceBlockInfo, EventType eventType, int delay, TickPriority priority, String description) {
         super(gameTime, microTimingSequence, targetBlockInfo, sourceBlockInfo, eventType);
         this.delay = delay;
         this.priority = priority;
         this.description = description;
     }
 
+    @Override
     public int getDelay() {
         return delay;
     }
 
+    @Override
     public TickPriority getPriority() {
         return priority;
     }

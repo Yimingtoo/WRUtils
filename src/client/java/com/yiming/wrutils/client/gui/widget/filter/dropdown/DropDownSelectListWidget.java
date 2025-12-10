@@ -3,6 +3,7 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -30,7 +31,7 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
     protected CheckState checkState = CheckState.CHECKED;
 
 
-    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
+    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
         this(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
         this.itemListWidget = new ItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
         this.itemListWidget.setItemEntries(list);
@@ -70,9 +71,31 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.checkState = checkState;
     }
 
+    public CheckState getCheckState() {
+        return this.checkState;
+    }
+
     public void setExpanded(boolean expanded) {
         this.isExpanded = expanded;
         this.setItemListWidgetEnabled(expanded);
+    }
+
+    public ArrayList<FilterType<?>> getFilterItemList() {
+        ArrayList<FilterType<?>> list = new ArrayList<>();
+        if (this.getCheckState() == CheckState.CHECKED) {
+            list.add(new SkipFilterItem());
+        } else {
+            if (this.checkState != CheckState.UNCHECKED) {
+                for (ItemListWidget.Entry entry : this.itemListWidget.children()) {
+                    if (entry instanceof ItemListWidget.ItemEntry itemEntry) {
+                        if (itemEntry.getCheckState() == CheckState.CHECKED) {
+                            list.add(itemEntry.getItem());
+                        }
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override

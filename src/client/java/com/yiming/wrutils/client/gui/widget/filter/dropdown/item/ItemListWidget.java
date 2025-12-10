@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
-    protected final ArrayList<ItemEntry<FilterType>> itemEntries = new ArrayList<>();
+    protected final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
     protected String masterString = null;
     private HeaderItemEntry headerItemEntry = null;
     protected Runnable onFocusedAction;
@@ -32,29 +32,29 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
-    public void setItemEntries(ArrayList<? extends FilterType> items) {
+    public void setItemEntries(ArrayList<? extends FilterType<?>> items) {
         this.itemEntries.clear();
         if (this.headerItemEntry != null) {
             this.itemEntries.add(this.headerItemEntry);
         }
-        items.forEach(item -> this.itemEntries.add(new ItemEntry<>(item)));
+        items.forEach(item -> this.itemEntries.add(new ItemEntry(item)));
         this.updateEntries();
     }
 
     public List<String> getCheckedItems() {
         return this.children().stream()
                 .filter(entry -> {
-                    if (entry instanceof ItemEntry<? extends FilterType> itemEntry) {
+                    if (entry instanceof ItemEntry itemEntry) {
                         return itemEntry.getCheckState() != CheckState.UNCHECKED;
                     }
                     return false;
                 })
-                .map(entry -> ((ItemEntry<? extends FilterType>) entry).itemName).toList();
+                .map(entry -> ((ItemEntry) entry).itemName).toList();
     }
 
     public void setCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
-            if (entry instanceof ItemEntry<? extends FilterType> itemEntry) {
+            if (entry instanceof ItemEntry itemEntry) {
                 itemEntry.setChecked(checked);
             }
         });
@@ -79,7 +79,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
 
     public void setHeaderItemEntry(HeaderItemEntry headerItemEntry) {
         this.headerItemEntry = headerItemEntry;
-        ArrayList<ItemEntry<FilterType>> itemEntriesClone = new ArrayList<>(this.itemEntries);
+        ArrayList<ItemEntry> itemEntriesClone = new ArrayList<>(this.itemEntries);
         this.itemEntries.clear();
         this.itemEntries.add(this.headerItemEntry);
         this.itemEntries.addAll(itemEntriesClone);
@@ -162,13 +162,13 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         }
     }
 
-    public static class ItemEntry<T extends FilterType> extends ItemListWidget.Entry {
+    public static class ItemEntry extends ItemListWidget.Entry {
         protected String itemName;
         @Nullable
-        protected final T item;
+        protected final FilterType<?> item;
         CheckState checkState = CheckState.UNCHECKED;
 
-        public ItemEntry(@Nullable T item) {
+        public ItemEntry(@Nullable FilterType<?> item) {
 //            this.itemName = itemName;
             this.item = item;
             if (item != null) {
@@ -190,7 +190,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
             return itemName;
         }
 
-        public @Nullable T getItem() {
+        public @Nullable FilterType<?> getItem() {
             return item;
         }
 
@@ -216,7 +216,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         }
     }
 
-    public static class HeaderItemEntry extends ItemEntry<FilterType> {
+    public static class HeaderItemEntry extends ItemEntry {
         public HeaderItemEntry() {
             super(null);
             this.itemName = "Any";

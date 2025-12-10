@@ -3,9 +3,7 @@ package com.yiming.wrutils.data.event;
 import net.minecraft.world.tick.TickPriority;
 import org.jetbrains.annotations.Nullable;
 
-public class ScheduledTickAddEvent extends BaseEvent {
-
-
+public class ScheduledTickAddEvent extends BaseEvent implements ScheduledTickInfo {
     public enum ScheduledTickAddState {
         NULL,
         TRUE,
@@ -34,14 +32,17 @@ public class ScheduledTickAddEvent extends BaseEvent {
     public void setIsAdded(ScheduledTickAddState isAdded) {
         this.isAdded = isAdded;
     }
+
     public ScheduledTickAddState getIsAdded() {
         return isAdded;
     }
 
+    @Override
     public int getDelay() {
         return delay;
     }
 
+    @Override
     public TickPriority getPriority() {
         return priority;
     }

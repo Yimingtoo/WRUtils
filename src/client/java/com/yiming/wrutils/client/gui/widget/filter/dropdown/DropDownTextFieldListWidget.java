@@ -1,10 +1,10 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
-import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.GameTickItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -28,7 +28,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     private CheckState checkState = CheckState.CHECKED;
 
-    public DropDownTextFieldListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
+    public DropDownTextFieldListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
         super(x, y, headerWidth, headerHeight, message);
         this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, x, y + headerHeight + this.interval, itemHeight, this);
         this.itemTextFieldListWidget.setItemEntries(list);
@@ -61,9 +61,34 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         this.checkState = checkState;
     }
 
+    public CheckState getCheckState() {
+        return this.checkState;
+    }
+
     public void setExpanded(boolean expanded) {
         this.isExpanded = expanded;
         this.setItemListWidgetEnabled(expanded);
+    }
+
+    public ArrayList<FilterType<?>> getFilterItemList() {
+        ArrayList<FilterType<?>> list = new ArrayList<>();
+        if (this.itemTextFieldListWidget.children().size() == 1) {
+            list.add(new SkipFilterItem());
+        } else if (this.itemTextFieldListWidget.children().size() > 1) {
+            if (this.checkState != CheckState.UNCHECKED) {
+                for (ItemTextFieldListWidget.Entry entry : this.itemTextFieldListWidget.children()) {
+                    if (entry instanceof ItemTextFieldListWidget.ItemHeaderTextFieldEntry) {
+                        continue;
+                    }
+                    if (entry instanceof ItemTextFieldListWidget.ItemTextFieldEntry itemTextFieldEntry) {
+                        if (itemTextFieldEntry.isChecked()) {
+                            list.add(itemTextFieldEntry.getItem());
+                        }
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override

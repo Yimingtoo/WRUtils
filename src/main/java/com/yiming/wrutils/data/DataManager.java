@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class DataManager {
-
     public static long currentGameTime;
     public static Stack<BlockInfo> BLOCK_INFO_STACK = new Stack<>();
     public static MicroTimingSequence currentMicroTimingSequence = MicroTimingSequence.WTU;
@@ -34,6 +33,8 @@ public class DataManager {
 
 
     public static TimeStamp lastTimeStamp;
+
+    public static long eventOriginTick;
 
     private static boolean shouldRecord(BlockInfo blockInfo) {
         if (!isRecording) {
