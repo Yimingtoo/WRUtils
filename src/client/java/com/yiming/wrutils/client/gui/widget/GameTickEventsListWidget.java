@@ -28,7 +28,6 @@ public class GameTickEventsListWidget extends ScrollableWidget {
     public void setEvents(ArrayList<BaseEvent> baseEvents) {
         this.eventsListWidgets.clear();
         if (baseEvents.isEmpty()) {
-            this.eventsListWidgets.clear();
             return;
         }
 //        long firstGameTick = baseEvents.getFirst().getTimeStamp().gameTime();

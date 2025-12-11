@@ -112,17 +112,4 @@ public class GameTickItem implements FilterType<GameTickItem.TickData> {
             }
         }
     }
-
-    @Override
-    public boolean collectOrNot(BaseEvent event) {
-        long gameTime = event.getTimeStamp().gameTime();
-        if (firstTick == lastTick) {
-            return gameTime == DataManager.eventOriginTick + firstTick;
-        } else {
-            return gameTime >= DataManager.eventOriginTick + firstTick && gameTime <= DataManager.eventOriginTick + lastTick;
-        }
-    }
-
-
-
 }

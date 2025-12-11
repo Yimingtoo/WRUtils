@@ -23,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
     private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
@@ -344,7 +342,6 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
     public static class ItemHeaderTextFieldEntry extends ItemTextFieldEntry {
         TextButtonWidget textButtonWidget;
-
         private final String titleText = "Origin Tick:";
         int textWidth;
 

@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-// 1111
 
 @Environment(EnvType.CLIENT)
 public class AreaGroupWidget extends AlwaysSelectedEntryListWidget<AreaGroupWidget.Entry> {

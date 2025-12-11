@@ -13,7 +13,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
     private final ItemTextFieldListWidget itemTextFieldListWidget;

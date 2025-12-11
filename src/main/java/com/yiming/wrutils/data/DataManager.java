@@ -33,7 +33,6 @@ public class DataManager {
 
 
     public static TimeStamp lastTimeStamp;
-    public static long eventOriginTick = 0;
 
     public static long eventOriginTick;
 

@@ -72,9 +72,7 @@ public class FilterWidget extends ClickableWidget {
         // 判断text是否为数字
         gameTickSelectWidget.getItemTextFieldListWidget().setHeaderTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+"));
         // 判断是否为单个整数 || 判断是否为两个整数用 '-' 分割
-        gameTickSelectWidget.getItemTextFieldListWidget().setItemTextFieldLostFocusFunction((text) -> {
-            return text.trim().matches("\\d+") || text.trim().matches("\\d+\\s*-\\s*\\d+");
-        });
+        gameTickSelectWidget.getItemTextFieldListWidget().setItemTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+") || text.trim().matches("\\d+\\s*-\\s*\\d+"));
         if (!DataManager.eventRecorder.isEmpty()) {
             ItemTextFieldListWidget.ItemHeaderTextFieldEntry entry = gameTickSelectWidget.getItemTextFieldListWidget().getHeaderEntry();
             ((LongItem) (entry.getItem())).setValue(DataManager.eventRecorder.getFirst().getTimeStamp().gameTime());
@@ -245,15 +243,6 @@ public class FilterWidget extends ClickableWidget {
             if (handler.apply(this.eventButton)) result = true;
         }
         return result;
-    }
-
-
-    public ArrayList<FilterType> getFilterItems() {
-        // Time Button
-        HashMap<String, ExpandableClickableWidget> map1 = this.widgetMap.get(this.timeButton);
-        DropDownTextFieldListWidget gameTickWidget = (DropDownTextFieldListWidget) map1.get("GameTick");
-        return gameTickWidget.getFilterItemList();
-
     }
 
 
