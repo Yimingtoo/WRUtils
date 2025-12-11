@@ -12,15 +12,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
     private final ItemListWidget subItemListWidget;
     private LinkedHashMap<String, ArrayList<String>> itemStringMap;
-    private LinkedHashMap<FilterType, ArrayList<? extends FilterType>> itemMap = new LinkedHashMap<>();
+    private LinkedHashMap<FilterType<?>, ArrayList<? extends FilterType<?>>> itemMap = new LinkedHashMap<>();
 
 
-    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
+    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
         super(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
 
 //        this.tempInit();
@@ -28,16 +27,16 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
         this.subItemListWidget = new ItemListWidget(this.client, this.expandWidth - headerWidth, x + this.itemListWidget.getWidth(), y + headerHeight + this.interval, itemHeight);
 
 //        this.subItemListWidget.setItemEntries(list);
-        for (FilterType entry : list) {
+        for (FilterType<?> entry : list) {
             if (entry instanceof AreaListItem areaListItem) {
-                this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getSelectBoxes().getList()));
+                this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getValue().getList()));
             }
         }
 
 
         this.setSubItemListWidgetEnabled(false);
         this.subItemListWidget.setOnFocusedAction(() -> {
-            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry<? extends FilterType> entry) {
+            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
                 int size = this.subItemListWidget.getCheckedItems().size();
                 if (size == 0) {
                     entry.setCheckState(CheckState.UNCHECKED);
@@ -56,7 +55,7 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
         this.setItemListWidgetEnabled(false);
         this.itemListWidget.setOnFocusedAction(() -> {
             if (this.itemListWidget.getFocused() != null) {
-                if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry<? extends FilterType> entry) {
+                if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
                     if (!(entry instanceof ItemListWidget.HeaderItemEntry)) {
                         this.setCheckState(entry.getCheckState());
                         String entryName = entry.getItemName();
@@ -85,7 +84,7 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
 
     }
 
-    public void setSubItemListWidgetItems(@Nullable FilterType key) {
+    public void setSubItemListWidgetItems(@Nullable FilterType<?> key) {
         if (key != null) {
             this.subItemListWidget.setMasterString(key.getName());
             this.subItemListWidget.setItemEntries(this.itemMap.get(key));

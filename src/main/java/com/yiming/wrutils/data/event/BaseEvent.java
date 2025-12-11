@@ -50,6 +50,10 @@ public abstract class BaseEvent {
         return targetBlockInfo;
     }
 
+    public EventType getEventType() {
+        return eventType;
+    }
+
     @Override
     public String toString() {
 

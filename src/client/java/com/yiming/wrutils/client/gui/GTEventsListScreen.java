@@ -70,20 +70,20 @@ public class GTEventsListScreen extends AbstractSetupScreen {
             }
         };
         this.addDrawableChild(this.filterButton);
-
         this.filterButtonOnClick();
     }
 
     private void filterButtonOnClick() {
         System.out.println("Filter button clicked");
-
-        ArrayList<FilterType> items = this.filterWidget.getFilterItems();
-        ArrayList<BaseEvent> list = DataManager.eventRecorder.stream()
-                .filter(event -> items.stream().anyMatch(item -> item.collectOrNot(event)))
+        ArrayList<ArrayList<FilterType<?>>> filterManager = this.filterWidget.getFilterItems();
+        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder;
+        filterEventList = filterEventList.stream()
+                .filter(event -> filterManager.stream()
+                        .allMatch(items -> items.stream()
+                                .anyMatch(item -> item.collectOrNot(event))))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        this.gameTickEventsListWidget.setEvents(list);
-
+        this.gameTickEventsListWidget.setEvents(filterEventList);
     }
 
 

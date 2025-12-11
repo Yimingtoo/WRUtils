@@ -1,7 +1,6 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
-import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.GameTickItem;
@@ -30,7 +29,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     private CheckState checkState = CheckState.CHECKED;
 
-    public DropDownTextFieldListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType> list) {
+    public DropDownTextFieldListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
         super(x, y, headerWidth, headerHeight, message);
         this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, x, y + headerHeight + this.interval, itemHeight, this);
         this.itemTextFieldListWidget.setItemEntries(list);
@@ -72,17 +71,17 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         this.setItemListWidgetEnabled(expanded);
     }
 
-    public ArrayList<FilterType> getFilterItemList() {
-        ArrayList<FilterType> list = new ArrayList<>();
+    public ArrayList<FilterType<?>> getFilterItemList() {
+        ArrayList<FilterType<?>> list = new ArrayList<>();
         if (this.itemTextFieldListWidget.children().size() == 1) {
             list.add(new SkipFilterItem());
         } else if (this.itemTextFieldListWidget.children().size() > 1) {
             if (this.checkState != CheckState.UNCHECKED) {
                 for (ItemTextFieldListWidget.Entry entry : this.itemTextFieldListWidget.children()) {
-                    if (entry instanceof ItemTextFieldListWidget.ItemHeaderTextFieldEntry<?>) {
+                    if (entry instanceof ItemTextFieldListWidget.ItemHeaderTextFieldEntry) {
                         continue;
                     }
-                    if (entry instanceof ItemTextFieldListWidget.ItemTextFieldEntry<? extends FilterType> itemTextFieldEntry) {
+                    if (entry instanceof ItemTextFieldListWidget.ItemTextFieldEntry itemTextFieldEntry) {
                         if (itemTextFieldEntry.isChecked()) {
                             list.add(itemTextFieldEntry.getItem());
                         }
@@ -92,7 +91,6 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         }
         return list;
     }
-
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {

@@ -1,15 +1,20 @@
 package com.yiming.wrutils.client.gui.widget.filter.item;
 
-import com.yiming.wrutils.data.event.BaseEvent;
+public class SkipFilterItem implements FilterType<Boolean> {
 
-public class SkipFilterItem implements FilterType {
+    @Override
+    public Boolean getValue() {
+        return false;
+    }
+
     @Override
     public String getName() {
-        return "";
+        return "SkipFilterItem";
     }
 
     @Override
-    public boolean collectOrNot(BaseEvent event) {
-        return true;
+    public void setValue(Boolean value) {
     }
+
+
 }

@@ -4,20 +4,27 @@ import com.yiming.wrutils.data.selected_area.SelectBoxes;
 
 import java.util.ArrayList;
 
-public class AreaListItem implements FilterType {
+public class AreaListItem implements FilterType<SelectBoxes> {
     private SelectBoxes selectBoxes;
 
     public AreaListItem(SelectBoxes selectBoxes) {
         this.selectBoxes = selectBoxes;
     }
 
-    public SelectBoxes getSelectBoxes() {
+
+    @Override
+    public SelectBoxes getValue() {
         return this.selectBoxes;
     }
 
     @Override
     public String getName() {
         return this.selectBoxes.getName();
+    }
+
+    @Override
+    public void setValue(SelectBoxes value) {
+        this.selectBoxes = value;
     }
 
     public static ArrayList<AreaListItem> getAreaListItems(ArrayList<SelectBoxes> selectBoxesList) {

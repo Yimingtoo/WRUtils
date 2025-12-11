@@ -2,17 +2,16 @@ package com.yiming.wrutils.client.gui.widget.filter.item;
 
 import com.yiming.wrutils.data.event.BaseEvent;
 
-public interface FilterType {
+public interface FilterType<T> {
+    T getValue();
+
     String getName();
+
+    void setValue(T value);
 
     default boolean collectOrNot(BaseEvent event) {
         return true;
     }
-
-    default void setData(String text) {
-    }
-
-    default FilterType copy() {
-        return this;
+    default void setValueFromText(String text) {
     }
 }
