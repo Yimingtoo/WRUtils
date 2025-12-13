@@ -2,7 +2,6 @@ package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.utils.WrutilsColor;
@@ -28,10 +27,11 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     }
 
     private boolean handleMouseEvent(Function<Element, Boolean> handler) {
-        boolean result = false;
-        if (handler.apply(this.filterWidget)) result = true;
-        if (handler.apply(this.filterButton)) result = true;
-        if (!result && handler.apply(this.gameTickEventsListWidget)) result = true;
+        boolean result;
+        // 处理鼠标事件
+        result = handler.apply(this.filterWidget);
+        result = handler.apply(this.filterButton) || result; // result 在"||"后面表示先执行handler.apply
+        result = result || handler.apply(this.gameTickEventsListWidget); // result 在"||"前面面表示如果result为true则不执行handler.apply
         return result;
     }
 

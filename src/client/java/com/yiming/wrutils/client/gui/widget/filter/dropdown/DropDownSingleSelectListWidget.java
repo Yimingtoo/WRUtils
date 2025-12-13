@@ -3,9 +3,11 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.item.AreaListItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.block.AreaListItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.SubAreaItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.block.SubAreaItem;
+import com.yiming.wrutils.data.selected_area.SelectBox;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +31,7 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
 //        this.subItemListWidget.setItemEntries(list);
         for (FilterType<?> entry : list) {
             if (entry instanceof AreaListItem areaListItem) {
-                this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getValue().getList()));
+                this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getValue().getList(), areaListItem.getBlockType()));
             }
         }
 
@@ -37,7 +39,7 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
         this.setSubItemListWidgetEnabled(false);
         this.subItemListWidget.setOnFocusedAction(() -> {
             if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
-                int size = this.subItemListWidget.getCheckedItems().size();
+                int size = this.subItemListWidget.getCheckedCount();
                 if (size == 0) {
                     entry.setCheckState(CheckState.UNCHECKED);
                     this.setCheckState(CheckState.UNCHECKED);
@@ -100,6 +102,23 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
     public void setSubItemListWidgetEnabled(boolean enabled) {
         this.subItemListWidget.visible = enabled;
         this.subItemListWidget.active = enabled;
+    }
+
+    @Override
+    public ArrayList<FilterType<?>> getFilterItemList() {
+        ArrayList<FilterType<?>> list = new ArrayList<>();
+        if (this.getCheckState() != CheckState.UNCHECKED) {
+            if (this.itemListWidget.getFirstCheckedOrNot() instanceof ItemListWidget.HeaderItemEntry) {
+                list.add(new SkipFilterItem());
+            } else {
+                this.subItemListWidget.getCheckedItemEntries().forEach(itemEntry -> {
+                    if (itemEntry.getItem() instanceof SubAreaItem) {
+                        list.add(itemEntry.getItem());
+                    }
+                });
+            }
+        }
+        return list;
     }
 
     @Override

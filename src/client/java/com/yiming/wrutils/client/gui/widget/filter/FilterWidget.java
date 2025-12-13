@@ -6,12 +6,11 @@ import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.*;
-import com.yiming.wrutils.client.gui.widget.filter.item.block.SourceBlockItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.block.TargetBlockItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.bool_item.BooleanItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.block.AreaListItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.block.BlockFilterType;
+import com.yiming.wrutils.client.gui.widget.filter.item.block.BlockItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.bool_item.ScheduledTickAddedStatusItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.int_item.DelayItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.int_item.IntegerItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.long_item.LongItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
@@ -100,18 +99,18 @@ public class FilterWidget extends ClickableWidget {
                 delaySet.add(event1.getDelay());
             }
         }
-        DropDownSingleSelectListWidget targetAreaWidget = new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList()));
+        DropDownSingleSelectListWidget targetAreaWidget = new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.TARGET));
         SingleSelectItemListWidget w1 = (SingleSelectItemListWidget) targetAreaWidget.getItemListWidget();
         w1.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
         w1.setSingleCheckedItem((ItemListWidget.ItemEntry) w1.getFirst());
         this.widgetMap.get(this.positionButton).put("TargetArea", targetAreaWidget);
-        this.widgetMap.get(this.positionButton).put("TargetBlock", new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), TargetBlockItem.getBlockItems(targetBlockSet)));
-        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList()));
+        this.widgetMap.get(this.positionButton).put("TargetBlock", new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), BlockItem.getBlockItems(targetBlockSet, BlockFilterType.TARGET)));
+        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.SOURCE));
         SingleSelectItemListWidget w2 = (SingleSelectItemListWidget) sourceAreaWidget.getItemListWidget();
         w2.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
         w2.setSingleCheckedItem((ItemListWidget.ItemEntry) w2.getFirst());
         this.widgetMap.get(this.positionButton).put("SourceArea", sourceAreaWidget);
-        this.widgetMap.get(this.positionButton).put("SourceBlock", new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), SourceBlockItem.getBlockItems(sourceBlockSet)));
+        this.widgetMap.get(this.positionButton).put("SourceBlock", new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), BlockItem.getBlockItems(sourceBlockSet, BlockFilterType.SOURCE)));
 
         this.widgetMap.put(this.eventButton, new HashMap<>());
         this.widgetMap.get(this.eventButton).put("EventType", new DropDownSelectListWidget(10, y + 23, 95, 18, 200, 18, Text.of("Event Type"), EventTypeItem.EventTypes()));
@@ -137,10 +136,12 @@ public class FilterWidget extends ClickableWidget {
         // Position Button
         HashMap<String, ExpandableClickableWidget> map2 = this.widgetMap.get(this.positionButton);
         DropDownSingleSelectListWidget targetAreaWidget = (DropDownSingleSelectListWidget) map2.get("TargetArea");
-
+        list.add(targetAreaWidget.getFilterItemList());
         DropDownSelectListWidget targetBlockWidget = (DropDownSelectListWidget) map2.get("TargetBlock");
         list.add(targetBlockWidget.getFilterItemList());
+
         DropDownSingleSelectListWidget sourceAreaWidget = (DropDownSingleSelectListWidget) map2.get("SourceArea");
+        list.add(sourceAreaWidget.getFilterItemList());
         DropDownSelectListWidget sourceBlockWidget = (DropDownSelectListWidget) map2.get("SourceBlock");
         list.add(sourceBlockWidget.getFilterItemList());
 

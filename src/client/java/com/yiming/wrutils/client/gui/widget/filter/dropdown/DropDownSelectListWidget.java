@@ -38,7 +38,7 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.setItemListWidgetEnabled(false);
         this.itemListWidget.setCheckedItems(true);
         this.itemListWidget.setOnFocusedAction(() -> {
-            int size = this.itemListWidget.getCheckedItems().size();
+            int size = this.itemListWidget.getCheckedCount();
             if (size == 0) {
                 this.setCheckState(CheckState.UNCHECKED);
             } else if (size < this.itemListWidget.children().size()) {
