@@ -19,7 +19,6 @@ public class SingleSelectItemListWidget extends ItemListWidget {
     }
 
 
-
     @Override
     public void setCheckedItems(boolean checked) {
         if (!checked) {
@@ -46,17 +45,19 @@ public class SingleSelectItemListWidget extends ItemListWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.hoveredElement(mouseX, mouseY).orElse(null) instanceof ItemEntry entry) {
-            if (mouseX > this.getX() + this.itemHeight) {
-                if (this.selectedItem != entry) {
+        if (this.isMouseOver(mouseX, mouseY)) {
+            if (this.hoveredElement(mouseX, mouseY).orElse(null) instanceof ItemEntry entry) {
+                if (mouseX > this.getX() + this.itemHeight) {
+                    if (this.selectedItem != entry) {
+                        this.setSingleCheckedItem(entry);
+                        this.selectedItem = entry;
+                    }
+                } else {
+                    CheckState checkState = entry.getCheckState();
                     this.setSingleCheckedItem(entry);
-                    this.selectedItem = entry;
-                }
-            } else {
-                CheckState checkState = entry.getCheckState();
-                this.setSingleCheckedItem(entry);
-                entry.setChecked(checkState != CheckState.CHECKED);
+                    entry.setChecked(checkState != CheckState.CHECKED);
 
+                }
             }
         }
 

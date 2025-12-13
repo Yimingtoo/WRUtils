@@ -8,14 +8,24 @@ import net.minecraft.block.BlockState;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public abstract class BlockItem implements FilterType<Block> {
-    protected Block block;
+public class BlockItem implements FilterType<Block> {
 
-    public BlockItem(Block block) {
+    protected Block block;
+    protected BlockFilterType blockType;
+
+    public BlockItem(Block block, BlockFilterType blockType) {
         this.block = block;
+        this.blockType = blockType;
     }
 
-    abstract protected BlockState getEventState(BaseEvent event);
+    protected BlockState getEventState(BaseEvent event) {
+        if (this.blockType == BlockFilterType.SOURCE) {
+            return event.getSourceBlockInfo().state();
+        } else if (this.blockType == BlockFilterType.TARGET) {
+            return event.getTargetBlockInfo().state();
+        }
+        return null;
+    }
 
     @Override
     public Block getValue() {
@@ -39,6 +49,14 @@ public abstract class BlockItem implements FilterType<Block> {
             return state.getBlock() == this.block;
         }
         return false;
+    }
+
+    public static ArrayList<BlockItem> getBlockItems(HashSet<Block> blockSet, BlockFilterType blockType) {
+        ArrayList<BlockItem> blockItems = new ArrayList<>();
+        for (Block block : blockSet) {
+            blockItems.add(new BlockItem(block, blockType));
+        }
+        return blockItems;
     }
 
 

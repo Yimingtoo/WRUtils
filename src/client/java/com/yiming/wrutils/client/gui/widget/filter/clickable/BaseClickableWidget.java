@@ -44,5 +44,14 @@ public class BaseClickableWidget extends ClickableWidget {
         }
     }
 
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.isValidClickButton(button) && this.isMouseOver(mouseX, mouseY)) {
+            this.onDrag(mouseX, mouseY, deltaX, deltaY);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

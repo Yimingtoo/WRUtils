@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
     protected final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
@@ -41,16 +42,38 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         this.updateEntries();
     }
 
-    public List<String> getCheckedItems() {
-        return this.children().stream()
+    public ArrayList<ItemEntry> getItemEntries() {
+        return this.itemEntries;
+    }
+
+    public ArrayList<ItemEntry> getCheckedItemEntries() {
+        return this.getItemEntries().stream()
+                .filter(entry -> entry.getCheckState() == CheckState.CHECKED)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public int getCheckedCount() {
+        return (int) this.children().stream()
                 .filter(entry -> {
                     if (entry instanceof ItemEntry itemEntry) {
                         return itemEntry.getCheckState() != CheckState.UNCHECKED;
                     }
                     return false;
                 })
-                .map(entry -> ((ItemEntry) entry).itemName).toList();
+                .count();
     }
+
+    public ItemEntry getFirstCheckedOrNot() {
+        return (ItemEntry) this.children().stream()
+                .filter(entry -> {
+                    if (entry instanceof ItemEntry itemEntry) {
+                        return itemEntry.getCheckState() != CheckState.UNCHECKED;
+                    }
+                    return false;
+                })
+                .findFirst().orElse(null);
+    }
+
 
     public void setCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
