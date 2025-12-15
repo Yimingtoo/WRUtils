@@ -2,6 +2,7 @@ package com.yiming.wrutils.client.input;
 
 import com.yiming.wrutils.client.Notification;
 import com.yiming.wrutils.client.WrutilsClient;
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.client.gui.AreaGroupScreen;
 import com.yiming.wrutils.client.gui.AreaListScreen;
@@ -31,6 +32,9 @@ public class KeyCallbacks {
         HotkeysManagement.TOOL_PLACE_CORNER_1.getKeybind().setCallback(callbackHotkeys);
         HotkeysManagement.TOOL_PLACE_CORNER_2.getKeybind().setCallback(callbackHotkeys);
         HotkeysManagement.TOOL_SELECT_ELEMENTS.getKeybind().setCallback(callbackHotkeys);
+
+        HotkeysManagement.PREVIOUS_EVENT.getKeybind().setCallback(callbackHotkeys);
+        HotkeysManagement.NEXT_EVENT.getKeybind().setCallback(callbackHotkeys);
 
     }
 
@@ -83,6 +87,16 @@ public class KeyCallbacks {
                 return true;
             } else if (key == HotkeysManagement.OPEN_CONFIGS_SCREEN.getKeybind()) {
                 GuiBase.openGui(new ConfigsScreen());
+                return true;
+            } else if (key == HotkeysManagement.PREVIOUS_EVENT.getKeybind()) {
+                if (DataManagerClient.filterEventPointer < DataManagerClient.filterEventList.size() - 1) {
+                    DataManagerClient.filterEventPointer++;
+                }
+                return true;
+            } else if (key == HotkeysManagement.NEXT_EVENT.getKeybind()) {
+                if (DataManagerClient.filterEventPointer > 1) {
+                    DataManagerClient.filterEventPointer--;
+                }
                 return true;
             }
 

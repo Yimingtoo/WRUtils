@@ -1,7 +1,9 @@
 package com.yiming.wrutils.client.gui.widget.filter.item.block;
 
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.data.Dimension;
 import com.yiming.wrutils.data.event.BaseEvent;
+import com.yiming.wrutils.data.event.BlockInfo;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import net.minecraft.util.math.BlockPos;
 
@@ -33,14 +35,14 @@ public class SubAreaItem implements FilterType<SelectBox> {
 
     @Override
     public boolean collectOrNot(BaseEvent event) {
-        BlockPos pos = null;
+        BlockInfo blockInfo = null;
         if (this.blockType == BlockFilterType.SOURCE) {
-            pos = event.getSourceBlockInfo().pos();
+            blockInfo = event.getSourceBlockInfo();
         } else if (this.blockType == BlockFilterType.TARGET) {
-            pos = event.getTargetBlockInfo().pos();
+            blockInfo = event.getTargetBlockInfo();
         }
-        if (pos != null) {
-            return this.selectBox.isContainVec3iPos(pos);
+        if (blockInfo != null) {
+            return this.selectBox.containsVec3iPosOfDimension(blockInfo);
         }
         return false;
     }

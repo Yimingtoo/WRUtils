@@ -1,14 +1,20 @@
 package com.yiming.wrutils.client.data;
 
 import com.yiming.wrutils.client.ModInfo;
+import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 public class DataManagerClient {
+    public static boolean isFilterEventRender;
+    public static ArrayList<BaseEvent> filterEventList = new ArrayList<>();
+    public static int filterEventPointer;
+
     public static File getDataDir() {
         return new File(new File(MinecraftClient.getInstance().runDirectory, "config"), ModInfo.MOD_ID);
     }

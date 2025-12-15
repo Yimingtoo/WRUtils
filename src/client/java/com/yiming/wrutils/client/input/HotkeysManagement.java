@@ -23,6 +23,8 @@ public class HotkeysManagement {
     public static final ConfigHotkey TOOL_PLACE_CORNER_1 = new ConfigHotkey("toolPlaceCorner1", "BUTTON_1", KeybindSettings.PRESS_ALLOWEXTRA).apply(HOTKEYS_CATEGORY);
     public static final ConfigHotkey TOOL_PLACE_CORNER_2 = new ConfigHotkey("toolPlaceCorner2", "BUTTON_2", KeybindSettings.PRESS_ALLOWEXTRA).apply(HOTKEYS_CATEGORY);
     public static final ConfigHotkey TOOL_SELECT_ELEMENTS = new ConfigHotkey("toolSelectElements", "BUTTON_3", KeybindSettings.PRESS_ALLOWEXTRA).apply(HOTKEYS_CATEGORY);
+    public static final ConfigHotkey PREVIOUS_EVENT = new ConfigHotkey("previousEvent", "UP", KeybindSettings.PRESS_ALLOWEXTRA).apply(HOTKEYS_CATEGORY);
+    public static final ConfigHotkey NEXT_EVENT = new ConfigHotkey("nextEvent", "DOWN", KeybindSettings.PRESS_ALLOWEXTRA).apply(HOTKEYS_CATEGORY);
 
     public static final List<ConfigHotkey> HOTKEY_LIST = ImmutableList.of(
             OPEN_MAIN_MENU_SCREEN,
@@ -33,6 +35,8 @@ public class HotkeysManagement {
             SELECT_MOVE_CTRL,
             TOOL_PLACE_CORNER_1,
             TOOL_PLACE_CORNER_2,
-            TOOL_SELECT_ELEMENTS
+            TOOL_SELECT_ELEMENTS,
+            PREVIOUS_EVENT,
+            NEXT_EVENT
     );
 }

@@ -6,8 +6,6 @@ import com.yiming.wrutils.data.selected_area.SelectBox;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import com.yiming.wrutils.mixin_interface.WorldTickSchedulerAccessor;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.tick.TickPriority;
 import net.minecraft.world.tick.WorldTickScheduler;
 
@@ -44,7 +42,7 @@ public class DataManager {
             return false;
         }
         for (SelectBox selectBox : getCurrentBoxes().getList()) {
-            if (selectBox.isContainVec3iPos(blockInfo.pos()) && selectBox.getDimension() == blockInfo.dimension()) {
+            if (selectBox.containsVec3iPosOfDimension(blockInfo)) {
                 return true;
             }
         }

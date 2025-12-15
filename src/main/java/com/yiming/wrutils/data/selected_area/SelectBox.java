@@ -1,6 +1,7 @@
 package com.yiming.wrutils.data.selected_area;
 
 import com.yiming.wrutils.data.Dimension;
+import com.yiming.wrutils.data.event.BlockInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -94,13 +95,22 @@ public class SelectBox {
     }
 
 
-    public boolean isContainVec3iPos(Vec3i pos) {
+    public boolean containsVec3iPos(Vec3i pos) {
         return pos.getX() >= minPos.getX() && pos.getX() <= maxPos.getX()
                 && pos.getY() >= minPos.getY() && pos.getY() <= maxPos.getY()
                 && pos.getZ() >= minPos.getZ() && pos.getZ() <= maxPos.getZ();
     }
 
-    public boolean isContainVec3dPos(Vec3d pos) {
+    public boolean containsVec3iPosOfDimension(Vec3i pos, Dimension dimension) {
+        return this.containsVec3iPos(pos) && this.dimension == dimension;
+    }
+
+    public boolean containsVec3iPosOfDimension(BlockInfo blockInfo) {
+        return this.containsVec3iPosOfDimension(blockInfo.pos(), blockInfo.dimension());
+    }
+
+
+    public boolean containsVec3dPos(Vec3d pos) {
         return pos.getX() >= minPos.getX() && pos.getX() <= maxPos.getX() + 1
                 && pos.getY() >= minPos.getY() && pos.getY() <= maxPos.getY() + 1
                 && pos.getZ() >= minPos.getZ() && pos.getZ() <= maxPos.getZ() + 1;
@@ -166,7 +176,7 @@ public class SelectBox {
         private final boolean yMax;
         private final boolean zMax;
 
-        private CornerDirection(boolean xMax, boolean yMax, boolean zMax, Vec3i dir) {
+        CornerDirection(boolean xMax, boolean yMax, boolean zMax, Vec3i dir) {
             this.xMax = xMax;
             this.yMax = yMax;
             this.zMax = zMax;

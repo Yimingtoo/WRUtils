@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.gui;
 
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
@@ -84,6 +85,7 @@ public class GTEventsListScreen extends AbstractSetupScreen {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         this.gameTickEventsListWidget.setEvents(filterEventList);
+        DataManagerClient.filterEventList = filterEventList;
     }
 
 

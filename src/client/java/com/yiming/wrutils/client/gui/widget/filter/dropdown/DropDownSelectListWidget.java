@@ -1,6 +1,5 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
-import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
