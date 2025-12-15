@@ -133,7 +133,7 @@ public class WrutilsClientUtils {
             Vec3i targetPos = null;
             double distanceToCube = -1;
             for (SelectBox box : boxes.getList(getPlayerDimension())) {
-                if (box.isContainVec3dPos(camPos)) {
+                if (box.containsVec3dPos(camPos)) {
                     ArrayList<Vec3i> cubePoses = SelectBox.CornerDirection.getCornerCubePoses(box);
                     for (Vec3i cubePos : cubePoses) {
                         double distance1 = GeometryUtil.intersectLineWithBox(camPos, camDir, new Vec3d(cubePos), new Vec3d(cubePos).add(1, 1, 1));
@@ -178,8 +178,8 @@ public class WrutilsClientUtils {
         Identifier dimensionId = dimensionKey.getValue();
 
         return switch (dimensionId.toString()) {
-            case "minecraft:overworld" -> Dimension.OVERWORLD;
             case "minecraft:the_nether" -> Dimension.NETHER;
+            case "minecraft:overworld" -> Dimension.OVERWORLD;
             case "minecraft:the_end" -> Dimension.END;
             default -> Dimension.NONE;
         };

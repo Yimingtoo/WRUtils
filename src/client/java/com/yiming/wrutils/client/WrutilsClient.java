@@ -23,6 +23,7 @@ public class WrutilsClient implements ClientModInitializer {
         guiInit();
         dataManagerInit();
         CustomRender.renderCustomModelOut();
+        CustomRender.renderEvent();
 
         InputEventHandler.getKeybindManager().registerKeybindProvider(KeyBoardManagement.getInstance());
         InputEventHandler.getInputManager().registerKeyboardInputHandler(KeyBoardManagement.getInstance());

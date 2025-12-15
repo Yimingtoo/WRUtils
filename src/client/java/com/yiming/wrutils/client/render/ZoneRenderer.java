@@ -1,11 +1,10 @@
 package com.yiming.wrutils.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
 
 public class ZoneRenderer {
 
-    public static void drawSelectedBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3i pos1, DrawColor style1, Vec3i pos2, DrawColor style2, DrawColor style) {
+    public static void drawSelectedBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3i pos1, WrutilsColor style1, Vec3i pos2, WrutilsColor style2, WrutilsColor style) {
         Vec3i unit = new Vec3i(
                 pos2.getX() >= pos1.getX() ? 1 : -1,
                 pos2.getY() >= pos1.getY() ? 1 : -1,
@@ -44,7 +43,7 @@ public class ZoneRenderer {
         ).toList();
 
         // 去除重复的边
-        List<CubeLine> deduplicateCubeLines = CubeLine.deduplicateLines(diagonalBlockCubeLines, DrawColor.getMixedStyle(style1, style2));
+        List<CubeLine> deduplicateCubeLines = CubeLine.deduplicateLines(diagonalBlockCubeLines, WrutilsColor.getMixedStyle(style1, style2));
 
         // 获得大Box的所有边
         List<CubeLine> cubeLines = new ArrayList<>(CubeLine.getLines(p1, p7, style));
@@ -76,11 +75,11 @@ public class ZoneRenderer {
 
     }
 
-    public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos, DrawColor style) {
+    public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos, WrutilsColor style) {
         drawBoxFaces(matrices, camera, pos, pos, style);
     }
 
-    public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos1, Vec3i pos2, DrawColor style) {
+    public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos1, Vec3i pos2, WrutilsColor style) {
         CubeFaces cubeFaces = new CubeFaces(pos1, pos2, style);
 
         RenderSystem.enableDepthTest();

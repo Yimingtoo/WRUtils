@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.render;
 
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -14,7 +15,7 @@ public class CubeFaces {
 
     public Map<Direction, CubeFace> faces = new HashMap<>();
 
-    public CubeFaces(Vec3i pos1, Vec3i pos2, DrawColor style) {
+    public CubeFaces(Vec3i pos1, Vec3i pos2, WrutilsColor style) {
         int x_min = 0;
         int y_min = 0;
         int z_min = 0;
@@ -41,7 +42,7 @@ public class CubeFaces {
         return posMin;
     }
 
-    public void setAllStyle(DrawColor style) {
+    public void setAllStyle(WrutilsColor style) {
         // 遍历faces的每个元素
         for (Map.Entry<Direction, CubeFace> entry : faces.entrySet()) {
             CubeFace cubeFace = entry.getValue();
@@ -49,7 +50,7 @@ public class CubeFaces {
         }
     }
 
-    public void setStyle(Direction direction, DrawColor style) {
+    public void setStyle(Direction direction, WrutilsColor style) {
         CubeFace cubeFace = faces.get(direction);
         if (cubeFace != null) {
             cubeFace.style = style;
@@ -60,9 +61,9 @@ public class CubeFaces {
     public class CubeFace {
         private final Vec3i pos1;
         private final Vec3i pos2;
-        public DrawColor style;
+        public WrutilsColor style;
 
-        public CubeFace(Vec3i pos1, Vec3i pos2, DrawColor style) {
+        public CubeFace(Vec3i pos1, Vec3i pos2, WrutilsColor style) {
             this.pos1 = pos1;
             this.pos2 = pos2;
             this.style = style;

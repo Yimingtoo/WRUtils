@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client.render;
 
+import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
@@ -12,10 +13,10 @@ public class CubeLine {
     public Direction direction;
     public Vec3i pos1;
     public Vec3i pos2;
-    public DrawColor style;
+    public WrutilsColor style;
 
 
-    public CubeLine(Vec3i pos1, Vec3i pos2, DrawColor style) {
+    public CubeLine(Vec3i pos1, Vec3i pos2, WrutilsColor style) {
         direction = Direction.getFacing(pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ());
         if (direction.getVector().getX() < 0 || direction.getVector().getY() < 0 || direction.getVector().getZ() < 0) {
             this.pos1 = pos2;
@@ -30,7 +31,7 @@ public class CubeLine {
     }
 
 
-    public static ArrayList<CubeLine> getLines(Vec3i pos1, Vec3i pos2, DrawColor style) {
+    public static ArrayList<CubeLine> getLines(Vec3i pos1, Vec3i pos2, WrutilsColor style) {
 
         int dx = (pos2.getX() - pos1.getX());
         int dy = (pos2.getY() - pos1.getY());
@@ -74,7 +75,7 @@ public class CubeLine {
         return cubeLines;
     }
 
-    public static List<CubeLine> deduplicateLines(List<CubeLine> cubeLines, DrawColor style) {
+    public static List<CubeLine> deduplicateLines(List<CubeLine> cubeLines, WrutilsColor style) {
         Map<EdgeKey, CubeLine> map = new HashMap<>();
 
         for (CubeLine cubeLine : cubeLines) {
