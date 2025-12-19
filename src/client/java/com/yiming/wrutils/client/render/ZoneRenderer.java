@@ -2,9 +2,12 @@ package com.yiming.wrutils.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.Color4f;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -17,7 +20,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class ZoneRenderer {
-
     public static void drawSelectedBox(MatrixStack matrices, Camera camera, VertexConsumerProvider vertexConsumerProvider, Vec3i pos1, WrutilsColor style1, Vec3i pos2, WrutilsColor style2, WrutilsColor style) {
         Vec3i unit = new Vec3i(
                 pos2.getX() >= pos1.getX() ? 1 : -1,
@@ -82,15 +84,7 @@ public class ZoneRenderer {
     public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos1, Vec3i pos2, WrutilsColor style) {
         CubeFaces cubeFaces = new CubeFaces(pos1, pos2, style);
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.depthMask(false);
-
-        RenderSystem.enablePolygonOffset();
-        RenderSystem.polygonOffset(-1.2f, -0.2f);
-
-        RenderSystem.enableBlend();
-        RenderSystem.disableCull();
+        preRender();
 
         RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         //RenderSystem.setShader(GameRenderer::getPositionColorProgram);
@@ -119,14 +113,7 @@ public class ZoneRenderer {
         }
         matrices.pop();
 
-        RenderSystem.enableCull();
-        RenderSystem.disableBlend();
-
-        RenderSystem.polygonOffset(0f, 0f);
-        RenderSystem.disablePolygonOffset();
-
-        RenderSystem.depthMask(true);
-        RenderSystem.disableDepthTest();
+        postRender();
     }
 
 
@@ -145,6 +132,63 @@ public class ZoneRenderer {
         vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(color);
         vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(color);
         vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(color & 0x00FFFFFF);
+    }
+
+    // 参考 litematica 源码
+    public static void drawBlockOutline(Camera camera, BlockPos pos, int lineWidth, WrutilsColor color) {
+        preRender();
+
+        RenderSystem.lineWidth(lineWidth);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        BuiltBuffer meshData;
+
+        Vec3d cameraPos = camera.getPos();
+        final double dx = cameraPos.x;
+        final double dy = cameraPos.y;
+        final double dz = cameraPos.z;
+        float minX = (float) (pos.getX() - dx);
+        float minY = (float) (pos.getY() - dy);
+        float minZ = (float) (pos.getZ() - dz);
+        float maxX = (float) (pos.getX() - dx + 1);
+        float maxY = (float) (pos.getY() - dy + 1);
+        float maxZ = (float) (pos.getZ() - dz + 1);
+
+        RenderUtils.drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, Color4f.fromColor(color.getColor()), buffer);
+        try {
+            meshData = buffer.end();
+            BufferRenderer.drawWithGlobalProgram(meshData);
+            meshData.close();
+        } catch (Exception ignore) {
+        }
+
+        postRender();
+    }
+
+
+    private static void preRender() {
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.depthMask(false);
+
+        RenderSystem.enablePolygonOffset();
+        RenderSystem.polygonOffset(-1.2f, -0.2f);
+
+        RenderSystem.enableBlend();
+        RenderSystem.disableCull();
+    }
+
+    private static void postRender() {
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+
+        RenderSystem.polygonOffset(0f, 0f);
+        RenderSystem.disablePolygonOffset();
+
+        RenderSystem.depthMask(true);
+        RenderSystem.disableDepthTest();
     }
 
 }

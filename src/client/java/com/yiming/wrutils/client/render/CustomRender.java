@@ -79,6 +79,8 @@ public class CustomRender {
                             targetBlockInfo.pos(),
                             new WrutilsColor(WrutilsColor.RED, .3f)
                     );
+
+                    ZoneRenderer.drawBlockOutline(context.camera(), targetBlockInfo.pos(), 5, new WrutilsColor(WrutilsColor.BLUE));
                     if (sourceBlockInfo != null) {
                         ZoneRenderer.drawBoxFaces(context.matrixStack(), context.camera(),
                                 sourceBlockInfo.pos(),
