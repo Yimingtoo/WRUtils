@@ -41,6 +41,10 @@ public class WrutilsColor {
         this.color = color & 0xFFFFFF | ((int) (alpha * 255)) << 24;
     }
 
+    public int getColor() {
+        return this.color;
+    }
+
     public static WrutilsColor getMixedStyle(WrutilsColor style1, WrutilsColor style2) {
         int color1 = style1.color;
         int color2 = style2.color;

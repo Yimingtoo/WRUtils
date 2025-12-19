@@ -39,7 +39,6 @@ public class GTEventsListScreen extends AbstractSetupScreen {
 
     @Override
     protected void init() {
-        MinecraftClient client1 = MinecraftClient.getInstance();
         super.init();
         int y = 26;
 
@@ -86,6 +85,7 @@ public class GTEventsListScreen extends AbstractSetupScreen {
 
         this.gameTickEventsListWidget.setEvents(filterEventList);
         DataManagerClient.filterEventList = filterEventList;
+        DataManagerClient.filterEventPointer = 0;
     }
 
 

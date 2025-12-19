@@ -89,13 +89,13 @@ public class KeyCallbacks {
                 GuiBase.openGui(new ConfigsScreen());
                 return true;
             } else if (key == HotkeysManagement.PREVIOUS_EVENT.getKeybind()) {
-                if (DataManagerClient.filterEventPointer < DataManagerClient.filterEventList.size() - 1) {
-                    DataManagerClient.filterEventPointer++;
+                if (DataManagerClient.filterEventPointer > 1) {
+                    DataManagerClient.filterEventPointer--;
                 }
                 return true;
             } else if (key == HotkeysManagement.NEXT_EVENT.getKeybind()) {
-                if (DataManagerClient.filterEventPointer > 1) {
-                    DataManagerClient.filterEventPointer--;
+                if (DataManagerClient.filterEventPointer < DataManagerClient.filterEventList.size() - 1) {
+                    DataManagerClient.filterEventPointer++;
                 }
                 return true;
             }
