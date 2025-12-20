@@ -1,22 +1,22 @@
 package com.yiming.wrutils.client;
 
 import com.yiming.wrutils.client.data.DataManagerClient;
+import com.yiming.wrutils.client.hud.EventInfoHud;
+import com.yiming.wrutils.client.hud.Notification;
 import com.yiming.wrutils.client.input.KeyBoardManagement;
 import com.yiming.wrutils.client.input.KeyCallbacks;
 import com.yiming.wrutils.client.input.MouseManagement;
 import com.yiming.wrutils.client.render.CustomRender;
+import com.yiming.wrutils.data.event.BaseEvent;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class WrutilsClient implements ClientModInitializer {
-    public static Item debugItem = Items.WOODEN_SWORD;
 
     @Override
     public void onInitializeClient() {
@@ -41,6 +41,12 @@ public class WrutilsClient implements ClientModInitializer {
                     Identifier.of("mymod", "notifications"),
                     (context, tickCounter) -> {
                         Notification.renderNotification(context);
+                        BaseEvent event = DataManagerClient.getFilterEvent();
+                        if (event != null) {
+                            EventInfoHud eventInfoHud = new EventInfoHud(event);
+                            eventInfoHud.setEnabled(true);
+                            eventInfoHud.render(context);
+                        }
                     }
             );
         });

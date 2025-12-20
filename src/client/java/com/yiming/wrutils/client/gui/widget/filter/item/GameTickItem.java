@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget.filter.item;
 
-import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.data.event.BaseEvent;
 
 import java.util.regex.Matcher;
@@ -42,9 +42,9 @@ public class GameTickItem implements FilterType<GameTickItem.TickData> {
         long firstTick = this.tickData.getFirstTick();
         long lastTick = this.tickData.getLastTick();
         if (firstTick == lastTick) {
-            return gameTime == DataManager.eventOriginTick + firstTick;
+            return gameTime == DataManagerClient.eventOriginTick + firstTick;
         } else {
-            return gameTime >= DataManager.eventOriginTick + firstTick && gameTime <= DataManager.eventOriginTick + lastTick;
+            return gameTime >= DataManagerClient.eventOriginTick + firstTick && gameTime <= DataManagerClient.eventOriginTick + lastTick;
         }
     }
 

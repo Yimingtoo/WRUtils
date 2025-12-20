@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.input;
 
-import com.yiming.wrutils.client.WrutilsClient;
+import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.selected_area.SelectBox;
 import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
@@ -8,8 +8,6 @@ import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-
-import java.util.Objects;
 
 public class MouseManagement implements IMouseInputHandler {
     private static final MouseManagement INSTANCE = new MouseManagement();
@@ -30,11 +28,10 @@ public class MouseManagement implements IMouseInputHandler {
     }
 
     private boolean handleMouseScroll(double dWheel) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        boolean blItem = Objects.requireNonNull(client.player).getMainHandStack().getItem() == WrutilsClient.debugItem;
+        boolean blItem = WrutilsClientUtils.isPlayerHoldingRequiredItem();
         if (blItem) {
             Entity entity = EntityUtils.getCameraEntity();
-            if (HotkeysManagement.SELECT_MOVE_CTRL.getKeybind().isKeybindHeld()) {
+            if (Hotkeys.SELECT_MOVE_CTRL.getKeybind().isKeybindHeld()) {
                 final int amount = dWheel > 0 ? 1 : -1;
 
                 SelectBox box = DataManager.getCurrentSelectBox();

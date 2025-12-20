@@ -29,10 +29,8 @@ public class DataManager {
     public static boolean isSelectionEnabled = false;
     public static boolean isRecording = false;
 
-
     public static TimeStamp lastTimeStamp;
 
-    public static long eventOriginTick;
 
     private static boolean shouldRecord(BlockInfo blockInfo) {
         if (!isRecording) {

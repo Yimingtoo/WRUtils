@@ -1,12 +1,12 @@
 {
   "wrutils.gui.title.malilib_gui.configs_screen": "无线红石工具箱 - 配置 - %s",
-  "wrutils.config.hotkeys.name.openMainMenuScreen": "打开主菜单界面",
-  "wrutils.config.hotkeys.name.openAreaGroupScreen": "打开选区组界面",
-  "wrutils.config.hotkeys.name.openAreaListScreen": "打开选区列表界面",
-  "wrutils.config.hotkeys.name.openSubAreaScreen": "打开子选区列表界面",
-  "wrutils.config.hotkeys.name.openConfigsScreen": "打开配置界面-本界面",
-  "wrutils.config.hotkeys.name.selectMoveCtrl": "移动控制辅助按键",
-  "wrutils.config.hotkeys.name.toolPlaceCorner1": "选区角块1按键",
-  "wrutils.config.hotkeys.name.toolPlaceCorner2": "选区角块2按键",
-  "wrutils.config.hotkeys.name.toolSelectElements": "选区元素选择按键"
+  "wrutils.client.input.hotkeys.name.openMainMenuScreen": "打开主菜单界面",
+  "wrutils.client.input.hotkeys.name.openAreaGroupScreen": "打开选区组界面",
+  "wrutils.client.input.hotkeys.name.openAreaListScreen": "打开选区列表界面",
+  "wrutils.client.input.hotkeys.name.openSubAreaScreen": "打开子选区列表界面",
+  "wrutils.client.input.hotkeys.name.openConfigsScreen": "打开配置界面-本界面",
+  "wrutils.client.input.hotkeys.name.selectMoveCtrl": "移动控制辅助按键",
+  "wrutils.client.input.hotkeys.name.toolPlaceCorner1": "选区角块1按键",
+  "wrutils.client.input.hotkeys.name.toolPlaceCorner2": "选区角块2按键",
+  "wrutils.client.input.hotkeys.name.toolSelectElements": "选区元素选择按键"
 }

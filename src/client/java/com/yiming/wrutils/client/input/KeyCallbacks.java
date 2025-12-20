@@ -1,7 +1,6 @@
 package com.yiming.wrutils.client.input;
 
-import com.yiming.wrutils.client.Notification;
-import com.yiming.wrutils.client.WrutilsClient;
+import com.yiming.wrutils.client.hud.Notification;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.client.gui.AreaGroupScreen;
@@ -22,19 +21,20 @@ public class KeyCallbacks {
     public static void keyCallBackInit(MinecraftClient client) {
         IHotkeyCallback callbackHotkeys = new HotKeyCallback(client);
 
-        HotkeysManagement.OPEN_MAIN_MENU_SCREEN.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.OPEN_AREA_GROUP_SCREEN.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.OPEN_AREA_LIST_SCREEN.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.OPEN_SUB_AREA_CONFIG_SCREEN.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.OPEN_CONFIGS_SCREEN.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.SELECT_MOVE_CTRL.getKeybind().setCallback(callbackHotkeys);
-
-        HotkeysManagement.TOOL_PLACE_CORNER_1.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.TOOL_PLACE_CORNER_2.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.TOOL_SELECT_ELEMENTS.getKeybind().setCallback(callbackHotkeys);
-
-        HotkeysManagement.PREVIOUS_EVENT.getKeybind().setCallback(callbackHotkeys);
-        HotkeysManagement.NEXT_EVENT.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.OPEN_MAIN_MENU_SCREEN.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.OPEN_AREA_GROUP_SCREEN.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.OPEN_AREA_LIST_SCREEN.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.OPEN_SUB_AREA_CONFIG_SCREEN.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.OPEN_CONFIGS_SCREEN.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.SELECT_MOVE_CTRL.getKeybind().setCallback(callbackHotkeys);
+//
+//        HotkeysManagement.TOOL_PLACE_CORNER_1.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.TOOL_PLACE_CORNER_2.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.TOOL_SELECT_ELEMENTS.getKeybind().setCallback(callbackHotkeys);
+//
+//        HotkeysManagement.PREVIOUS_EVENT.getKeybind().setCallback(callbackHotkeys);
+//        HotkeysManagement.NEXT_EVENT.getKeybind().setCallback(callbackHotkeys);
+        Hotkeys.HOTKEY_LIST.forEach(key -> key.getKeybind().setCallback(callbackHotkeys));
 
     }
 
@@ -52,10 +52,10 @@ public class KeyCallbacks {
             }
 
             // 处理鼠标按键事件
-            boolean bl1 = key == HotkeysManagement.TOOL_PLACE_CORNER_1.getKeybind();
-            boolean bl2 = key == HotkeysManagement.TOOL_PLACE_CORNER_2.getKeybind();
-            boolean bl3 = key == HotkeysManagement.TOOL_SELECT_ELEMENTS.getKeybind();
-            boolean blItem = client.player.getMainHandStack().getItem() == WrutilsClient.debugItem;
+            boolean bl1 = key == Hotkeys.TOOL_PLACE_CORNER_1.getKeybind();
+            boolean bl2 = key == Hotkeys.TOOL_PLACE_CORNER_2.getKeybind();
+            boolean bl3 = key == Hotkeys.TOOL_SELECT_ELEMENTS.getKeybind();
+            boolean blItem = client.player.getMainHandStack().getItem() == DataManagerClient.debugItem;
             if (blItem) {
                 if (bl1 || bl2) {
                     WrutilsClientUtils.setSelectBoxCorner(client, bl1 ? SelectBox.SelectedCorner.CORNER_1 : SelectBox.SelectedCorner.CORNER_2);
@@ -65,38 +65,44 @@ public class KeyCallbacks {
             }
 
 
-            if (key == HotkeysManagement.OPEN_MAIN_MENU_SCREEN.getKeybind()) {
+            if (key == Hotkeys.OPEN_MAIN_MENU_SCREEN.getKeybind()) {
                 this.client.setScreen(new MainMenuScreen());
                 return true;
-            } else if (key == HotkeysManagement.OPEN_AREA_GROUP_SCREEN.getKeybind()) {
+            } else if (key == Hotkeys.OPEN_AREA_GROUP_SCREEN.getKeybind()) {
                 this.client.setScreen(new AreaGroupScreen(null));
                 return true;
-            } else if (key == HotkeysManagement.OPEN_AREA_LIST_SCREEN.getKeybind()) {
+            } else if (key == Hotkeys.OPEN_AREA_LIST_SCREEN.getKeybind()) {
                 if (DataManager.getCurrentBoxes() == null) {
                     Notification.addNotification("No Area is Selected!!!", 1000);
                     return false;
                 }
                 this.client.setScreen(new AreaListScreen(null, DataManager.getCurrentBoxes()));
                 return true;
-            } else if (key == HotkeysManagement.OPEN_SUB_AREA_CONFIG_SCREEN.getKeybind()) {
+            } else if (key == Hotkeys.OPEN_SUB_AREA_CONFIG_SCREEN.getKeybind()) {
                 if (DataManager.getCurrentSelectBox() == null) {
                     Notification.addNotification("No Sub Area is Selected!!!", 1000);
                     return false;
                 }
                 this.client.setScreen(new SubAreaScreen(null, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()));
                 return true;
-            } else if (key == HotkeysManagement.OPEN_CONFIGS_SCREEN.getKeybind()) {
+            } else if (key == Hotkeys.OPEN_CONFIGS_SCREEN.getKeybind()) {
                 GuiBase.openGui(new ConfigsScreen());
                 return true;
-            } else if (key == HotkeysManagement.PREVIOUS_EVENT.getKeybind()) {
+            } else if (key == Hotkeys.PREVIOUS_EVENT.getKeybind()) {
                 if (DataManagerClient.filterEventPointer > 1) {
                     DataManagerClient.filterEventPointer--;
                 }
                 return true;
-            } else if (key == HotkeysManagement.NEXT_EVENT.getKeybind()) {
+            } else if (key == Hotkeys.NEXT_EVENT.getKeybind()) {
                 if (DataManagerClient.filterEventPointer < DataManagerClient.filterEventList.size() - 1) {
                     DataManagerClient.filterEventPointer++;
                 }
+                return true;
+            } else if (key == Hotkeys.CLEAR_EVENTS.getKeybind()) {
+                DataManager.eventRecorder.clear();
+                DataManagerClient.filterEventList.clear();
+                DataManagerClient.filterEventPointer = 0;
+                Notification.addNotification("Events have been cleared.", 1000);
                 return true;
             }
 
@@ -104,5 +110,6 @@ public class KeyCallbacks {
             return false;
         }
     }
+
 
 }
