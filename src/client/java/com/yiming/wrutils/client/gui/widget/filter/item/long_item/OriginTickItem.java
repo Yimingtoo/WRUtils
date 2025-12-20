@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget.filter.item.long_item;
 
-import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.client.data.DataManagerClient;
 
 public class OriginTickItem extends LongItem {
     public OriginTickItem(long value) {
@@ -10,7 +10,7 @@ public class OriginTickItem extends LongItem {
     @Override
     public void setValue(Long value) {
         super.setValue(value);
-        DataManager.eventOriginTick = value;
+        DataManagerClient.eventOriginTick = value;
     }
 
 }

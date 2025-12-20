@@ -13,9 +13,7 @@ public class GeometryUtil {
      *
      * @param linePoint   直线起点
      * @param lineDir     直线方向向量
-     * @param posMin      矩形的最小角点
-     * @param posMax      矩形的最大角点
-     * @param planeDir    平面方向（矩形所在的轴）
+     * @param plane       平面
      * @param maxDistance 最大考虑距离
      * @return 如果存在有效交点且在maxDistance内，返回交点距离；
      * 如果没有有效交点，返回-1；

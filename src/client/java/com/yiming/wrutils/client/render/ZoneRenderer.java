@@ -84,7 +84,7 @@ public class ZoneRenderer {
     public static void drawBoxFaces(MatrixStack matrices, Camera camera, Vec3i pos1, Vec3i pos2, WrutilsColor style) {
         CubeFaces cubeFaces = new CubeFaces(pos1, pos2, style);
 
-        preRender();
+        setupRenderState();
 
         RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         //RenderSystem.setShader(GameRenderer::getPositionColorProgram);
@@ -113,7 +113,7 @@ public class ZoneRenderer {
         }
         matrices.pop();
 
-        postRender();
+        restoreRenderState();
     }
 
 
@@ -136,7 +136,7 @@ public class ZoneRenderer {
 
     // 参考 litematica 源码
     public static void drawBlockOutline(Camera camera, BlockPos pos, int lineWidth, WrutilsColor color) {
-        preRender();
+        setupRenderState();
 
         RenderSystem.lineWidth(lineWidth);
         RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
@@ -164,11 +164,11 @@ public class ZoneRenderer {
         } catch (Exception ignore) {
         }
 
-        postRender();
+        restoreRenderState();
     }
 
 
-    private static void preRender() {
+    private static void setupRenderState() {
         RenderSystem.enableDepthTest();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
         RenderSystem.depthMask(false);
@@ -180,7 +180,7 @@ public class ZoneRenderer {
         RenderSystem.disableCull();
     }
 
-    private static void postRender() {
+    private static void restoreRenderState() {
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
 

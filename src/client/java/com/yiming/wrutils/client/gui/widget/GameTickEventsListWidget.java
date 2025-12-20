@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget;
 
-import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -36,7 +36,7 @@ public class GameTickEventsListWidget extends ScrollableWidget {
         for (BaseEvent baseEvent : baseEvents) {
             if (baseEvent.getTimeStamp().gameTime() != gameTick) {
                 gameTick = baseEvent.getTimeStamp().gameTime();
-                eventsListWidget = new EventsListWidget(this.parent, gameTick, (int) (gameTick - DataManager.eventOriginTick), 0, 0, this.getWidth() - 10, Text.of("Tick: "));
+                eventsListWidget = new EventsListWidget(this.parent, gameTick, (int) (gameTick - DataManagerClient.eventOriginTick), 0, 0, this.getWidth() - 10, Text.of("Tick: "));
                 eventsListWidget.addChild(baseEvent);
                 this.eventsListWidgets.add(eventsListWidget);
             } else {

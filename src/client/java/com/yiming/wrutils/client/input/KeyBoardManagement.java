@@ -15,7 +15,7 @@ public class KeyBoardManagement implements IKeybindProvider, IKeyboardInputHandl
 
     @Override
     public void addKeysToMap(IKeybindManager iKeybindManager) {
-        for (IHotkey hotkey : HotkeysManagement.HOTKEY_LIST) {
+        for (IHotkey hotkey : Hotkeys.HOTKEY_LIST) {
             iKeybindManager.addKeybindToMap(hotkey.getKeybind());
         }
 
@@ -23,7 +23,7 @@ public class KeyBoardManagement implements IKeybindProvider, IKeyboardInputHandl
 
     @Override
     public void addHotkeys(IKeybindManager iKeybindManager) {
-        iKeybindManager.addHotkeysForCategory(ModInfo.MOD_NAME, ModInfo.MOD_ID + ".hotkeys.category.generic_hotkeys", HotkeysManagement.HOTKEY_LIST);
+        iKeybindManager.addHotkeysForCategory(ModInfo.MOD_NAME, ModInfo.MOD_ID + ".hotkeys.category.generic_hotkeys", Hotkeys.HOTKEY_LIST);
     }
 
 }

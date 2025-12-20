@@ -1,4 +1,4 @@
-package com.yiming.wrutils.client;
+package com.yiming.wrutils.client.hud;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

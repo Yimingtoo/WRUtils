@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.utils;
 
-import com.yiming.wrutils.client.Notification;
+import com.yiming.wrutils.client.data.DataManagerClient;
+import com.yiming.wrutils.client.hud.Notification;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.Dimension;
 import com.yiming.wrutils.data.selected_area.SelectBox;
@@ -183,5 +184,10 @@ public class WrutilsClientUtils {
             case "minecraft:the_end" -> Dimension.END;
             default -> Dimension.NONE;
         };
+    }
+
+    public static boolean isPlayerHoldingRequiredItem() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        return client.player != null && client.player.getMainHandStack().getItem() == DataManagerClient.debugItem;
     }
 }

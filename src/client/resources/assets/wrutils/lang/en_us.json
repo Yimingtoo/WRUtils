@@ -1,12 +1,12 @@
 {
   "wrutils.gui.title.malilib_gui.configs_screen": "Wrutils Configs - %s",
-  "wrutils.config.hotkeys.name.openMainMenuScreen": "openMainMenuScreen",
-  "wrutils.config.hotkeys.name.openAreaGroupScreen": "openAreaGroupScreen",
-  "wrutils.config.hotkeys.name.openAreaListScreen": "openAreaListScreen",
-  "wrutils.config.hotkeys.name.openSubAreaScreen": "openSubAreaScreen",
-  "wrutils.config.hotkeys.name.openConfigsScreen": "openConfigsScreen",
-  "wrutils.config.hotkeys.name.selectMoveCtrl": "selectMoveCtrl",
-  "wrutils.config.hotkeys.name.toolPlaceCorner1": "toolPlaceCorner1",
-  "wrutils.config.hotkeys.name.toolPlaceCorner2": "toolPlaceCorner2",
-  "wrutils.config.hotkeys.name.toolSelectElements": "toolSelectElements"
+  "wrutils.client.input.hotkeys.name.openMainMenuScreen": "openMainMenuScreen",
+  "wrutils.client.input.hotkeys.name.openAreaGroupScreen": "openAreaGroupScreen",
+  "wrutils.client.input.hotkeys.name.openAreaListScreen": "openAreaListScreen",
+  "wrutils.client.input.hotkeys.name.openSubAreaScreen": "openSubAreaScreen",
+  "wrutils.client.input.hotkeys.name.openConfigsScreen": "openConfigsScreen",
+  "wrutils.client.input.hotkeys.name.selectMoveCtrl": "selectMoveCtrl",
+  "wrutils.client.input.hotkeys.name.toolPlaceCorner1": "toolPlaceCorner1",
+  "wrutils.client.input.hotkeys.name.toolPlaceCorner2": "toolPlaceCorner2",
+  "wrutils.client.input.hotkeys.name.toolSelectElements": "toolSelectElements"
 }

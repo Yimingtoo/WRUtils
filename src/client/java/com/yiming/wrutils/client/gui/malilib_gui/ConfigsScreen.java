@@ -1,11 +1,10 @@
 package com.yiming.wrutils.client.gui.malilib_gui;
 
 import com.yiming.wrutils.client.ModInfo;
-import com.yiming.wrutils.client.input.HotkeysManagement;
+import com.yiming.wrutils.client.input.Hotkeys;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.List;
@@ -65,7 +64,7 @@ public class ConfigsScreen extends GuiConfigsBase {
     public List<ConfigOptionWrapper> getConfigs() {
         List<? extends IConfigBase> configs = switch (currentTab) {
             case GENERIC -> List.of();
-            case HOTKEYS -> HotkeysManagement.HOTKEY_LIST;
+            case HOTKEYS -> Hotkeys.HOTKEY_LIST;
         };
         return ConfigOptionWrapper.createFor(configs);
     }
