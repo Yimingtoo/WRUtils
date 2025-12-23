@@ -2,16 +2,14 @@ package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -21,7 +19,8 @@ import java.util.stream.Collectors;
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
     private FilterWidget filterWidget;
-    private BaseClickableWidget filterButton;
+    private ButtonWidget filterButton;
+    private ButtonWidget clearEventsButton;
 
     protected GTEventsListScreen(Screen parent) {
         super(Text.of("Game Tick Events"), parent, false);
@@ -32,6 +31,7 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         // 处理鼠标事件
         result = handler.apply(this.filterWidget);
         result = handler.apply(this.filterButton) || result; // result 在"||"后面表示先执行handler.apply
+        result = result || handler.apply(this.clearEventsButton);
         result = result || handler.apply(this.gameTickEventsListWidget); // result 在"||"前面面表示如果result为true则不执行handler.apply
         return result;
     }
@@ -60,17 +60,22 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         });
         this.addDrawableChild(this.filterWidget);
 
-        int x1 = 288;
-        this.filterButton = new BaseClickableWidget(this.filterWidget.getX() + x1, this.filterWidget.getY(), 18, 18, Text.of("F"), this::filterButtonOnClick) {
-            @Override
-            protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-                context.drawTextWithShadow(this.textRenderer, this.getMessage(), this.getX() + 6, this.getY() + 5, WrutilsColor.WHITE);
-                context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), WrutilsColor.GREY_0);
-                context.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, WrutilsColor.BLACK);
-            }
-        };
+        int x1 = this.filterWidget.getTabsWidth() + 5;
+        this.filterButton = ButtonWidget.builder(Text.of("Filter"), button -> this.filterButtonOnClick())
+                .width(40).position(x1, y).build();
         this.addDrawableChild(this.filterButton);
+        this.filterButton.setHeight(16);
         this.filterButtonOnClick();
+
+        x1 += this.filterButton.getWidth() + 5;
+        this.clearEventsButton = ButtonWidget.builder(Text.of("Clear"), button -> {
+            DataManagerClient.clearEvents();
+            this.gameTickEventsListWidget.setEvents(DataManagerClient.filterEventList);
+        }).width(40).position(x1, y).build();
+        this.clearEventsButton.setHeight(16);
+        this.addDrawableChild(this.clearEventsButton);
+
+
     }
 
     private void filterButtonOnClick() {

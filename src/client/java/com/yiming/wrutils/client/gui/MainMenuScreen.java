@@ -5,7 +5,6 @@ import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
-import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -18,12 +17,17 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class MainMenuScreen extends Screen {
-
+    private final MinecraftClient client1;
+    private ButtonWidget playButton;
+    private ButtonWidget eventButton;
     private CustomButtonWidget customButtonWidget;
+    private ButtonWidget selectionButton;
+    private ButtonWidget recordButton;
 
     // 设置界面标题
     public MainMenuScreen() {
         super(Text.of("WRUtils Settings"));
+        this.client1 = MinecraftClient.getInstance();
     }
 
     @Override
@@ -35,66 +39,84 @@ public class MainMenuScreen extends Screen {
 
 
     private void initWidgets() {
-        MinecraftClient client1 = MinecraftClient.getInstance();
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().margin(4, 4, 4, 0);
         GridWidget.Adder adder = gridWidget.createAdder(2);
+
+        // 返回按钮
         adder.add(ButtonWidget.builder(Text.of("Back"), button -> {
-            client1.setScreen(null);
-            client1.mouse.lockCursor();
+            this.client1.setScreen(null);
+            this.client1.mouse.lockCursor();
         }).width(228).build(), 2, gridWidget.copyPositioner().marginTop(50));
 
-        adder.add(ButtonWidget.builder(Text.of("Events"), button -> {
-            GuiBase.openGui(new GTEventsListScreen(this));
-//            GuiBase.openGui(new TestScreen(Text.of("Test"),this));
+        // 事件按钮
+        AxisGridWidget axisGridWidget = adder.add(new AxisGridWidget(110, 20, AxisGridWidget.DisplayAxis.HORIZONTAL));
+        this.eventButton = axisGridWidget.add(ButtonWidget.builder(Text.of("Events"), button -> {
+            this.client1.setScreen(new GTEventsListScreen(this));
+            this.updatePlayEventButton();
         }).width(110).build());
+        this.playButton = axisGridWidget.add(ButtonWidget.builder(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"), button -> {
+            DataManagerClient.isFilterEventRender = !DataManagerClient.isFilterEventRender;
+            button.setMessage(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"));
+        }).width(38).build());
+        this.updatePlayEventButton();
 
+        // 配置界面按钮
         adder.add(ButtonWidget.builder(Text.of("Configs Menu"), button -> {
-            GuiBase.openGui(new ConfigsScreen(this));
+            this.client1.setScreen(new ConfigsScreen(this));
         }).width(110).build());
 
-        adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {
-            if (!DataManager.isSelectionEnabled) {
-                // "请先开启选取!"
-                return;
-            }
-            DataManager.isRecording = !DataManager.isRecording;
-            button.setMessage(this.getRecordButtonText());
-        }).width(110).build());
-
-        adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
+        // 选取按钮
+        this.selectionButton = adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
             if (DataManager.isRecording) {
-                // "请先停止记录!"
-                return;
+//                DataManager.isRecording = false;
+                this.recordButton.onPress();
             }
             DataManager.isSelectionEnabled = !DataManager.isSelectionEnabled;
             button.setMessage(this.getSelectionButtonText());
             this.customButtonWidget.setEnabled(DataManager.isSelectionEnabled);
         }).width(110).build());
 
-
-        this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 228, 20, 3, Text.of("Test3")), 2);
-        this.customButtonWidget.setOnClickAction(
-                () -> client1.setScreen(new AreaGroupScreen(this)),
-                () -> client1.setScreen(new AreaListScreen(this, DataManager.getCurrentBoxes())),
-                () -> client1.setScreen(new SubAreaScreen(this, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()))
-        );
-        adder.add(ButtonWidget.builder(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"), button -> {
-            DataManagerClient.isFilterEventRender = !DataManagerClient.isFilterEventRender;
-//            button.setMessage(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"));
-            button.setMessage(Text.of(String.valueOf(DataManagerClient.isFilterEventRender)));
+        // 记录按钮
+        this.recordButton = adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {
+            if (!DataManager.isSelectionEnabled) {
+                // "请先开启选取!"
+//                return;
+                this.selectionButton.onPress();
+            }
+            DataManager.isRecording = !DataManager.isRecording;
+            button.setMessage(this.getRecordButtonText());
         }).width(110).build());
+
+        // 区域按钮
+        this.customButtonWidget = adder.add(new CustomButtonWidget(0, 0, 228, 20, 3, Text.of("")), 2);
+        this.customButtonWidget.setOnClickAction(
+                () -> this.client1.setScreen(new AreaGroupScreen(this)),
+                () -> this.client1.setScreen(new AreaListScreen(this, DataManager.getCurrentBoxes())),
+                () -> this.client1.setScreen(new SubAreaScreen(this, DataManager.getCurrentBoxes(), DataManager.getCurrentSelectBox()))
+        );
+
+
+//        adder.add(ButtonWidget.builder(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"), button -> {
+//            DataManagerClient.isFilterEventRender = !DataManagerClient.isFilterEventRender;
+//            button.setMessage(Text.of(DataManagerClient.isFilterEventRender ? "Stop" : "Play"));
+//        }).width(110).build());
 
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, 0, this.width, this.height, 0.5F, 0.25F);
         gridWidget.forEachChild(this::addDrawableChild);
     }
 
+    public void updatePlayEventButton() {
+        boolean isEmpty = DataManagerClient.filterEventList.isEmpty();
+        playButton.visible = !isEmpty;
+        eventButton.setWidth(isEmpty ? 110 : 68);
+    }
+
     private Text getRecordButtonText() {
         boolean bl = !DataManager.isRecording;
-        return Text.literal(bl ? "Start" : "Stop").styled(style -> style.withColor(bl ? 0xFFFFFFFF : 0xFFFFFF00))
-                .append(Text.literal(" "))
-                .append(Text.literal("Record").styled(style -> style.withColor(0xFFFFFFFF)));
+        return Text.literal(bl ? "Start Record" : "Recording").styled(style -> style.withColor(bl ? 0xFFFFFFFF : 0xFFFFFF00));
+
     }
 
     private Text getSelectionButtonText() {

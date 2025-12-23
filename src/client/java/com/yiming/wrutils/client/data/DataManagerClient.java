@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.data;
 
 import com.yiming.wrutils.client.ModInfo;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
@@ -21,8 +22,12 @@ public class DataManagerClient {
 
     public static long eventOriginTick;
 
-
-    public static BaseEvent getFilterEvent() {
+    public static void clearEvents() {
+        DataManager.eventRecorder.clear();
+        filterEventList.clear();
+        filterEventPointer = 0;
+    }
+    public static BaseEvent getFilterEventAtPointer() {
         if (filterEventPointer >= filterEventList.size()) {
             return null;
         }
@@ -56,5 +61,6 @@ public class DataManagerClient {
         System.out.println("save：" + DataManagerClient.getDataDir().getAbsolutePath());
 
     }
+
 
 }

@@ -89,7 +89,7 @@ public class KeyCallbacks {
                 GuiBase.openGui(new ConfigsScreen());
                 return true;
             } else if (key == Hotkeys.PREVIOUS_EVENT.getKeybind()) {
-                if (DataManagerClient.filterEventPointer > 1) {
+                if (DataManagerClient.filterEventPointer > 0) {
                     DataManagerClient.filterEventPointer--;
                 }
                 return true;
@@ -99,9 +99,7 @@ public class KeyCallbacks {
                 }
                 return true;
             } else if (key == Hotkeys.CLEAR_EVENTS.getKeybind()) {
-                DataManager.eventRecorder.clear();
-                DataManagerClient.filterEventList.clear();
-                DataManagerClient.filterEventPointer = 0;
+                DataManagerClient.clearEvents();
                 Notification.addNotification("Events have been cleared.", 1000);
                 return true;
             }

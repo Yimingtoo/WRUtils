@@ -178,10 +178,12 @@ public class CustomButtonWidget extends ClickableWidget {
         if (this.button2.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (this.button1.mouseClicked(mouseX, mouseY, button)) {
+        boolean bl = mouseY < this.getY() + this.getHeight() - this.margin * 2;
+        if ((bl || !this.button2.visible)
+                && this.button1.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return bl && super.mouseClicked(mouseX, mouseY, button);
     }
 
     private static class ButtonWidget extends ClickableWidget {
