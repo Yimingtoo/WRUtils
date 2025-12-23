@@ -1,5 +1,6 @@
 package com.yiming.wrutils.client;
 
+import com.yiming.wrutils.client.data.Configs;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.hud.EventInfoHud;
 import com.yiming.wrutils.client.hud.Notification;
@@ -8,6 +9,8 @@ import com.yiming.wrutils.client.input.KeyCallbacks;
 import com.yiming.wrutils.client.input.MouseManagement;
 import com.yiming.wrutils.client.render.CustomRender;
 import com.yiming.wrutils.data.event.BaseEvent;
+import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
@@ -20,6 +23,9 @@ public class WrutilsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        // *** Malilib ***
+        InitializationHandler.getInstance().registerInitializationHandler(() -> ConfigManager.getInstance().registerConfigHandler(ModInfo.MOD_ID, new Configs()));
+        // *** Malilib ***
         guiInit();
         dataManagerInit();
         CustomRender.renderCustomModelOut();
@@ -32,7 +38,9 @@ public class WrutilsClient implements ClientModInitializer {
         KeyCallbacks.keyCallBackInit(MinecraftClient.getInstance());
 
 
+
     }
+
 
     public void guiInit() {
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
@@ -41,7 +49,7 @@ public class WrutilsClient implements ClientModInitializer {
                     Identifier.of("mymod", "notifications"),
                     (context, tickCounter) -> {
                         Notification.renderNotification(context);
-                        BaseEvent event = DataManagerClient.getFilterEvent();
+                        BaseEvent event = DataManagerClient.getFilterEventAtPointer();
                         if (event != null) {
                             EventInfoHud eventInfoHud = new EventInfoHud(event);
                             eventInfoHud.setEnabled(true);

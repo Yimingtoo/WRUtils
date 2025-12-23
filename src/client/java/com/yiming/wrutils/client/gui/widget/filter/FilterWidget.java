@@ -39,6 +39,7 @@ public class FilterWidget extends ClickableWidget {
     private final TabButton timeButton;
     private final TabButton positionButton;
     private final TabButton eventButton;
+    private int tabsWidth;
 
     private BaseClickableWidget currentWidget = null;
 
@@ -58,12 +59,13 @@ public class FilterWidget extends ClickableWidget {
             }
         };
 
-        x1 += 23;
-        this.timeButton = new TabButton(x + x1, y, 80, 18, Text.of("Time"), this::timeButtonOnClick);
-        x1 += 85;
-        this.positionButton = new TabButton(x + x1, y, 80, 18, Text.of("Position"), this::positionButtonOnClick);
-        x1 += 85;
-        this.eventButton = new TabButton(x + x1, y, 80, 18, Text.of("Event"), this::eventButtonOnClick);
+        x1 += this.switchButton.getWidth() + 5;
+        this.timeButton = new TabButton(x + x1, y, 18, Text.of("Time"), this::timeButtonOnClick);
+        x1 += this.timeButton.getWidth() + 5;
+        this.positionButton = new TabButton(x + x1, y, 18, Text.of("Position"), this::positionButtonOnClick);
+        x1 += this.positionButton.getWidth() + 5;
+        this.eventButton = new TabButton(x + x1, y, 18, Text.of("Event"), this::eventButtonOnClick);
+        this.tabsWidth = x1 + this.eventButton.getWidth();
 
         this.widgetMap.put(this.timeButton, new HashMap<>());
 //        ArrayList<GameTickItem> gameTickItems = new ArrayList<>();
@@ -176,6 +178,10 @@ public class FilterWidget extends ClickableWidget {
 
     public void setOnOpenStateChangeAction(Runnable action) {
         this.onOpenStateChangeAction = action;
+    }
+
+    public int getTabsWidth() {
+        return this.tabsWidth;
     }
 
     public void switchButtonOnClick() {
@@ -311,6 +317,11 @@ public class FilterWidget extends ClickableWidget {
 
         public TabButton(int x, int y, int width, int height, Text message, Runnable onClickAction) {
             super(x, y, width, height, message, onClickAction);
+        }
+
+        public TabButton(int x, int y, int height, Text message, Runnable onClickAction) {
+            super(x, y, 0, height, message, onClickAction);
+            this.width = this.textRenderer.getWidth(this.getMessage()) + 5 * 2;
         }
 
         public void setTabSelected(boolean flag) {

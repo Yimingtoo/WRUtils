@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.gui.malilib_gui;
 
 import com.yiming.wrutils.client.ModInfo;
+import com.yiming.wrutils.client.data.configs.Generic;
 import com.yiming.wrutils.client.input.Hotkeys;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
@@ -20,7 +21,7 @@ public class ConfigsScreen extends GuiConfigsBase {
 
     public ConfigsScreen(Screen parent) {
         this();
-        this.setParent( parent);
+        this.setParent(parent);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class ConfigsScreen extends GuiConfigsBase {
     @Override
     public List<ConfigOptionWrapper> getConfigs() {
         List<? extends IConfigBase> configs = switch (currentTab) {
-            case GENERIC -> List.of();
+            case GENERIC -> Generic.GENERIC_LIST;
             case HOTKEYS -> Hotkeys.HOTKEY_LIST;
         };
         return ConfigOptionWrapper.createFor(configs);

@@ -30,6 +30,9 @@ public class SingleSelectItemListWidget extends ItemListWidget {
         } else {
             if (this.selectedItem != null) {
                 this.selectedItem.setChecked(true);
+            } else if (!this.children().isEmpty() && this.getFirst() instanceof ItemEntry entry) {
+                this.selectedItem = entry;
+                entry.setChecked(true);
             }
         }
     }
