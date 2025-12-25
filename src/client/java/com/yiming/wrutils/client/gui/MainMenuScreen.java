@@ -3,8 +3,11 @@ package com.yiming.wrutils.client.gui;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.malilib_gui.ConfigsScreen;
 import com.yiming.wrutils.client.gui.widget.CustomButtonWidget;
+import com.yiming.wrutils.client.utils.WrutilsClientUtils;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
+import com.yiming.wrutils.data.selected_area.SelectBox;
+import com.yiming.wrutils.data.selected_area.SelectBoxes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -69,9 +72,21 @@ public class MainMenuScreen extends Screen {
         // 选取按钮
         this.selectionButton = adder.add(ButtonWidget.builder(this.getSelectionButtonText(), button -> {
             if (DataManager.isRecording) {
-//                DataManager.isRecording = false;
                 this.recordButton.onPress();
             }
+
+            // 如果没有添加SubArea，自动添加SubArea
+            if (!DataManager.isSelectionEnabled) {
+                SelectBoxes boxes = DataManager.getCurrentBoxes();
+                MinecraftClient client1 = MinecraftClient.getInstance();
+                if (!(client1.player == null) && boxes != null && boxes.getList().isEmpty()) {
+                    SelectBox selectBox = new SelectBox(client1.player.getBlockPos(),
+                            client1.player.getBlockPos(), WrutilsClientUtils.getPlayerDimension());
+                    boxes.addAndSetCurrent(selectBox);
+                }
+            }
+            this.changeCustomButtonLevel();
+
             DataManager.isSelectionEnabled = !DataManager.isSelectionEnabled;
             button.setMessage(this.getSelectionButtonText());
             this.customButtonWidget.setEnabled(DataManager.isSelectionEnabled);
@@ -80,8 +95,6 @@ public class MainMenuScreen extends Screen {
         // 记录按钮
         this.recordButton = adder.add(ButtonWidget.builder(this.getRecordButtonText(), button -> {
             if (!DataManager.isSelectionEnabled) {
-                // "请先开启选取!"
-//                return;
                 this.selectionButton.onPress();
             }
             DataManager.isRecording = !DataManager.isRecording;

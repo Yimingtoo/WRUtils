@@ -1,4 +1,6 @@
-package com.yiming.wrutils.client.gui.widget.filter.item;
+package com.yiming.wrutils.client.gui.widget.filter.item.items;
+
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 
 public class SkipFilterItem implements FilterType<Boolean> {
 

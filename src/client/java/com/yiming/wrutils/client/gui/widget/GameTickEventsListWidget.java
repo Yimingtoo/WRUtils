@@ -57,6 +57,10 @@ public class GameTickEventsListWidget extends ScrollableWidget {
         return height;
     }
 
+    public void refreshEvents() {
+        this.setEvents(DataManagerClient.filterEventList);
+    }
+
     @Override
     protected int getContentsHeightWithPadding() {
         int padding = 8;

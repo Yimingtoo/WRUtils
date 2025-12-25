@@ -82,23 +82,27 @@ public class AreaListScreen extends AbstractSetupScreen {
         Text text2 = Text.of("Sub Areas:");
         TextWidget textWidget2 = addDrawableChild(new TextWidget(text2, this.textRenderer));
         SimplePositioningWidget.setPos(textWidget2, 12, y, this.textRenderer.getWidth(text2), 20);
-        ButtonWidget createSubArea = this.addDrawableChild(ButtonWidget.builder(Text.of("Create Sub Area"), button -> {
-            if (client1.player == null) {
-                return;
-            }
-
-            SelectBox selectBox = new SelectBox(client1.player.getBlockPos(), client1.player.getBlockPos(), WrutilsClientUtils.getPlayerDimension());
-            this.selfSelectBoxes.addAndSetCurrent(selectBox);
-            areaListWidget.appendAreaEntry(selectBox);
-        }).width(100).build());
+        ButtonWidget createSubArea = this.addDrawableChild(ButtonWidget.builder(Text.of("Create Sub Area"), this::createSubAreaButtonOnClick).width(100).build());
         SimplePositioningWidget.setPos(createSubArea, 75, y, 100, 20);
 
-        ButtonWidget unselectButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Unselect"), button -> {
-            this.areaListWidget.setSelected((AreaListWidget.Entry) null);
-        }).width(100).build());
+        ButtonWidget unselectButton = this.addDrawableChild(ButtonWidget.builder(Text.of("Unselect"), this::unselectButtonOnClick).width(100).build());
         SimplePositioningWidget.setPos(unselectButton, 180, y, 100, 20);
 
 
+    }
+
+    public void createSubAreaButtonOnClick(ButtonWidget button) {
+        MinecraftClient client1 = MinecraftClient.getInstance();
+        if (client1.player == null) {
+            return;
+        }
+        SelectBox selectBox = new SelectBox(client1.player.getBlockPos(), client1.player.getBlockPos(), WrutilsClientUtils.getPlayerDimension());
+        this.selfSelectBoxes.addAndSetCurrent(selectBox);
+        areaListWidget.appendAreaEntry(selectBox);
+    }
+
+    public void unselectButtonOnClick(ButtonWidget button) {
+        this.areaListWidget.setSelected((AreaListWidget.Entry) null);
     }
 
 

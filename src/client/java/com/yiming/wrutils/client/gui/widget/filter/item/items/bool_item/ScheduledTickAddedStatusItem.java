@@ -1,11 +1,9 @@
-package com.yiming.wrutils.client.gui.widget.filter.item.bool_item;
+package com.yiming.wrutils.client.gui.widget.filter.item.items.bool_item;
 
-import com.yiming.wrutils.client.gui.widget.filter.item.int_item.IntegerItem;
 import com.yiming.wrutils.data.event.BaseEvent;
 import com.yiming.wrutils.data.event.ScheduledTickAddEvent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class ScheduledTickAddedStatusItem extends BooleanItem {
     public ScheduledTickAddedStatusItem(boolean value) {

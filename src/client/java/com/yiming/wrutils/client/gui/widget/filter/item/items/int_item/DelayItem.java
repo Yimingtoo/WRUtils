@@ -1,7 +1,6 @@
-package com.yiming.wrutils.client.gui.widget.filter.item.int_item;
+package com.yiming.wrutils.client.gui.widget.filter.item.items.int_item;
 
 import com.yiming.wrutils.data.event.BaseEvent;
-import com.yiming.wrutils.data.event.ScheduledTickAddEvent;
 import com.yiming.wrutils.data.event.ScheduledTickInfo;
 
 import java.util.ArrayList;

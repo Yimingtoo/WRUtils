@@ -21,6 +21,7 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     private FilterWidget filterWidget;
     private ButtonWidget filterButton;
     private ButtonWidget clearEventsButton;
+    private ButtonWidget resetButton;
 
     protected GTEventsListScreen(Screen parent) {
         super(Text.of("Game Tick Events"), parent, false);
@@ -31,7 +32,8 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         // 处理鼠标事件
         result = handler.apply(this.filterWidget);
         result = handler.apply(this.filterButton) || result; // result 在"||"后面表示先执行handler.apply
-        result = result || handler.apply(this.clearEventsButton);
+        result = handler.apply(this.clearEventsButton) || result;
+        result = handler.apply(this.resetButton) || result;
         result = result || handler.apply(this.gameTickEventsListWidget); // result 在"||"前面面表示如果result为true则不执行handler.apply
         return result;
     }
@@ -59,22 +61,30 @@ public class GTEventsListScreen extends AbstractSetupScreen {
             }
         });
         this.addDrawableChild(this.filterWidget);
-
         int x1 = this.filterWidget.getTabsWidth() + 5;
+
         this.filterButton = ButtonWidget.builder(Text.of("Filter"), button -> this.filterButtonOnClick())
                 .width(40).position(x1, y).build();
         this.addDrawableChild(this.filterButton);
         this.filterButton.setHeight(16);
         this.filterButtonOnClick();
-
         x1 += this.filterButton.getWidth() + 5;
+
+
+        this.resetButton = ButtonWidget.builder(Text.of("Reset"), button -> {
+            this.filterWidget.resetFilter();
+            this.gameTickEventsListWidget.refreshEvents();
+        }).width(40).position(x1, y).build();
+        this.resetButton.setHeight(16);
+        this.addDrawableChild(this.resetButton);
+        x1 += this.resetButton.getWidth() + 5;
+
         this.clearEventsButton = ButtonWidget.builder(Text.of("Clear"), button -> {
             DataManagerClient.clearEvents();
-            this.gameTickEventsListWidget.setEvents(DataManagerClient.filterEventList);
-        }).width(40).position(x1, y).build();
+            this.gameTickEventsListWidget.refreshEvents();
+        }).width(40).position(this.width - 45, y).build();
         this.clearEventsButton.setHeight(16);
         this.addDrawableChild(this.clearEventsButton);
-
 
     }
 

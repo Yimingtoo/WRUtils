@@ -18,9 +18,16 @@ public class SingleSelectItemListWidget extends ItemListWidget {
         });
     }
 
+    @Override
+    public void reset() {
+        if (this.getFirst() instanceof ItemEntry entry) {
+            this.setSingleCheckedItem(entry);
+            this.selectedItem = entry;
+        }
+    }
 
     @Override
-    public void setCheckedItems(boolean checked) {
+    public void setSelectedCheckedItems(boolean checked) {
         if (!checked) {
             this.children().forEach(entry -> {
                 if (entry instanceof ItemEntry itemEntry) {

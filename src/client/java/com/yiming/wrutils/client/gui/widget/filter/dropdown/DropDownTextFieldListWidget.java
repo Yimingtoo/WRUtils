@@ -3,8 +3,8 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.GameTickItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.GameTickItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -89,6 +89,12 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
             }
         }
         return list;
+    }
+
+    @Override
+    public void reset() {
+        this.setCheckState(CheckState.CHECKED);
+        this.itemTextFieldListWidget.reset();
     }
 
     @Override

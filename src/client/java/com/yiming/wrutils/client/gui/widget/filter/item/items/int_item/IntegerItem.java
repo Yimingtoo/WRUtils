@@ -1,4 +1,4 @@
-package com.yiming.wrutils.client.gui.widget.filter.item.int_item;
+package com.yiming.wrutils.client.gui.widget.filter.item.items.int_item;
 
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 
