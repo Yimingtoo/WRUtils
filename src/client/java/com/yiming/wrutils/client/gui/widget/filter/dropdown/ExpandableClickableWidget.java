@@ -13,4 +13,6 @@ public abstract class ExpandableClickableWidget extends BaseClickableWidget {
     public boolean isExpanded() {
         return this.isExpanded;
     }
+
+    abstract public void reset();
 }

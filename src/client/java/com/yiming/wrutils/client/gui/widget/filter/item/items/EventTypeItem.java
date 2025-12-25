@@ -1,5 +1,6 @@
-package com.yiming.wrutils.client.gui.widget.filter.item;
+package com.yiming.wrutils.client.gui.widget.filter.item.items;
 
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.data.event.BaseEvent;
 import com.yiming.wrutils.data.event.EventType;
 

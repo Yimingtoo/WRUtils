@@ -6,7 +6,8 @@ import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidg
 import com.yiming.wrutils.client.gui.widget.filter.clickable.TextButtonWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.long_item.OriginTickItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.LongItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.OriginTickItem;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -140,6 +141,21 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
                 itemTextFieldEntry.getTextField().setFocused(false);
             }
         });
+    }
+
+    public void reset() {
+        this.itemEntries.clear();
+        this.itemEntries.add(this.headerEntry);
+        this.updateEntries();
+        if (!DataManager.eventRecorder.isEmpty()) {
+            long time = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
+            ((LongItem) this.headerEntry.getItem()).setValue(time);
+            this.headerEntry.setTextFieldText(String.valueOf(time));
+
+        } else {
+            ((LongItem) this.headerEntry.getItem()).setValue(0L);
+            this.headerEntry.setTextFieldText(String.valueOf(0L));
+        }
     }
 
 
@@ -362,7 +378,10 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
                 this.item.setValueFromText(text);
             });
             this.textField.setWidth(142 - this.textWidth - 6);
+        }
 
+        public void setTextFieldText(String text) {
+            this.textField.setText(text);
         }
 
         @Override

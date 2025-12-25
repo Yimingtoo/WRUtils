@@ -23,6 +23,6 @@ public record BlockInfo(BlockPos pos, Dimension dimension, @Nullable BlockState 
     @Override
     public String toString() {
 
-        return String.format("<%s>{%d, %d, %d}", state.getBlock() != null ? state.getBlock().getName().getString() : "null", pos.getX(), pos.getY(), pos.getZ());
+        return String.format("<%s>{%s[%d, %d, %d]}", state.getBlock() != null ? state.getBlock().getName().getString() : "null", dimension.getName(), pos.getX(), pos.getY(), pos.getZ());
     }
 }

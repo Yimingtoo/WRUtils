@@ -14,6 +14,10 @@ public class TextButtonWidget extends BaseClickableWidget {
         this.onClickAction = onClickAction;
     }
 
+    public void setTextWidgetText(Text text) {
+        this.textWidget.setMessage(text);
+    }
+
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.isMouseOver(mouseX, mouseY) ? WrutilsColor.WHITE : WrutilsColor.GREY_0);

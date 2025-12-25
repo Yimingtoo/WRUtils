@@ -2,7 +2,7 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -35,7 +35,7 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.itemListWidget = new ItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
         this.itemListWidget.setItemEntries(list);
         this.setItemListWidgetEnabled(false);
-        this.itemListWidget.setCheckedItems(true);
+        this.itemListWidget.setSelectedCheckedItems(true);
         this.itemListWidget.setOnFocusedAction(() -> {
             int size = this.itemListWidget.getCheckedCount();
             if (size == 0) {
@@ -95,6 +95,12 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
             }
         }
         return list;
+    }
+
+    @Override
+    public void reset() {
+        this.setCheckState(CheckState.CHECKED);
+        this.itemListWidget.reset();
     }
 
     @Override
@@ -173,12 +179,12 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
             switch (this.checkState) {
                 case CHECKED:
                     this.checkState = CheckState.UNCHECKED;
-                    this.itemListWidget.setCheckedItems(false);
+                    this.itemListWidget.setSelectedCheckedItems(false);
                     break;
                 case UNCHECKED:
                 case INDETERMINATE:
                     this.checkState = CheckState.CHECKED;
-                    this.itemListWidget.setCheckedItems(true);
+                    this.itemListWidget.setSelectedCheckedItems(true);
                     break;
             }
             return;

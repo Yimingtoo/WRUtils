@@ -1,6 +1,9 @@
 package com.yiming.wrutils.client.data;
 
 import com.yiming.wrutils.client.ModInfo;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.item.FilterTypeList;
+import com.yiming.wrutils.client.gui.widget.filter.item.ItemType;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
 import net.minecraft.client.MinecraftClient;
@@ -12,6 +15,8 @@ import net.minecraft.util.WorldSavePath;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class DataManagerClient {
     public static Item debugItem = Items.WOODEN_SWORD;
@@ -20,13 +25,23 @@ public class DataManagerClient {
     public static ArrayList<BaseEvent> filterEventList = new ArrayList<>();
     public static int filterEventPointer;
 
+    public static FilterTypeList filterTypeList = new FilterTypeList();
+
     public static long eventOriginTick;
+
 
     public static void clearEvents() {
         DataManager.eventRecorder.clear();
         filterEventList.clear();
         filterEventPointer = 0;
     }
+
+    public static void resetFilter() {
+        filterEventPointer = 0;
+        filterEventList.clear();
+        filterEventList.addAll(DataManager.eventRecorder);
+    }
+
     public static BaseEvent getFilterEventAtPointer() {
         if (filterEventPointer >= filterEventList.size()) {
             return null;

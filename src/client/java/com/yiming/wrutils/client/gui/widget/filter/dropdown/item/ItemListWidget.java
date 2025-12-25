@@ -12,7 +12,6 @@ import net.minecraft.util.Colors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
@@ -75,7 +74,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
 
-    public void setCheckedItems(boolean checked) {
+    public void setSelectedCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
             if (entry instanceof ItemEntry itemEntry) {
                 itemEntry.setChecked(checked);
@@ -107,6 +106,10 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         this.itemEntries.add(this.headerItemEntry);
         this.itemEntries.addAll(itemEntriesClone);
         this.updateEntries();
+    }
+
+    public void reset() {
+        this.itemEntries.forEach(entry -> entry.setChecked(true));
     }
 
     @Override

@@ -3,11 +3,10 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.item.block.AreaListItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.block.AreaListItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.SkipFilterItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.block.SubAreaItem;
-import com.yiming.wrutils.data.selected_area.SelectBox;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.item.items.block.SubAreaItem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -67,9 +66,9 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
                             this.setSubItemListWidgetItems(entry.getItem());
                         } else {
                             if (entry.getCheckState() == CheckState.CHECKED) {
-                                this.subItemListWidget.setCheckedItems(true);
+                                this.subItemListWidget.setSelectedCheckedItems(true);
                             } else if (entry.getCheckState() == CheckState.UNCHECKED) {
-                                this.subItemListWidget.setCheckedItems(false);
+                                this.subItemListWidget.setSelectedCheckedItems(false);
                             }
                         }
                     } else {
@@ -94,7 +93,7 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
             this.subItemListWidget.setMasterString(null);
             this.subItemListWidget.setItemEntries(new ArrayList<>());
         }
-        this.subItemListWidget.setCheckedItems(true);
+        this.subItemListWidget.setSelectedCheckedItems(true);
         this.subItemListWidget.setScrollY(0);
     }
 
@@ -170,14 +169,14 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
             switch (this.checkState) {
                 case CHECKED:
                     this.checkState = CheckState.UNCHECKED;
-                    this.itemListWidget.setCheckedItems(false);
-                    this.subItemListWidget.setCheckedItems(false);
+                    this.itemListWidget.setSelectedCheckedItems(false);
+                    this.subItemListWidget.setSelectedCheckedItems(false);
                     break;
                 case UNCHECKED:
                 case INDETERMINATE:
                     this.checkState = CheckState.CHECKED;
-                    this.itemListWidget.setCheckedItems(true);
-                    this.subItemListWidget.setCheckedItems(true);
+                    this.itemListWidget.setSelectedCheckedItems(true);
+                    this.subItemListWidget.setSelectedCheckedItems(true);
                     break;
             }
             return;
