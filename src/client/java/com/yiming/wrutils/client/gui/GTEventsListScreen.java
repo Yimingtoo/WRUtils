@@ -13,6 +13,8 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -91,8 +93,8 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     private void filterButtonOnClick() {
         System.out.println("Filter button clicked");
         ArrayList<ArrayList<FilterType<?>>> filterManager = this.filterWidget.getFilterItems();
-        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder;
-        filterEventList = filterEventList.stream()
+//        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder;
+        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder.stream()
                 .filter(event -> filterManager.stream()
                         .allMatch(items -> items.stream()
                                 .anyMatch(item -> item.collectOrNot(event))))

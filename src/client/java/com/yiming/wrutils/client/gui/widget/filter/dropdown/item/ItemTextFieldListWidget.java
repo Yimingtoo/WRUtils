@@ -8,6 +8,9 @@ import com.yiming.wrutils.client.gui.widget.filter.dropdown.DropDownTextFieldLis
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.LongItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.OriginTickItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
+import com.yiming.wrutils.client.gui.widget.filter.items.GameTickFilter;
 import com.yiming.wrutils.data.DataManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -28,7 +31,8 @@ import java.util.function.Function;
 public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemTextFieldListWidget.Entry> {
     private static final Logger log = LoggerFactory.getLogger(ItemTextFieldListWidget.class);
     private final ArrayList<ItemTextFieldEntry> itemEntries = new ArrayList<>();
-    private final ItemHeaderTextFieldEntry headerEntry = new ItemHeaderTextFieldEntry(new OriginTickItem(0), this.headerTextFieldLostFocusFunction);
+    // todo : extract to extend class
+    private final ItemHeaderTextFieldEntry headerEntry = new ItemHeaderTextFieldEntry(this.headerTextFieldLostFocusFunction);
     private DropDownTextFieldListWidget parent;
     private Function<String, Boolean> itemTextFieldLostFocusFunction = null;
     private Function<String, Boolean> headerTextFieldLostFocusFunction = null;
@@ -48,17 +52,25 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
-    public void setItemEntries(ArrayList<? extends FilterType<?>> items) {
-        items.forEach(item -> {
+//    public void setItemEntries(ArrayList<? extends FilterItem> items) {
+//        items.forEach(item -> {
+//            ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(item, this.itemTextFieldLostFocusFunction);
+//            itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
+//            this.itemEntries.add(itemTextFieldEntry);
+//        });
+//        this.updateEntries();
+//    }
+
+    public void setItemEntries(FilterTypeTemp filter) {
+        for (FilterItem item : filter.getItems()) {
             ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(item, this.itemTextFieldLostFocusFunction);
             itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
             this.itemEntries.add(itemTextFieldEntry);
-        });
-        this.updateEntries();
+        }
     }
 
 
-    public void addItemEntry(FilterType<?> item) {
+    public void addItemEntry(FilterItem item) {
         ItemTextFieldEntry itemTextFieldEntry = new ItemTextFieldEntry(item, this.itemTextFieldLostFocusFunction);
         itemTextFieldEntry.setOnRemoveAction(() -> this.removeItemTextFieldEntry(itemTextFieldEntry));
         this.itemEntries.add(itemTextFieldEntry);
@@ -150,6 +162,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         if (!DataManager.eventRecorder.isEmpty()) {
             long time = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
             ((LongItem) this.headerEntry.getItem()).setValue(time);
+
             this.headerEntry.setTextFieldText(String.valueOf(time));
 
         } else {
@@ -249,7 +262,7 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
     }
 
     public static class ItemTextFieldEntry extends ItemTextFieldListWidget.Entry {
-        protected final FilterType<?> item;
+        protected final FilterItem item;
 
         protected boolean isChecked;
         protected final CustomTextFieldWidget textField;
@@ -257,12 +270,12 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
         protected Runnable onRemoveAction = null;
 
-        public ItemTextFieldEntry(FilterType<?> item, Function<String, Boolean> textFieldLostFocusFunction) {
+        public ItemTextFieldEntry(FilterItem item, Function<String, Boolean> textFieldLostFocusFunction) {
             this(item);
             this.setTextFieldLostFocusFunction(textFieldLostFocusFunction);
         }
 
-        public ItemTextFieldEntry(FilterType<?> item) {
+        public ItemTextFieldEntry(FilterItem item) {
             this.item = item;
             this.isChecked = true;
             this.textField = new CustomTextFieldWidget(this.textRenderer, 120, 14, Text.of(this.getItemName()));
@@ -356,18 +369,16 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
         }
     }
 
+    // todo : extract to extend class
     public static class ItemHeaderTextFieldEntry extends ItemTextFieldEntry {
-        TextButtonWidget textButtonWidget;
+        private final TextButtonWidget textButtonWidget;
         private final String titleText = "Origin Tick:";
         int textWidth;
+        private long relativeTick;
 
-        public ItemHeaderTextFieldEntry(FilterType<?> item, Function<String, Boolean> textFieldLostFocusFunction) {
-            this(item);
+        public ItemHeaderTextFieldEntry(Function<String, Boolean> textFieldLostFocusFunction) {
+            super(null);
             this.textField.setLostFocusFunction(textFieldLostFocusFunction);
-        }
-
-        public ItemHeaderTextFieldEntry(FilterType<?> item) {
-            super(item);
             this.removeButton.active = false;
             this.removeButton.visible = false;
             this.textWidth = this.textRenderer.getWidth(this.titleText);
@@ -382,6 +393,12 @@ public class ItemTextFieldListWidget extends AlwaysSelectedEntryListWidget<ItemT
 
         public void setTextFieldText(String text) {
             this.textField.setText(text);
+        }
+
+
+        @Override
+        public String getItemName() {
+            return String.valueOf(this.relativeTick);
         }
 
         @Override

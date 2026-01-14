@@ -7,6 +7,7 @@ import com.yiming.wrutils.data.event.BaseEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class GameTickItem implements FilterType<GameTickItem.TickData> {
     private TickData tickData;
 
