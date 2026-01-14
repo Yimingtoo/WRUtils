@@ -79,6 +79,7 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.setItemListWidgetEnabled(expanded);
     }
 
+    @Deprecated
     public ArrayList<FilterType<?>> getFilterItemList() {
         ArrayList<FilterType<?>> list = new ArrayList<>();
         if (this.getCheckState() == CheckState.CHECKED) {

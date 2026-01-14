@@ -17,6 +17,7 @@ import com.yiming.wrutils.client.gui.widget.filter.item.items.EventTypeItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.PriorityItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.SequenceItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.LongItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.GameTickFilter;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
@@ -74,14 +75,16 @@ public class FilterWidget extends ClickableWidget {
 
         this.widgetMap.put(this.timeButton, new HashMap<>());
 //        ArrayList<GameTickItem> gameTickItems = new ArrayList<>();
-        DropDownTextFieldListWidget gameTickSelectWidget = new DropDownTextFieldListWidget(10, y + 23, 100, 18, 200, 18, Text.of("Game Tick"), new ArrayList<>());
+        DropDownTextFieldListWidget gameTickSelectWidget = new DropDownTextFieldListWidget(10, y + 23, 100, 18, 200, 18, Text.of("Game Tick"), FilterManager.GAME_TICK_FILTER);
         // 判断text是否为数字
         gameTickSelectWidget.getItemTextFieldListWidget().setHeaderTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+"));
         // 判断是否为单个整数 || 判断是否为两个整数用 '-' 分割
         gameTickSelectWidget.getItemTextFieldListWidget().setItemTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+") || text.trim().matches("\\d+\\s*-\\s*\\d+"));
         if (!DataManager.eventRecorder.isEmpty()) {
             ItemTextFieldListWidget.ItemHeaderTextFieldEntry entry = gameTickSelectWidget.getItemTextFieldListWidget().getHeaderEntry();
-            ((LongItem) (entry.getItem())).setValue(DataManager.eventRecorder.getFirst().getTimeStamp().gameTime());
+            long time = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
+            entry.setTextFieldText(String.valueOf(time));
+            ((GameTickFilter) (gameTickSelectWidget.getFilter())).
             entry.updateTextField();
         }
         this.widgetMap.get(this.timeButton).put(ItemType.GAME_TICK, gameTickSelectWidget);
