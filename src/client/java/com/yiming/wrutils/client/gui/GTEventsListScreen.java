@@ -2,7 +2,9 @@ package com.yiming.wrutils.client.gui;
 
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.widget.GameTickEventsListWidget;
+import com.yiming.wrutils.client.gui.widget.filter.FilterManager;
 import com.yiming.wrutils.client.gui.widget.filter.FilterWidget;
+import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseButtonWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
@@ -21,9 +23,9 @@ import java.util.stream.Collectors;
 public class GTEventsListScreen extends AbstractSetupScreen {
     private GameTickEventsListWidget gameTickEventsListWidget;
     private FilterWidget filterWidget;
-    private ButtonWidget filterButton;
-    private ButtonWidget clearEventsButton;
-    private ButtonWidget resetButton;
+    private BaseButtonWidget filterButton;
+    private BaseButtonWidget clearEventsButton;
+    private BaseButtonWidget resetButton;
 
     protected GTEventsListScreen(Screen parent) {
         super(Text.of("Game Tick Events"), parent, false);
@@ -49,6 +51,12 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         int height1 = this.height - 50;
         int y1 = 45;
         this.gameTickEventsListWidget = new GameTickEventsListWidget(this, 0, y1, this.width, height1);
+//        if (!DataManager.eventRecorder.isEmpty()) {
+//            DataManagerClient.eventOriginTick = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
+//        } else {
+//            DataManagerClient.eventOriginTick = 0;
+//        }
+        DataManagerClient.eventOriginTick = DataManager.getEventRecordFirstTick();
         this.gameTickEventsListWidget.setEvents(DataManager.eventRecorder);
         this.addDrawableChild(this.gameTickEventsListWidget);
 
@@ -65,15 +73,18 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         this.addDrawableChild(this.filterWidget);
         int x1 = this.filterWidget.getTabsWidth() + 5;
 
-        this.filterButton = ButtonWidget.builder(Text.of("Filter"), button -> this.filterButtonOnClick())
+        this.filterButton = BaseButtonWidget.builder1(Text.of("Filter"), button -> this.filterButtonOnClick())
                 .width(40).position(x1, y).build();
+
         this.addDrawableChild(this.filterButton);
         this.filterButton.setHeight(16);
         this.filterButtonOnClick();
         x1 += this.filterButton.getWidth() + 5;
 
 
-        this.resetButton = ButtonWidget.builder(Text.of("Reset"), button -> {
+        this.resetButton = BaseButtonWidget.builder1(Text.of("Reset"), button -> {
+
+            System.out.println("Reset button clicked " + button.isFocused());
             this.filterWidget.resetFilter();
             this.gameTickEventsListWidget.refreshEvents();
         }).width(40).position(x1, y).build();
@@ -81,7 +92,8 @@ public class GTEventsListScreen extends AbstractSetupScreen {
         this.addDrawableChild(this.resetButton);
         x1 += this.resetButton.getWidth() + 5;
 
-        this.clearEventsButton = ButtonWidget.builder(Text.of("Clear"), button -> {
+        this.clearEventsButton = BaseButtonWidget.builder1(Text.of("Clear"), button -> {
+            System.out.println("ccc button clicked " + button.isFocused());
             DataManagerClient.clearEvents();
             this.gameTickEventsListWidget.refreshEvents();
         }).width(40).position(this.width - 45, y).build();
@@ -91,18 +103,25 @@ public class GTEventsListScreen extends AbstractSetupScreen {
     }
 
     private void filterButtonOnClick() {
-        System.out.println("Filter button clicked");
-        ArrayList<ArrayList<FilterType<?>>> filterManager = this.filterWidget.getFilterItems();
-//        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder;
-        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder.stream()
-                .filter(event -> filterManager.stream()
-                        .allMatch(items -> items.stream()
-                                .anyMatch(item -> item.collectOrNot(event))))
-                .collect(Collectors.toCollection(ArrayList::new));
+        System.out.println("Filter button clicked ");
 
+        ArrayList<BaseEvent> filterEventList = FilterManager.getFilteredEventList();
         this.gameTickEventsListWidget.setEvents(filterEventList);
         DataManagerClient.filterEventList = filterEventList;
         DataManagerClient.filterEventPointer = 0;
+
+
+//        ArrayList<ArrayList<FilterType<?>>> filterManager = this.filterWidget.getFilterItems();
+////        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder;
+//        ArrayList<BaseEvent> filterEventList = DataManager.eventRecorder.stream()
+//                .filter(event -> filterManager.stream()
+//                        .allMatch(items -> items.stream()
+//                                .anyMatch(item -> item.collectOrNot(event))))
+//                .collect(Collectors.toCollection(ArrayList::new));
+//
+//        this.gameTickEventsListWidget.setEvents(filterEventList);
+//        DataManagerClient.filterEventList = filterEventList;
+//        DataManagerClient.filterEventPointer = 0;
     }
 
 

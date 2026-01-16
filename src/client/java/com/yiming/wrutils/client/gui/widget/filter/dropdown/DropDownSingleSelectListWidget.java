@@ -1,12 +1,13 @@
 
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.block.AreaListItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.block.SubAreaItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -20,14 +21,12 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
     private LinkedHashMap<FilterType<?>, ArrayList<? extends FilterType<?>>> itemMap = new LinkedHashMap<>();
 
 
-    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
+    public DropDownSingleSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, FilterTypeTemp areaFilter, FilterTypeTemp subAreaFilter, ArrayList<FilterType<?>> list) {
         super(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
 
-//        this.tempInit();
         this.itemListWidget = new SingleSelectItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
         this.subItemListWidget = new ItemListWidget(this.client, this.expandWidth - headerWidth, x + this.itemListWidget.getWidth(), y + headerHeight + this.interval, itemHeight);
 
-//        this.subItemListWidget.setItemEntries(list);
         for (FilterType<?> entry : list) {
             if (entry instanceof AreaListItem areaListItem) {
                 this.itemMap.put(areaListItem, SubAreaItem.getSubAreaItems(areaListItem.getValue().getList(), areaListItem.getBlockType()));
@@ -36,65 +35,72 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
 
 
         this.setSubItemListWidgetEnabled(false);
-        this.subItemListWidget.setOnFocusedAction(() -> {
-            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
-                int size = this.subItemListWidget.getCheckedCount();
-                if (size == 0) {
-                    entry.setCheckState(CheckState.UNCHECKED);
-                    this.setCheckState(CheckState.UNCHECKED);
-                } else if (size < this.subItemListWidget.children().size()) {
-                    entry.setCheckState(CheckState.INDETERMINATE);
-                    this.setCheckState(CheckState.INDETERMINATE);
-                } else {
-                    entry.setCheckState(CheckState.CHECKED);
-                    this.setCheckState(CheckState.CHECKED);
-                }
-            }
-        });
+        this.subItemListWidget.setOnFocusedAction(this::onFocused0);
 
-        this.itemListWidget.setItemEntries(new ArrayList<>(this.itemMap.keySet()));
+        this.itemListWidget.setItemEntries(areaFilter);
         this.setItemListWidgetEnabled(false);
-        this.itemListWidget.setOnFocusedAction(() -> {
-            if (this.itemListWidget.getFocused() != null) {
-                if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
-                    if (!(entry instanceof ItemListWidget.HeaderItemEntry)) {
-                        this.setCheckState(entry.getCheckState());
-                        String entryName = entry.getItemName();
-                        String masterString = this.subItemListWidget.getMasterString();
-                        this.setSubItemListWidgetEnabled(true);
-                        if (!entryName.equals(masterString)) {
-                            this.setSubItemListWidgetItems(entry.getItem());
-                        } else {
-                            if (entry.getCheckState() == CheckState.CHECKED) {
-                                this.subItemListWidget.setSelectedCheckedItems(true);
-                            } else if (entry.getCheckState() == CheckState.UNCHECKED) {
-                                this.subItemListWidget.setSelectedCheckedItems(false);
-                            }
-                        }
-                    } else {
-                        this.setCheckState(entry.getCheckState());
-                        this.setSubItemListWidgetItems(null);
-                        this.setSubItemListWidgetEnabled(false);
-                    }
-                }
-            } else {
-                this.setSubItemListWidgetItems(null);
-                this.setSubItemListWidgetEnabled(false);
-            }
-        });
+        this.itemListWidget.setOnFocusedAction(this::onFocused1);
 
     }
 
-    public void setSubItemListWidgetItems(@Nullable FilterType<?> key) {
-        if (key != null) {
-            this.subItemListWidget.setMasterString(key.getName());
-            this.subItemListWidget.setItemEntries(this.itemMap.get(key));
-        } else {
-            this.subItemListWidget.setMasterString(null);
-            this.subItemListWidget.setItemEntries(new ArrayList<>());
+    private void onFocused0() {
+        if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
+//            int size = this.subItemListWidget.getCheckedCount();
+//            if (size == 0) {
+//                entry.setCheckState(CheckState.UNCHECKED);
+//                this.setCheckState(CheckState.UNCHECKED);
+//            } else if (size < this.subItemListWidget.children().size()) {
+//                entry.setCheckState(CheckState.INDETERMINATE);
+//                this.setCheckState(CheckState.INDETERMINATE);
+//            } else {
+//                entry.setCheckState(CheckState.CHECKED);
+//                this.setCheckState(CheckState.CHECKED);
+//            }
+            CheckState checkState1 = this.subItemListWidget.getPatrentCheckState();
+            entry.setCheckState(checkState1);
+            this.setCheckState(checkState1);
         }
-        this.subItemListWidget.setSelectedCheckedItems(true);
-        this.subItemListWidget.setScrollY(0);
+    }
+
+    private void onFocused1() {
+        if (this.itemListWidget.getFocused() != null) {
+            if (this.itemListWidget.getFocused() instanceof ItemListWidget.ItemEntry entry) {
+                if (!(entry instanceof ItemListWidget.HeaderItemEntry)) {
+                    this.setCheckState(entry.getCheckState());
+                    String entryName = entry.getItemName();
+                    String masterString = this.subItemListWidget.getMasterString();
+                    this.setSubItemListWidgetEnabled(true);
+                    if (!entryName.equals(masterString)) {
+//                        this.setSubItemListWidgetItems(entry.getItem());
+                    } else {
+                        if (entry.getCheckState() == CheckState.CHECKED) {
+                            this.subItemListWidget.setSelectedCheckedItems(true);
+                        } else if (entry.getCheckState() == CheckState.UNCHECKED) {
+                            this.subItemListWidget.setSelectedCheckedItems(false);
+                        }
+                    }
+                } else {
+                    this.setCheckState(entry.getCheckState());
+                    this.setSubItemListWidgetItems(null);
+                    this.setSubItemListWidgetEnabled(false);
+                }
+            }
+        } else {
+            this.setSubItemListWidgetItems(null);
+            this.setSubItemListWidgetEnabled(false);
+        }
+    }
+
+    public void setSubItemListWidgetItems(@Nullable FilterType<?> key) {
+//        if (key != null) {
+//            this.subItemListWidget.setMasterString(key.getName());
+//            this.subItemListWidget.setItemEntries(this.itemMap.get(key));
+//        } else {
+//            this.subItemListWidget.setMasterString(null);
+//            this.subItemListWidget.setItemEntries(new ArrayList<>());
+//        }
+//        this.subItemListWidget.setSelectedCheckedItems(true);
+//        this.subItemListWidget.setScrollY(0);
     }
 
 
@@ -103,22 +109,6 @@ public class DropDownSingleSelectListWidget extends DropDownSelectListWidget {
         this.subItemListWidget.active = enabled;
     }
 
-    @Override
-    public ArrayList<FilterType<?>> getFilterItemList() {
-        ArrayList<FilterType<?>> list = new ArrayList<>();
-        if (this.getCheckState() != CheckState.UNCHECKED) {
-            if (this.itemListWidget.getFirstCheckedOrNot() instanceof ItemListWidget.HeaderItemEntry) {
-                list.add(new SkipFilterItem());
-            } else {
-                this.subItemListWidget.getCheckedItemEntries().forEach(itemEntry -> {
-                    if (itemEntry.getItem() instanceof SubAreaItem) {
-                        list.add(itemEntry.getItem());
-                    }
-                });
-            }
-        }
-        return list;
-    }
 
     @Override
     protected void renderLayer1(DrawContext context, int mouseX, int mouseY, float delta) {

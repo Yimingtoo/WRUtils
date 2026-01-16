@@ -160,4 +160,8 @@ public class DataManager {
     }
 
 
+    public static long getEventRecordFirstTick() {
+        return eventRecorder.isEmpty() ? 0 : eventRecorder.getFirst().getTimeStamp().gameTime();
+    }
+
 }

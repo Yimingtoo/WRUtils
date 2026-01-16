@@ -1,4 +1,4 @@
-package com.yiming.wrutils.client.gui.widget.filter.dropdown;
+package com.yiming.wrutils.client.gui.widget.filter;
 
 public enum CheckState {
     UNCHECKED,
