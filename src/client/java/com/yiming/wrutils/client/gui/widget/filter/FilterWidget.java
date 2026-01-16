@@ -4,7 +4,6 @@ import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.*;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.*;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.block.AreaListItem;
@@ -16,23 +15,23 @@ import com.yiming.wrutils.client.gui.widget.filter.item.items.int_item.DelayItem
 import com.yiming.wrutils.client.gui.widget.filter.item.items.EventTypeItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.PriorityItem;
 import com.yiming.wrutils.client.gui.widget.filter.item.items.SequenceItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.long_item.LongItem;
 import com.yiming.wrutils.client.gui.widget.filter.items.GameTickFilter;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
+import com.yiming.wrutils.data.event.EventType;
+import com.yiming.wrutils.data.event.MicroTimingSequence;
 import com.yiming.wrutils.data.event.ScheduledTickInfo;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.world.tick.TickPriority;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.Function;
@@ -73,28 +72,14 @@ public class FilterWidget extends ClickableWidget {
         this.eventButton = new TabButton(x + x1, y, 18, Text.of("Event"), this::eventButtonOnClick);
         this.tabsWidth = x1 + this.eventButton.getWidth();
 
-        this.widgetMap.put(this.timeButton, new HashMap<>());
-//        ArrayList<GameTickItem> gameTickItems = new ArrayList<>();
-        DropDownTextFieldListWidget gameTickSelectWidget = new DropDownTextFieldListWidget(10, y + 23, 100, 18, 200, 18, Text.of("Game Tick"), FilterManager.GAME_TICK_FILTER);
-        // 判断text是否为数字
-        gameTickSelectWidget.getItemTextFieldListWidget().setHeaderTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+"));
-        // 判断是否为单个整数 || 判断是否为两个整数用 '-' 分割
-        gameTickSelectWidget.getItemTextFieldListWidget().setItemTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+") || text.trim().matches("\\d+\\s*-\\s*\\d+"));
-        if (!DataManager.eventRecorder.isEmpty()) {
-            ItemTextFieldListWidget.ItemHeaderTextFieldEntry entry = gameTickSelectWidget.getItemTextFieldListWidget().getHeaderEntry();
-            long time = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
-            entry.setTextFieldText(String.valueOf(time));
-            ((GameTickFilter) (gameTickSelectWidget.getFilter())).
-            entry.updateTextField();
-        }
-        this.widgetMap.get(this.timeButton).put(ItemType.GAME_TICK, gameTickSelectWidget);
-        this.widgetMap.get(this.timeButton).put(ItemType.SEQUENCE, new DropDownSelectListWidget(115, y + 23, 100, 18, 100, 18, Text.of("Sequence"), SequenceItem.SequenceItems()));
 
-        this.widgetMap.put(this.positionButton, new HashMap<>());
         // 获得 DataManager.eventRecorder 中包含的方块Block
         HashSet<Block> targetBlockSet = new HashSet<>();
         HashSet<Block> sourceBlockSet = new HashSet<>();
         HashSet<Integer> delaySet = new HashSet<>();
+        HashSet<MicroTimingSequence> sequenceSet = new HashSet<>();
+        HashSet<TickPriority> tickPrioritySet = new HashSet<>();
+        HashSet<EventType> eventTypeSet = new HashSet<>();
         for (BaseEvent event : DataManager.eventRecorder) {
             if (event.getTargetBlockInfo().state() != null) {
                 targetBlockSet.add(event.getTargetBlockInfo().state().getBlock());
@@ -104,70 +89,50 @@ public class FilterWidget extends ClickableWidget {
             }
             if (event instanceof ScheduledTickInfo info) {
                 delaySet.add(info.getDelay());
+                tickPrioritySet.add(info.getPriority());
             }
+            sequenceSet.add(event.getTimeStamp().sequence());
+            eventTypeSet.add(event.getEventType());
         }
-        DropDownSingleSelectListWidget targetAreaWidget = new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.TARGET));
-        SingleSelectItemListWidget w1 = (SingleSelectItemListWidget) targetAreaWidget.getItemListWidget();
-        w1.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
-        w1.setSingleCheckedItem((ItemListWidget.ItemEntry) w1.getFirst());
-        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_AREA_LIST, targetAreaWidget);
-        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_BLOCK, new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), BlockItem.getBlockItems(targetBlockSet, BlockFilterType.TARGET)));
-        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.SOURCE));
-        SingleSelectItemListWidget w2 = (SingleSelectItemListWidget) sourceAreaWidget.getItemListWidget();
-        w2.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
-        w2.setSingleCheckedItem((ItemListWidget.ItemEntry) w2.getFirst());
-        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_AREA_LIST, sourceAreaWidget);
-        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_BLOCK, new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), BlockItem.getBlockItems(sourceBlockSet, BlockFilterType.SOURCE)));
-        this.widgetMap.get(this.positionButton).put(ItemType.DIMENSION, new DropDownSelectListWidget(405, y + 23, 90, 18, 100, 18, Text.of("Dimension"), DimensionItem.getDimensionItems(BlockFilterType.TARGET)));
+
+        this.widgetMap.put(this.timeButton, new HashMap<>());
+//        ArrayList<GameTickItem> gameTickItems = new ArrayList<>();
+        GameTickFilterDropDownWidget gameTickSelectWidget = new GameTickFilterDropDownWidget(10, y + 23, 100, 18, 200, 18, Text.of("Game Tick"), (GameTickFilter) FilterManager.GAME_TICK_FILTER);
+        // 判断text是否为数字
+        gameTickSelectWidget.getItemTextFieldListWidget().setHeaderTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+"));
+        // 判断是否为单个整数 || 判断是否为两个整数用 '-' 分割
+        gameTickSelectWidget.getItemTextFieldListWidget().setItemTextFieldLostFocusFunction((text) -> text.trim().matches("\\d+") || text.trim().matches("\\d+\\s*-\\s*\\d+"));
+        //  设置header的text
+//        if (!DataManager.eventRecorder.isEmpty()) {
+//            long time = DataManager.eventRecorder.getFirst().getTimeStamp().gameTime();
+//            gameTickSelectWidget.getItemTextFieldListWidget().getHeaderEntry().setTextFieldText(String.valueOf(time));
+//        }
+        this.widgetMap.get(this.timeButton).put(ItemType.GAME_TICK, gameTickSelectWidget);
+        this.widgetMap.get(this.timeButton).put(ItemType.SEQUENCE, new DropDownSelectListWidget(115, y + 23, 100, 18, 100, 18, Text.of("Sequence"), FilterManager.SEQUENCE_FILTER.updateFilter(sequenceSet)));
+
+        this.widgetMap.put(this.positionButton, new HashMap<>());
+
+//        DropDownSingleSelectListWidget targetAreaWidget = new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.TARGET));
+//        SingleSelectItemListWidget w1 = (SingleSelectItemListWidget) targetAreaWidget.getItemListWidget();
+//        w1.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
+//        w1.setSingleCheckedItem((ItemListWidget.ItemEntry) w1.getFirst());
+//        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_AREA_LIST, targetAreaWidget);
+//        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_BLOCK, new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), BlockItem.getBlockItems(targetBlockSet, BlockFilterType.TARGET)));
+//        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.SOURCE));
+//        SingleSelectItemListWidget w2 = (SingleSelectItemListWidget) sourceAreaWidget.getItemListWidget();
+//        w2.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
+//        w2.setSingleCheckedItem((ItemListWidget.ItemEntry) w2.getFirst());
+//        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_AREA_LIST, sourceAreaWidget);
+//        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_BLOCK, new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), BlockItem.getBlockItems(sourceBlockSet, BlockFilterType.SOURCE)));
+//        this.widgetMap.get(this.positionButton).put(ItemType.DIMENSION, new DropDownSelectListWidget(405, y + 23, 90, 18, 100, 18, Text.of("Dimension"), DimensionItem.getDimensionItems(BlockFilterType.TARGET)));
 
         this.widgetMap.put(this.eventButton, new HashMap<>());
-        this.widgetMap.get(this.eventButton).put(ItemType.EVENT_TYPE, new DropDownSelectListWidget(10, y + 23, 95, 18, 200, 18, Text.of("Event Type"), EventTypeItem.EventTypes()));
-
-        this.widgetMap.get(this.eventButton).put(ItemType.DELAY, new DropDownSelectListWidget(110, y + 23, 95, 18, 200, 18, Text.of("Delay"), DelayItem.getDelayItems(delaySet)));
-        this.widgetMap.get(this.eventButton).put(ItemType.PRIORITY, new DropDownSelectListWidget(210, y + 23, 95, 18, 200, 18, Text.of("Priority"), PriorityItem.priorityItems()));
-        this.widgetMap.get(this.eventButton).put(ItemType.SCHEDULED_TICK_ADDED_STATUS, new DropDownSelectListWidget(310, y + 23, 95, 18, 200, 18, Text.of("Is Added"), ScheduledTickAddedStatusItem.getScheduledTickAddedStatusItems()));
+        this.widgetMap.get(this.eventButton).put(ItemType.EVENT_TYPE, new DropDownSelectListWidget(10, y + 23, 95, 18, 200, 18, Text.of("Event Type"), FilterManager.EVENT_TYPE_FILTER.updateFilter(eventTypeSet)));
+        this.widgetMap.get(this.eventButton).put(ItemType.DELAY, new DropDownSelectListWidget(110, y + 23, 95, 18, 200, 18, Text.of("Delay"), FilterManager.DELAY_FILTER.updateFilter(delaySet)));
+        this.widgetMap.get(this.eventButton).put(ItemType.PRIORITY, new DropDownSelectListWidget(210, y + 23, 95, 18, 200, 18, Text.of("Priority"), FilterManager.PRIORITY_FILTER.updateFilter(tickPrioritySet)));
+        this.widgetMap.get(this.eventButton).put(ItemType.SCHEDULED_TICK_ADDED_STATUS, new DropDownSelectListWidget(310, y + 23, 95, 18, 200, 18, Text.of("Is Added"), FilterManager.SCHEDULED_TICK_ADD_STATUS_FILTER));
 
         this.enableSubWidgets(null);
-
-    }
-
-    public ArrayList<ArrayList<FilterType<?>>> getFilterItems() {
-        ArrayList<ArrayList<FilterType<?>>> list = new ArrayList<>();
-        // Time Button
-        HashMap<ItemType, ExpandableClickableWidget> map1 = this.widgetMap.get(this.timeButton);
-        DropDownTextFieldListWidget gameTickWidget = (DropDownTextFieldListWidget) map1.get(ItemType.GAME_TICK);
-        list.add(gameTickWidget.getFilterItemList());
-
-        DropDownSelectListWidget tickSequenceWidget = (DropDownSelectListWidget) map1.get(ItemType.SEQUENCE);
-        list.add(tickSequenceWidget.getFilterItemList());
-
-        // Position Button
-        HashMap<ItemType, ExpandableClickableWidget> map2 = this.widgetMap.get(this.positionButton);
-        DropDownSingleSelectListWidget targetAreaWidget = (DropDownSingleSelectListWidget) map2.get(ItemType.TARGET_AREA_LIST);
-        list.add(targetAreaWidget.getFilterItemList());
-        DropDownSelectListWidget targetBlockWidget = (DropDownSelectListWidget) map2.get(ItemType.TARGET_BLOCK);
-        list.add(targetBlockWidget.getFilterItemList());
-
-        DropDownSingleSelectListWidget sourceAreaWidget = (DropDownSingleSelectListWidget) map2.get(ItemType.SOURCE_AREA_LIST);
-        list.add(sourceAreaWidget.getFilterItemList());
-        DropDownSelectListWidget sourceBlockWidget = (DropDownSelectListWidget) map2.get(ItemType.SOURCE_BLOCK);
-        list.add(sourceBlockWidget.getFilterItemList());
-        DropDownSelectListWidget dimensionWidget = (DropDownSelectListWidget) map2.get(ItemType.DIMENSION);
-        list.add(dimensionWidget.getFilterItemList());
-
-        // Event Button
-        HashMap<ItemType, ExpandableClickableWidget> map3 = this.widgetMap.get(this.eventButton);
-        DropDownSelectListWidget eventTypeWidget = (DropDownSelectListWidget) map3.get(ItemType.EVENT_TYPE);
-        list.add(eventTypeWidget.getFilterItemList());
-        DropDownSelectListWidget priorityWidget = (DropDownSelectListWidget) map3.get(ItemType.PRIORITY);
-        list.add(priorityWidget.getFilterItemList());
-        DropDownSelectListWidget delayWidget = (DropDownSelectListWidget) map3.get(ItemType.DELAY);
-        list.add(delayWidget.getFilterItemList());
-        DropDownSelectListWidget isAddedWidget = (DropDownSelectListWidget) map3.get(ItemType.SCHEDULED_TICK_ADDED_STATUS);
-        list.add(isAddedWidget.getFilterItemList());
-
-
-        return list;
 
     }
 

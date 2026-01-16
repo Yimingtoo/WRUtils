@@ -1,6 +1,6 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown.item;
 
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.CheckState;
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import net.minecraft.client.MinecraftClient;
 
 public class SingleSelectItemListWidget extends ItemListWidget {
@@ -13,7 +13,7 @@ public class SingleSelectItemListWidget extends ItemListWidget {
     public void setSingleCheckedItem(ItemEntry itemEntry) {
         this.children().forEach(entry -> {
             if (entry instanceof ItemEntry itemEntry1) {
-                itemEntry1.setChecked(itemEntry1 == itemEntry);
+                itemEntry1.setCheckState(itemEntry1 == itemEntry ? CheckState.CHECKED : CheckState.UNCHECKED);
             }
         });
     }
@@ -31,15 +31,15 @@ public class SingleSelectItemListWidget extends ItemListWidget {
         if (!checked) {
             this.children().forEach(entry -> {
                 if (entry instanceof ItemEntry itemEntry) {
-                    itemEntry.setChecked(false);
+                    itemEntry.setCheckState(CheckState.UNCHECKED);
                 }
             });
         } else {
             if (this.selectedItem != null) {
-                this.selectedItem.setChecked(true);
+                this.selectedItem.setCheckState(CheckState.CHECKED);
             } else if (!this.children().isEmpty() && this.getFirst() instanceof ItemEntry entry) {
                 this.selectedItem = entry;
-                entry.setChecked(true);
+                entry.setCheckState(CheckState.CHECKED);
             }
         }
     }
@@ -65,7 +65,7 @@ public class SingleSelectItemListWidget extends ItemListWidget {
                 } else {
                     CheckState checkState = entry.getCheckState();
                     this.setSingleCheckedItem(entry);
-                    entry.setChecked(checkState != CheckState.CHECKED);
+                    entry.setCheckState(checkState != CheckState.CHECKED ? CheckState.CHECKED : CheckState.UNCHECKED);
 
                 }
             }

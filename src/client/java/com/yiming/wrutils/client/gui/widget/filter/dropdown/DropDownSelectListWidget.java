@@ -1,8 +1,8 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -18,34 +18,23 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
     protected int headerWidth;
     protected int itemHeight;
     protected int expandWidth;
-//    protected boolean isExpanded = false;
+
+    protected FilterTypeTemp filter;
 
     protected final int interval = 2;
-
-
-    protected ArrayList<String> itemStringList;
 
     protected final MinecraftClient client = MinecraftClient.getInstance();
 
     protected CheckState checkState = CheckState.CHECKED;
 
 
-    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, ArrayList<? extends FilterType<?>> list) {
+    public DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, FilterTypeTemp filter) {
         this(x, y, headerWidth, headerHeight, expandWidth, itemHeight, message);
         this.itemListWidget = new ItemListWidget(this.client, headerWidth, x, y + headerHeight + this.interval, itemHeight);
-        this.itemListWidget.setItemEntries(list);
+        this.itemListWidget.setItemEntries(filter);
+        this.filter = filter;
         this.setItemListWidgetEnabled(false);
-        this.itemListWidget.setSelectedCheckedItems(true);
-        this.itemListWidget.setOnFocusedAction(() -> {
-            int size = this.itemListWidget.getCheckedCount();
-            if (size == 0) {
-                this.setCheckState(CheckState.UNCHECKED);
-            } else if (size < this.itemListWidget.children().size()) {
-                this.setCheckState(CheckState.INDETERMINATE);
-            } else {
-                this.setCheckState(CheckState.CHECKED);
-            }
-        });
+        this.itemListWidget.setOnFocusedAction(() -> this.setCheckState(this.itemListWidget.getPatrentCheckState()));
     }
 
     protected DropDownSelectListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message) {
@@ -62,16 +51,8 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.height = this.headerHeight + (enabled ? this.interval + this.itemListWidget.getHeight() : 0);
     }
 
-    public ItemListWidget getItemListWidget() {
-        return this.itemListWidget;
-    }
-
     public void setCheckState(CheckState checkState) {
         this.checkState = checkState;
-    }
-
-    public CheckState getCheckState() {
-        return this.checkState;
     }
 
     public void setExpanded(boolean expanded) {
@@ -79,24 +60,6 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.setItemListWidgetEnabled(expanded);
     }
 
-    @Deprecated
-    public ArrayList<FilterType<?>> getFilterItemList() {
-        ArrayList<FilterType<?>> list = new ArrayList<>();
-        if (this.getCheckState() == CheckState.CHECKED) {
-            list.add(new SkipFilterItem());
-        } else {
-            if (this.checkState != CheckState.UNCHECKED) {
-                for (ItemListWidget.Entry entry : this.itemListWidget.children()) {
-                    if (entry instanceof ItemListWidget.ItemEntry itemEntry) {
-                        if (itemEntry.getCheckState() == CheckState.CHECKED) {
-                            list.add(itemEntry.getItem());
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
 
     @Override
     public void reset() {
@@ -190,7 +153,6 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
             }
             return;
         }
-
         this.setExpanded(!this.isExpanded);
     }
 

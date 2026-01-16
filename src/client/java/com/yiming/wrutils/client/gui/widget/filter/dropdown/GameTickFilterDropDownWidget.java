@@ -1,11 +1,8 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown;
 
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.AddRemoveButtonWidget;
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemTextFieldListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.GameTickItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.SkipFilterItem;
-import com.yiming.wrutils.client.gui.widget.filter.items.FilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.GameTickItemsWidget;
 import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
 import com.yiming.wrutils.client.gui.widget.filter.items.GameTickFilter;
 import com.yiming.wrutils.client.utils.WrutilsColor;
@@ -15,16 +12,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
-import java.util.ArrayList;
-
-public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
-    private final ItemTextFieldListWidget itemTextFieldListWidget;
+public class GameTickFilterDropDownWidget extends ExpandableClickableWidget {
+    private final GameTickItemsWidget gameTickItemsWidget;
     private final int headerHeight;
     private final int headerWidth;
     private final int itemHeight;
     private final int expandWidth;
-    private FilterTypeTemp filter;
-//    private boolean isExpanded = false;
+    private final GameTickFilter filter;
 
     private final AddRemoveButtonWidget addButton;
 
@@ -32,34 +26,35 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     private CheckState checkState = CheckState.CHECKED;
 
-    public DropDownTextFieldListWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, FilterTypeTemp filter) {
+    public GameTickFilterDropDownWidget(int x, int y, int headerWidth, int headerHeight, int expandWidth, int itemHeight, Text message, GameTickFilter filter) {
         super(x, y, headerWidth, headerHeight, message);
-        this.itemTextFieldListWidget = new ItemTextFieldListWidget(MinecraftClient.getInstance(), expandWidth, x, y + headerHeight + this.interval, itemHeight, this);
-        this.itemTextFieldListWidget.setItemEntries(filter);
+        this.gameTickItemsWidget = new GameTickItemsWidget(MinecraftClient.getInstance(), expandWidth, x, y + headerHeight + this.interval, itemHeight, this, filter);
+        this.gameTickItemsWidget.setItemEntries(filter);
         this.filter = filter;
         this.headerWidth = headerWidth;
         this.headerHeight = headerHeight;
         this.itemHeight = itemHeight;
         this.expandWidth = expandWidth;
         this.setItemListWidgetEnabled(false);
+        this.setCheckState(this.gameTickItemsWidget.getPatrentCheckState());
 
         this.addButton = new AddRemoveButtonWidget(0, 0, 14, headerHeight, true, () -> {
             // todo : extract to extend class
-            this.itemTextFieldListWidget.addItemEntry(new GameTickFilter.Item(0, true));
-            this.itemTextFieldListWidget.updateParentWidgetCheckedState();
+            this.gameTickItemsWidget.addItemEntry(new GameTickFilter.Item(0, CheckState.CHECKED));
+            this.setCheckState(this.gameTickItemsWidget.getPatrentCheckState());
             this.setExpanded(true);
         });
     }
 
     public void setItemListWidgetEnabled(boolean enabled) {
-        this.itemTextFieldListWidget.visible = enabled;
-        this.itemTextFieldListWidget.active = enabled;
-        this.height = this.headerHeight + (enabled ? this.itemTextFieldListWidget.getHeight() : 0);
+        this.gameTickItemsWidget.visible = enabled;
+        this.gameTickItemsWidget.active = enabled;
+        this.height = this.headerHeight + (enabled ? this.gameTickItemsWidget.getHeight() : 0);
         this.width = enabled ? this.expandWidth : this.headerWidth;
     }
 
-    public ItemTextFieldListWidget getItemTextFieldListWidget() {
-        return this.itemTextFieldListWidget;
+    public GameTickItemsWidget getItemTextFieldListWidget() {
+        return this.gameTickItemsWidget;
     }
 
     public void setCheckState(CheckState checkState) {
@@ -70,6 +65,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         this.isExpanded = expanded;
         this.setItemListWidgetEnabled(expanded);
     }
+
     public CheckState getCheckState() {
         return this.checkState;
     }
@@ -78,32 +74,11 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         return filter;
     }
 
-    @Deprecated
-    public ArrayList<FilterType<?>> getFilterItemList() {
-        ArrayList<FilterType<?>> list = new ArrayList<>();
-        if (this.itemTextFieldListWidget.children().size() == 1) {
-            list.add(new SkipFilterItem());
-        } else if (this.itemTextFieldListWidget.children().size() > 1) {
-            if (this.checkState != CheckState.UNCHECKED) {
-                for (ItemTextFieldListWidget.Entry entry : this.itemTextFieldListWidget.children()) {
-                    if (entry instanceof ItemTextFieldListWidget.ItemHeaderTextFieldEntry) {
-                        continue;
-                    }
-                    if (entry instanceof ItemTextFieldListWidget.ItemTextFieldEntry itemTextFieldEntry) {
-                        if (itemTextFieldEntry.isChecked()) {
-//                            list.add(itemTextFieldEntry.getItem());
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
 
     @Override
     public void reset() {
         this.setCheckState(CheckState.CHECKED);
-        this.itemTextFieldListWidget.reset();
+        this.gameTickItemsWidget.reset();
     }
 
     @Override
@@ -112,7 +87,6 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         matrixStack.push();
         matrixStack.translate(0, 0, 1); // 背景层级
         // 绘制背景
-//        super.renderWidget(context, mouseX, mouseY, delta);
         int interval = this.isExpanded ? this.interval : 0;
         context.drawTextWithShadow(this.textRenderer, this.getMessage(), this.getX() + 5, this.getY() + 5, Colors.WHITE);
         context.fill(this.getX(), this.getY(), this.getX() + this.headerWidth, this.getY() + this.headerHeight + interval, WrutilsColor.GREY_0);
@@ -127,7 +101,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
             }
         }
 
-        this.itemTextFieldListWidget.render(context, mouseX, mouseY, delta);
+        this.gameTickItemsWidget.render(context, mouseX, mouseY, delta);
 
         this.addButton.setPosition(this.getX() + this.headerWidth - this.headerHeight - this.headerHeight / 2,
                 this.getY() + this.headerHeight / 2 - this.addButton.getHeight() / 2);
@@ -144,8 +118,8 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
         boolean bl2 = mouseY > this.getY() + this.headerHeight;
         boolean bl3 = bl || bl2;
         if (!(this.isMouseOver(mouseX, mouseY) && bl3)) {
-            if (this.itemTextFieldListWidget.isTextFieldFocused()) {
-                this.itemTextFieldListWidget.removeTextFieldFocused();
+            if (this.gameTickItemsWidget.isTextFieldFocused()) {
+                this.gameTickItemsWidget.removeTextFieldFocused();
                 return true;
             } else {
                 this.setExpanded(false);
@@ -157,7 +131,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
             }
         }
 
-        if (this.itemTextFieldListWidget.mouseClicked(mouseX, mouseY, button)) {
+        if (this.gameTickItemsWidget.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
 
@@ -166,19 +140,19 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        boolean bl = this.itemTextFieldListWidget.mouseReleased(mouseX, mouseY, button);
+        boolean bl = this.gameTickItemsWidget.mouseReleased(mouseX, mouseY, button);
         return bl;
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        boolean bl = this.itemTextFieldListWidget.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        boolean bl = this.gameTickItemsWidget.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
         return bl;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if (this.itemTextFieldListWidget.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
+        if (this.gameTickItemsWidget.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
             return true;
         }
         if (this.isMouseOver(mouseX, mouseY)) {
@@ -190,7 +164,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     @Override
     public boolean charTyped(char chr, int keyCode) {
-        if (this.itemTextFieldListWidget.charTyped(chr, keyCode)) {
+        if (this.gameTickItemsWidget.charTyped(chr, keyCode)) {
             return true;
         }
         return super.charTyped(chr, keyCode);
@@ -198,7 +172,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.itemTextFieldListWidget.keyPressed(keyCode, scanCode, modifiers)) {
+        if (this.gameTickItemsWidget.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -213,12 +187,12 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
             switch (this.checkState) {
                 case CHECKED:
                     this.checkState = CheckState.UNCHECKED;
-                    this.itemTextFieldListWidget.setCheckedItems(false);
+                    this.gameTickItemsWidget.setCheckedItems(CheckState.UNCHECKED);
                     break;
                 case UNCHECKED:
                 case INDETERMINATE:
                     this.checkState = CheckState.CHECKED;
-                    this.itemTextFieldListWidget.setCheckedItems(true);
+                    this.gameTickItemsWidget.setCheckedItems(CheckState.CHECKED);
                     break;
             }
             return;
@@ -226,7 +200,7 @@ public class DropDownTextFieldListWidget extends ExpandableClickableWidget {
 
 //        this.setExpanded(!this.isExpanded);
         if (this.isExpanded) {
-            if (!this.itemTextFieldListWidget.isTextFieldFocused()) {
+            if (!this.gameTickItemsWidget.isTextFieldFocused()) {
                 this.setExpanded(false);
             }
         } else {

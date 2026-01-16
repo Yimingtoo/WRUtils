@@ -1,41 +1,52 @@
 package com.yiming.wrutils.client.gui.widget.filter.items;
 
 import com.yiming.wrutils.client.data.DataManagerClient;
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
+import com.yiming.wrutils.client.gui.widget.filter.items.base.LongItem;
+import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GameTickFilter implements FilterTypeTemp {
-        public static long relativeTick = 0;
-//    public Long relativeTick = 0L;
-    private final List<Item> items = new ArrayList<>();
+public class GameTickFilter extends FilterTypeTemp {
+    public static long relativeTick = 0;
+    private final OriginalTickItem originalTickItem = new OriginalTickItem(0);
 
-
-    @Override
-    public List<Item> getItems() {
-        return this.items;
+    public static void setRelativeTick(long tick) {
+        relativeTick = tick;
     }
 
-    public static class Item implements FilterItem {
+    public OriginalTickItem getOriginalTickItem() {
+        return this.originalTickItem;
+    }
+
+    public void setOriginalTickItem(long tick) {
+        this.originalTickItem.setValue(tick);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        this.originalTickItem.setValue(DataManager.getEventRecordFirstTick());
+    }
+
+    public static class Item extends FilterItem {
         private final TickData tickData;
-        private boolean isChecked = false;
 
-        public Item(TickData tickData, boolean isChecked) {
+        public Item(TickData tickData, CheckState checkState) {
             this.tickData = tickData;
-            this.isChecked = isChecked;
+            this.checkState = checkState;
         }
 
-        public Item(long tick, boolean isChecked) {
+        public Item(long tick, CheckState checkState) {
             this.tickData = new TickData(tick);
-            this.isChecked = isChecked;
+            this.checkState = checkState;
         }
 
-        public Item(long firstTick, long lastTick, boolean isChecked) {
+        public Item(long firstTick, long lastTick, CheckState checkState) {
             this.tickData = new TickData(firstTick, lastTick);
-            this.isChecked = isChecked;
+            this.checkState = checkState;
         }
 
 
@@ -76,16 +87,6 @@ public class GameTickFilter implements FilterTypeTemp {
         }
 
         @Override
-        public boolean isChecked() {
-            return isChecked;
-        }
-
-        @Override
-        public void setChecked(boolean checked) {
-            this.isChecked = checked;
-        }
-
-        @Override
         public String getName() {
             return this.tickData.toString();
         }
@@ -99,6 +100,35 @@ public class GameTickFilter implements FilterTypeTemp {
                 return gameTime == relativeTick + firstTick;
             } else {
                 return gameTime >= relativeTick + firstTick && gameTime <= relativeTick + lastTick;
+            }
+        }
+    }
+
+    public static class OriginalTickItem extends LongItem {
+        public OriginalTickItem(long value) {
+            super(value);
+        }
+
+        @Override
+        public void setValue(long value) {
+            super.setValue(value);
+            DataManagerClient.eventOriginTick = value;
+        }
+
+        @Override
+        public void setValueFromText(String text) {
+            boolean result = text.trim().matches("\\d+");
+            Pattern singleNumberPattern = Pattern.compile("\\d+");
+            if (result) {
+                if (text.trim().isEmpty()) {
+                    return;
+                }
+                text = text.trim();
+                Matcher singleMatcher = singleNumberPattern.matcher(text);
+                if (singleMatcher.matches()) {
+                    long value = Long.parseLong(text);
+                    this.setValue(value);
+                }
             }
         }
     }

@@ -1,7 +1,8 @@
 package com.yiming.wrutils.client.gui.widget.filter.dropdown.item;
 
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.CheckState;
-import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.CheckState;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -32,12 +33,14 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         this.setHeight(this.itemHeight * Math.min(this.itemEntries.size(), 6) + 10);
     }
 
-    public void setItemEntries(ArrayList<? extends FilterType<?>> items) {
+    public void setItemEntries(FilterTypeTemp filter) {
         this.itemEntries.clear();
         if (this.headerItemEntry != null) {
             this.itemEntries.add(this.headerItemEntry);
         }
-        items.forEach(item -> this.itemEntries.add(new ItemEntry(item)));
+        for (FilterItem item : filter.getItems()) {
+            this.itemEntries.add(new ItemEntry(item));
+        }
         this.updateEntries();
     }
 
@@ -62,6 +65,19 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
                 .count();
     }
 
+    public CheckState getPatrentCheckState() {
+        CheckState checkState = CheckState.CHECKED;
+        int size = this.getCheckedCount();
+        if (size == 0) {
+            if (!this.itemEntries.isEmpty()) {
+                checkState = CheckState.UNCHECKED;
+            }
+        } else if (size < this.itemEntries.size()) {
+            checkState = CheckState.INDETERMINATE;
+        }
+        return checkState;
+    }
+
     public ItemEntry getFirstCheckedOrNot() {
         return (ItemEntry) this.children().stream()
                 .filter(entry -> {
@@ -77,7 +93,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     public void setSelectedCheckedItems(boolean checked) {
         this.children().forEach(entry -> {
             if (entry instanceof ItemEntry itemEntry) {
-                itemEntry.setChecked(checked);
+                itemEntry.setCheckState(checked ? CheckState.CHECKED : CheckState.UNCHECKED);
             }
         });
     }
@@ -87,9 +103,6 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         this.onFocusedAction = onFocusedAction;
     }
 
-    public int getItemCount() {
-        return this.children().size();
-    }
 
     public void setMasterString(String masterString) {
         this.masterString = masterString;
@@ -109,7 +122,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
     public void reset() {
-        this.itemEntries.forEach(entry -> entry.setChecked(true));
+        this.itemEntries.forEach(entry -> entry.setCheckState(CheckState.CHECKED));
     }
 
     @Override
@@ -189,54 +202,36 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
     }
 
     public static class ItemEntry extends ItemListWidget.Entry {
-        protected String itemName;
-        @Nullable
-        protected final FilterType<?> item;
-        CheckState checkState = CheckState.UNCHECKED;
+        protected final FilterItem item;
 
-        public ItemEntry(@Nullable FilterType<?> item) {
-//            this.itemName = itemName;
+        public ItemEntry(FilterItem item) {
             this.item = item;
-            if (item != null) {
-                this.itemName = item.getName();
-            } else {
-                this.itemName = "";
-            }
         }
 
         public void setCheckState(CheckState checkState) {
-            this.checkState = checkState;
+            this.item.setChecked(checkState);
         }
 
         public CheckState getCheckState() {
-            return checkState;
+            return this.item.isChecked();
         }
 
         public String getItemName() {
-            return itemName;
+            return this.item.getName();
         }
 
-        public @Nullable FilterType<?> getItem() {
-            return item;
+        public FilterItem getItem() {
+            return this.item;
         }
-
-        public void setChecked(boolean checked) {
-            if (checked) {
-                this.checkState = CheckState.CHECKED;
-            } else {
-                this.checkState = CheckState.UNCHECKED;
-            }
-        }
-
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawTextWithShadow(this.textRenderer, itemName, x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
+            context.drawTextWithShadow(this.textRenderer, this.getItemName(), x + 15, y + entryHeight / 2 - 2, Colors.WHITE);
             context.fill(x - 1, y + entryHeight / 2 - 4, x + 8, y + entryHeight / 2 + 5, Colors.WHITE);
             context.fill(x, y + entryHeight / 2 - 3, x + 7, y + entryHeight / 2 + 4, Colors.BLACK);
-            if (this.checkState == CheckState.CHECKED) {
+            if (this.item.isChecked() == CheckState.CHECKED) {
                 context.fill(x + 1, y + entryHeight / 2 - 2, x + 6, y + entryHeight / 2 + 3, Colors.GREEN);
-            } else if (this.checkState == CheckState.INDETERMINATE) {
+            } else if (this.item.isChecked() == CheckState.INDETERMINATE) {
                 context.fill(x + 1, y + entryHeight / 2, x + 6, y + entryHeight / 2 + 1, Colors.GREEN);
             }
         }
@@ -244,8 +239,12 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
 
     public static class HeaderItemEntry extends ItemEntry {
         public HeaderItemEntry() {
-            super(null);
-            this.itemName = "Any";
+            super(new FilterItem() {
+                @Override
+                public String getName() {
+                    return "Any";
+                }
+            });
         }
     }
 }
