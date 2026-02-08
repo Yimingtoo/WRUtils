@@ -8,9 +8,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class SelectBox {
     private String selectBoxName = "Sub-Area-0";
+    private UUID uuid = UUID.randomUUID();
     private Vec3i pos1;
     private Vec3i pos2;
 
@@ -94,6 +96,9 @@ public class SelectBox {
         this.dimension = dimension;
     }
 
+    public UUID getUUID() {
+        return this.uuid;
+    }
 
     public boolean containsVec3iPos(Vec3i pos) {
         return pos.getX() >= minPos.getX() && pos.getX() <= maxPos.getX()

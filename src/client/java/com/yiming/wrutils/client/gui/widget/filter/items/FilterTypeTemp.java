@@ -18,6 +18,10 @@ public abstract class FilterTypeTemp {
         this.items.add(item);
     }
 
+    public void addItems(Collection<FilterItem> items) {
+        this.items.addAll(items);
+    }
+
     public void removeItem(FilterItem item) {
         this.items.remove(item);
     }

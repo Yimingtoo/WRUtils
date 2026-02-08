@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.gui.widget.filter.item.items.block;
 
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.items.BlockFilterType;
 import com.yiming.wrutils.data.event.BaseEvent;
 import com.yiming.wrutils.data.event.BlockInfo;
 import com.yiming.wrutils.data.selected_area.SelectBox;

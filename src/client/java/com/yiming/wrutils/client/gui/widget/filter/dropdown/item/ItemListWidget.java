@@ -3,6 +3,7 @@ package com.yiming.wrutils.client.gui.widget.filter.dropdown.item;
 import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.items.FilterItem;
 import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
+import com.yiming.wrutils.client.gui.widget.filter.items.base.AnyItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget.Entry> {
     protected final ArrayList<ItemEntry> itemEntries = new ArrayList<>();
     protected String masterString = null;
-    private HeaderItemEntry headerItemEntry = null;
+//    private HeaderItemEntry headerItemEntry = null;
     protected Runnable onFocusedAction;
 
     public ItemListWidget(MinecraftClient minecraftClient, int width, int x, int y, int itemHeight) {
@@ -35,9 +36,9 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
 
     public void setItemEntries(FilterTypeTemp filter) {
         this.itemEntries.clear();
-        if (this.headerItemEntry != null) {
-            this.itemEntries.add(this.headerItemEntry);
-        }
+//        if (this.headerItemEntry != null) {
+//            this.itemEntries.add(this.headerItemEntry);
+//        }
         for (FilterItem item : filter.getItems()) {
             this.itemEntries.add(new ItemEntry(item));
         }
@@ -112,14 +113,14 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
         return this.masterString;
     }
 
-    public void setHeaderItemEntry(HeaderItemEntry headerItemEntry) {
-        this.headerItemEntry = headerItemEntry;
-        ArrayList<ItemEntry> itemEntriesClone = new ArrayList<>(this.itemEntries);
-        this.itemEntries.clear();
-        this.itemEntries.add(this.headerItemEntry);
-        this.itemEntries.addAll(itemEntriesClone);
-        this.updateEntries();
-    }
+//    public void setHeaderItemEntry(HeaderItemEntry headerItemEntry) {
+//        this.headerItemEntry = headerItemEntry;
+//        ArrayList<ItemEntry> itemEntriesClone = new ArrayList<>(this.itemEntries);
+//        this.itemEntries.clear();
+//        this.itemEntries.add(this.headerItemEntry);
+//        this.itemEntries.addAll(itemEntriesClone);
+//        this.updateEntries();
+//    }
 
     public void reset() {
         this.itemEntries.forEach(entry -> entry.setCheckState(CheckState.CHECKED));
@@ -239,12 +240,7 @@ public class ItemListWidget extends AlwaysSelectedEntryListWidget<ItemListWidget
 
     public static class HeaderItemEntry extends ItemEntry {
         public HeaderItemEntry() {
-            super(new FilterItem() {
-                @Override
-                public String getName() {
-                    return "Any";
-                }
-            });
+            super(new AnyItem());
         }
     }
 }
