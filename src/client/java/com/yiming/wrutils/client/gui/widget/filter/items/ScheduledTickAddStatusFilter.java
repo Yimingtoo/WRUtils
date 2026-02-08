@@ -2,14 +2,11 @@ package com.yiming.wrutils.client.gui.widget.filter.items;
 
 import com.yiming.wrutils.client.gui.widget.filter.CheckState;
 import com.yiming.wrutils.client.gui.widget.filter.items.base.BooleanItem;
-import com.yiming.wrutils.client.gui.widget.filter.items.base.OtherItem;
 import com.yiming.wrutils.data.event.BaseEvent;
-import com.yiming.wrutils.data.event.MicroTimingSequence;
 import com.yiming.wrutils.data.event.ScheduledTickAddEvent;
 
 public class ScheduledTickAddStatusFilter extends FilterTypeTemp {
     public ScheduledTickAddStatusFilter() {
-        super();
         this.addItem(new SkippedItem());
         this.addItem(new Item(true));
         this.addItem(new Item(false));
@@ -36,7 +33,7 @@ public class ScheduledTickAddStatusFilter extends FilterTypeTemp {
     public static class SkippedItem extends FilterItem {
         @Override
         public String getName() {
-            return "Widely allowed";
+            return "Non‑strictly";
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.yiming.wrutils.client.gui.widget.filter.item.items.block;
 
 import com.yiming.wrutils.client.gui.widget.filter.item.FilterType;
+import com.yiming.wrutils.client.gui.widget.filter.items.BlockFilterType;
 import com.yiming.wrutils.data.selected_area.SelectBoxes;
 
 import java.util.ArrayList;

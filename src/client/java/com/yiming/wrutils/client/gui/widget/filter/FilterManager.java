@@ -17,6 +17,12 @@ public class FilterManager {
     public static DelayFilter DELAY_FILTER = (DelayFilter) addFilter(new DelayFilter());
     public static PriorityFilter PRIORITY_FILTER = (PriorityFilter) addFilter(new PriorityFilter());
     public static ScheduledTickAddStatusFilter SCHEDULED_TICK_ADD_STATUS_FILTER = (ScheduledTickAddStatusFilter) addFilter(new ScheduledTickAddStatusFilter());
+    public static BlockFilter BLOCK_FILTER_SOURCE = (BlockFilter) addFilter(new BlockFilter(BlockFilterType.SOURCE));
+    public static BlockFilter BLOCK_FILTER_TARGET = (BlockFilter) addFilter(new BlockFilter(BlockFilterType.TARGET));
+    public static AreaListFilter AREA_LIST_FILTER_SOURCE = (new AreaListFilter(BlockFilterType.SOURCE));
+    public static AreaListFilter AREA_LIST_FILTER_TARGET = (new AreaListFilter(BlockFilterType.TARGET));
+    public static SubAreaFilter SUB_AREA_FILTER_SOURCE = (SubAreaFilter) addFilter(new SubAreaFilter(BlockFilterType.SOURCE));
+    public static SubAreaFilter SUB_AREA_FILTER_TARGET = (SubAreaFilter) addFilter(new SubAreaFilter(BlockFilterType.TARGET));
 
     public static FilterTypeTemp addFilter(FilterTypeTemp filter) {
         filterManager.add(filter);

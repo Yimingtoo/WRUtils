@@ -3,19 +3,11 @@ package com.yiming.wrutils.client.gui.widget.filter;
 import com.yiming.wrutils.client.data.DataManagerClient;
 import com.yiming.wrutils.client.gui.widget.filter.clickable.BaseClickableWidget;
 import com.yiming.wrutils.client.gui.widget.filter.dropdown.*;
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.ItemListWidget;
-import com.yiming.wrutils.client.gui.widget.filter.dropdown.item.SingleSelectItemListWidget;
 import com.yiming.wrutils.client.gui.widget.filter.item.*;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.block.AreaListItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.block.BlockFilterType;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.block.BlockItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.block.DimensionItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.bool_item.ScheduledTickAddedStatusItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.int_item.DelayItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.EventTypeItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.PriorityItem;
-import com.yiming.wrutils.client.gui.widget.filter.item.items.SequenceItem;
+import com.yiming.wrutils.client.gui.widget.filter.items.AreaListFilter;
+import com.yiming.wrutils.client.gui.widget.filter.items.FilterTypeTemp;
 import com.yiming.wrutils.client.gui.widget.filter.items.GameTickFilter;
+import com.yiming.wrutils.client.gui.widget.filter.items.SubAreaFilter;
 import com.yiming.wrutils.client.utils.WrutilsColor;
 import com.yiming.wrutils.data.DataManager;
 import com.yiming.wrutils.data.event.BaseEvent;
@@ -111,19 +103,20 @@ public class FilterWidget extends ClickableWidget {
         this.widgetMap.get(this.timeButton).put(ItemType.SEQUENCE, new DropDownSelectListWidget(115, y + 23, 100, 18, 100, 18, Text.of("Sequence"), FilterManager.SEQUENCE_FILTER.updateFilter(sequenceSet)));
 
         this.widgetMap.put(this.positionButton, new HashMap<>());
-
-//        DropDownSingleSelectListWidget targetAreaWidget = new DropDownSingleSelectListWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.TARGET));
-//        SingleSelectItemListWidget w1 = (SingleSelectItemListWidget) targetAreaWidget.getItemListWidget();
-//        w1.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
-//        w1.setSingleCheckedItem((ItemListWidget.ItemEntry) w1.getFirst());
-//        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_AREA_LIST, targetAreaWidget);
-//        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_BLOCK, new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), BlockItem.getBlockItems(targetBlockSet, BlockFilterType.TARGET)));
+        AreaListFilter filter = FilterManager.AREA_LIST_FILTER_TARGET.updateFilter(DataManager.areaGroupManagement.getList());
+        SubAreaFilter filter1 = FilterManager.SUB_AREA_FILTER_TARGET;
+        if (filter.getOldSelectBoxes() != null) {
+            filter1.updateFilter(filter.getOldSelectBoxes().getList());
+        }
+        AreaSelectWidget targetAreaWidget = new AreaSelectWidget(10, y + 23, 90, 18, 200, 18, Text.of("Target Area"), filter, filter1);
+        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_AREA_LIST, targetAreaWidget);
+        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_BLOCK, new DropDownSelectListWidget(105, y + 23, 90, 18, 100, 18, Text.of("Target Block"), FilterManager.BLOCK_FILTER_TARGET.updateFilter(targetBlockSet)));
 //        DropDownSingleSelectListWidget sourceAreaWidget = new DropDownSingleSelectListWidget(210, y + 23, 90, 18, 200, 18, Text.of("Source Area"), AreaListItem.getAreaListItems(DataManager.areaGroupManagement.getList(), BlockFilterType.SOURCE));
 //        SingleSelectItemListWidget w2 = (SingleSelectItemListWidget) sourceAreaWidget.getItemListWidget();
 //        w2.setHeaderItemEntry(new ItemListWidget.HeaderItemEntry());
 //        w2.setSingleCheckedItem((ItemListWidget.ItemEntry) w2.getFirst());
-//        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_AREA_LIST, sourceAreaWidget);
-//        this.widgetMap.get(this.positionButton).put(ItemType.TARGET_BLOCK, new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), BlockItem.getBlockItems(sourceBlockSet, BlockFilterType.SOURCE)));
+//        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_AREA_LIST, sourceAreaWidget);
+        this.widgetMap.get(this.positionButton).put(ItemType.SOURCE_BLOCK, new DropDownSelectListWidget(305, y + 23, 90, 18, 100, 18, Text.of("Source Block"), FilterManager.BLOCK_FILTER_SOURCE.updateFilter(sourceBlockSet)));
 //        this.widgetMap.get(this.positionButton).put(ItemType.DIMENSION, new DropDownSelectListWidget(405, y + 23, 90, 18, 100, 18, Text.of("Dimension"), DimensionItem.getDimensionItems(BlockFilterType.TARGET)));
 
         this.widgetMap.put(this.eventButton, new HashMap<>());

@@ -34,6 +34,7 @@ public class DropDownSelectListWidget extends ExpandableClickableWidget {
         this.itemListWidget.setItemEntries(filter);
         this.filter = filter;
         this.setItemListWidgetEnabled(false);
+        this.setCheckState(this.itemListWidget.getPatrentCheckState());
         this.itemListWidget.setOnFocusedAction(() -> this.setCheckState(this.itemListWidget.getPatrentCheckState()));
     }
 

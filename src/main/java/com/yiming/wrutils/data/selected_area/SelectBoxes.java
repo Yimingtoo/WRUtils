@@ -4,11 +4,13 @@ import com.yiming.wrutils.data.Dimension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class SelectBoxes {
     private ArrayList<SelectBox> selectBoxList = new ArrayList<>();
     private SelectBox currentSelectBox;
     private String selectBoxesName = "Area-0";
+    private UUID uuid = UUID.randomUUID();
 
     public void addAndSetCurrent(SelectBox selectBox) {
         this.add(selectBox);
@@ -60,6 +62,10 @@ public class SelectBoxes {
             nameSet.add(box.getName());
         }
         return nameSet;
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
     }
 
     public void setName(String name) {

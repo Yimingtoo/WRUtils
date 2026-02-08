@@ -9,7 +9,7 @@ import com.yiming.wrutils.data.event.ScheduledTickInfo;
 public class OtherItem extends FilterItem {
     @Override
     public String getName() {
-        return "Widely allowed";
+        return "Non‑strictly";
     }
 
     @Override
